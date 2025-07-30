@@ -6135,5 +6135,365 @@
             "gever",
             "uitdrager"
         ]
+    },
+    {
+        "vraag": "Toen zeide ik: Ach Heere Heere, zie, ik kan niet spreken, want ik ben ... (Jeremia 1:6)",
+        "juisteAntwoord": "jong",
+        "moeilijkheidsgraad": 3,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "oud",
+            "onervaren",
+            "afhankelijk"
+        ]
+    },
+    {
+        "vraag": "want Ik ben met u, om u te ... , spreekt de Heere (Jeremia 1:8)",
+        "juisteAntwoord": "redden",
+        "moeilijkheidsgraad": 3,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "helpen",
+            "steunen",
+            "horen"
+        ]
+    },
+    {
+        "vraag": "Er zal mij een ... komen die hun te sterk zal zijn (Jeremia 4:12)",
+        "juisteAntwoord": "wind",
+        "moeilijkheidsgraad": 3,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "storm",
+            "vloed",
+            "overvloed"
+        ]
+    },
+    {
+        "vraag": "Zie, gij vertrouwt op valse ... , die geen nut doen (Jeremia 7:8)",
+        "juisteAntwoord": "woorden",
+        "moeilijkheidsgraad": 4,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "daden",
+            "gedachten",
+            "leraars"
+        ]
+    },
+    {
+        "vraag": "Gij zijt mijn ... ten dage des kwaads (Jeremia 17:17)",
+        "juisteAntwoord": "Toevlucht",
+        "moeilijkheidsgraad": 3,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "Beschermer",
+            "God",
+            "Hulpe"
+        ]
+    },
+    {
+        "vraag": "Mijn ziel gedenkt er wel ... aan, en zij bukt zich neder in mij (Klaagliederen 3:20)",
+        "juisteAntwoord": "terdege",
+        "moeilijkheidsgraad": 3,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "voortdurend",
+            "gedurig",
+            "gestaag"
+        ]
+    },
+    {
+        "vraag": "Het zijn de ... des Heeren, dat wij niet vernield zijn (Klaagliederen 3:22)",
+        "juisteAntwoord": "goedertierenheden",
+        "moeilijkheidsgraad": 3,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "gerechtigheden",
+            "goedheden",
+            "rechtvaardigheden"
+        ]
+    },
+    {
+        "vraag": "Zij zijn allen morgen nieuw, Uw ... is groot (Klaagliederen 3:23)",
+        "juisteAntwoord": "trouw",
+        "moeilijkheidsgraad": 3,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "goedheid",
+            "macht",
+            "liefde"
+        ]
+    },
+    {
+        "vraag": "Want hij plaagt en bedroeft des mensen kinderen niet ... (Klaagliederen 3:33)",
+        "juisteAntwoord": "van harte",
+        "moeilijkheidsgraad": 3,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "met lust",
+            "altoos",
+            "in eeuwigheid"
+        ]
+    },
+    {
+        "vraag": "Gij hebt al hun ... gezien, al hun gedachten tegen mij (Klaagliederen 3:60)",
+        "juisteAntwoord": "wraak",
+        "moeilijkheidsgraad": 4,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "boosheid",
+            "zonden",
+            "gedachten"
+        ]
+    },
+    {
+        "vraag": "Toen opende ik mijn mond, en Hij gaf mij die rol te ... (Ezechi\u00ebl 3:2)",
+        "juisteAntwoord": "eten",
+        "moeilijkheidsgraad": 3,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "lezen",
+            "overdenken",
+            "zien"
+        ]
+    },
+    {
+        "vraag": "Mensenkind, zet uw aangezicht tegen de bergen ... (Ezechi\u00ebl 6:2)",
+        "juisteAntwoord": "Isra\u00ebls",
+        "moeilijkheidsgraad": 3,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "Cherubs",
+            "rondom Jeruzalem",
+            "Sions"
+        ]
+    },
+    {
+        "vraag": "En Hij zeide tot mij: Mensenkind, graaf nu in dien ... (Ezechi\u00ebl 8:8)",
+        "juisteAntwoord": "wand",
+        "moeilijkheidsgraad": 3,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "aarde",
+            "muur",
+            "rivier"
+        ]
+    },
+    {
+        "vraag": "En de bewoonde steden zullen ... worden (Ezechi\u00ebl 12:20)",
+        "juisteAntwoord": "woest",
+        "moeilijkheidsgraad": 3,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "droog",
+            "verlaten",
+            "verwoest"
+        ]
+    },
+    {
+        "vraag": "Ofschoon Noach, Dani\u00ebl en ... in het midden van hetzelve waren (Ezechi\u00ebl 14:20)",
+        "juisteAntwoord": "Job",
+        "moeilijkheidsgraad": 4,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "Amos",
+            "Jona",
+            "David"
+        ]
+    },
+    {
+        "vraag": "en dat men hen onderwees in de spraak der ... (Dani\u00ebl 1:4)",
+        "juisteAntwoord": "Chaldee\u00ebn",
+        "moeilijkheidsgraad": 2,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "volkeren",
+            "Chaldi\u00ebrs",
+            "Judee\u00ebn"
+        ]
+    },
+    {
+        "vraag": "en Dani\u00ebl noemde hij ... (Dani\u00ebl 1:7)",
+        "juisteAntwoord": "Beltsazar",
+        "moeilijkheidsgraad": 1,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "Sadrach",
+            "Mesach",
+            "Abed-nego"
+        ]
+    },
+    {
+        "vraag": "Beproef toch uw knechten ... dagen lang, en men geve ons van het gezaaide te eten en water te drinken (Dani\u00ebl 1:12)",
+        "juisteAntwoord": "10",
+        "moeilijkheidsgraad": 2,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "6",
+            "7",
+            "14"
+        ]
+    },
+    {
+        "vraag": "Daarom ging Dani\u00ebl in tot ... , dien de koning gesteld had om de wijzen van Babel om te brengen (Dani\u00ebl 2:24)",
+        "juisteAntwoord": "Arioch",
+        "moeilijkheidsgraad": 2,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "Melzar",
+            "Sadrach",
+            "Ari\u00ebl"
+        ]
+    },
+    {
+        "vraag": "... , uw koninkrijk is verdeeld (Dani\u00ebl 5:28)",
+        "juisteAntwoord": "Peres",
+        "moeilijkheidsgraad": 2,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "Tekel",
+            "Mene",
+            "Upharsin"
+        ]
+    },
+    {
+        "vraag": "en in de dagen van ... , zoon van Joas, koning van Isra\u00ebl (Hosea 1:1)",
+        "juisteAntwoord": "Jerobeam",
+        "moeilijkheidsgraad": 5,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "Jotham",
+            "Achaz",
+            "Hizkia"
+        ]
+    },
+    {
+        "vraag": "Noem zijn naam ... ; want gijlieden zijt Mijn volk niet (Hosea 1:9)",
+        "juisteAntwoord": "Lo-Ammi",
+        "moeilijkheidsgraad": 5,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "Lo-Ruchama",
+            "Jizre\u00ebl",
+            "Gomer"
+        ]
+    },
+    {
+        "vraag": "Efra\u00efm is vergezeld met de ... , laat hem varen (Hosea 4:17)",
+        "juisteAntwoord": "afgoden",
+        "moeilijkheidsgraad": 3,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "broederen",
+            "priesters",
+            "profeten"
+        ]
+    },
+    {
+        "vraag": "Komt en laat ons ... tot den Heere (Hosea 6:1)",
+        "juisteAntwoord": "wederkeren",
+        "moeilijkheidsgraad": 3,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "terugkeren",
+            "opzien",
+            "bidden"
+        ]
+    },
+    {
+        "vraag": "Wie is ... ? Die versta deze dingen (Hosea 14:10)",
+        "juisteAntwoord": "wijs",
+        "moeilijkheidsgraad": 3,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "verstandig",
+            "recht",
+            "opmerkzaam"
+        ]
+    },
+    {
+        "vraag": "Het woord den Heeren dat geschied is tot Jo\u00ebl, den zoon van ... (Jo\u00ebl 1:1)",
+        "juisteAntwoord": "Pethu\u00ebl",
+        "moeilijkheidsgraad": 4,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "Palti\u00ebl",
+            "Petahja",
+            "Jojada"
+        ]
+    },
+    {
+        "vraag": "Blaast de bazuin te ... (Jo\u00ebl 2:1)",
+        "juisteAntwoord": "Sion",
+        "moeilijkheidsgraad": 1,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "Jeruzalem",
+            "Sichem",
+            "Jericho"
+        ]
+    },
+    {
+        "vraag": "Vrees niet, o land; verheug u en zijt ... (Jo\u00ebl 2:21)",
+        "juisteAntwoord": "blijde",
+        "moeilijkheidsgraad": 3,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "verheugd",
+            "blijmoedig",
+            "heilig"
+        ]
+    },
+    {
+        "vraag": "al wie de Naam des Heeren zal aanroepen, zal ... worden (Jo\u00ebl 2: 32)",
+        "juisteAntwoord": "behouden",
+        "moeilijkheidsgraad": 3,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "zalig",
+            "bewaard",
+            "bekeerd"
+        ]
+    },
+    {
+        "vraag": "... zal tot een verwoesting worden (Jo\u00ebl 3:19)",
+        "juisteAntwoord": "Egypte",
+        "moeilijkheidsgraad": 4,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "Juda",
+            "Edom",
+            "Jeruzalem"
+        ]
     }
 ]
