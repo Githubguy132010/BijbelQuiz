@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:math';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'logger.dart';
 
 /// A service to handle local notifications for the application.
@@ -38,24 +39,102 @@ class NotificationService {
     tz.initializeTimeZones();
     AppLogger.info('Initializing NotificationService');
     
+    // Request notification permissions before initializing
+    if (Platform.isAndroid) {
+      await _setupAndroidNotificationChannel();
+    }
+
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
-    const DarwinInitializationSettings initializationSettingsDarwin =
-        DarwinInitializationSettings();
+    
+    // Handle iOS/macOS initialization
+    final DarwinInitializationSettings initializationSettingsDarwin =
+        DarwinInitializationSettings(
+          requestAlertPermission: true,
+          requestBadgePermission: true,
+          requestSoundPermission: true,
+          onDidReceiveLocalNotification: _onDidReceiveLocalNotification,
+        );
+        
     const LinuxInitializationSettings initializationSettingsLinux =
         LinuxInitializationSettings(defaultActionName: 'Open notification');
-    const InitializationSettings initializationSettings = InitializationSettings(
+        
+    final InitializationSettings initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsDarwin,
       macOS: initializationSettingsDarwin,
       linux: initializationSettingsLinux,
     );
-    await flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
-      onDidReceiveNotificationResponse: (NotificationResponse response) {},
-    );
-    _initialized = true;
-    AppLogger.info('NotificationService initialized');
+
+    try {
+      await flutterLocalNotificationsPlugin.initialize(
+        initializationSettings,
+        onDidReceiveNotificationResponse: _onNotificationResponse,
+      );
+      _initialized = true;
+      AppLogger.info('NotificationService initialized');
+    } catch (e) {
+      AppLogger.error('Failed to initialize notifications: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> _setupAndroidNotificationChannel() async {
+    try {
+      const AndroidNotificationChannel channel = AndroidNotificationChannel(
+        'motivation_channel',
+        'Motivation Notifications',
+        description: 'Daily motivational reminders to play BijbelQuiz',
+        importance: Importance.max,
+        playSound: true,
+        enableVibration: true,
+        showBadge: true,
+        enableLights: true,
+      );
+
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>()
+          ?.createNotificationChannel(channel);
+      
+      // Request notification permission on Android 13+
+      if (await _isAndroid13OrHigher()) {
+        try {
+          final bool? granted = await flutterLocalNotificationsPlugin
+              .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+              ?.requestNotificationsPermission();
+              
+          AppLogger.info('Notification permission granted: $granted');
+        } catch (e) {
+          AppLogger.error('Error requesting notification permission: $e');
+        }
+      }
+    } catch (e) {
+      AppLogger.error('Error setting up notification channel: $e');
+    }
+  }
+
+  Future<bool> _isAndroid13OrHigher() async {
+    if (!Platform.isAndroid) return false;
+    final deviceInfo = await DeviceInfoPlugin().androidInfo;
+    return deviceInfo.version.sdkInt >= 33; // Android 13 is API level 33
+  }
+
+  // Handle iOS/macOS local notification
+  static Future<void> _onDidReceiveLocalNotification(
+    int id,
+    String? title,
+    String? body,
+    String? payload,
+  ) async {
+    // Handle the notification when it's received while the app is in the foreground
+    AppLogger.info('Received local notification: $id, $title, $body');
+  }
+
+  // Handle notification tap/response
+  static Future<void> _onNotificationResponse(NotificationResponse response) async {
+    // Handle when the user taps on a notification
+    AppLogger.info('Notification tapped: ${response.id}, ${response.payload}');
   }
 
   /// Plant drie dagelijkse motivatie-meldingen op willekeurige tijden.
@@ -135,39 +214,74 @@ class NotificationService {
     required String body,
     required TimeOfDay timeOfDay,
   }) async {
-    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-    tz.TZDateTime scheduledDate = tz.TZDateTime(
-      tz.local,
-      now.year,
-      now.month,
-      now.day,
-      timeOfDay.hour,
-      timeOfDay.minute,
-    );
-    if (scheduledDate.isBefore(now)) {
-      scheduledDate = scheduledDate.add(const Duration(days: 1));
-    }
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      id,
-      title,
-      body,
-      scheduledDate,
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-          'motivation_channel',
-          'Motivation Notifications',
-          channelDescription: 'Daily motivational reminders to play BijbelQuiz',
-          importance: Importance.max,
-          priority: Priority.high,
+    try {
+      // Ensure timezone is initialized
+      tz.initializeTimeZones();
+      
+      // Get current time in local timezone
+      final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+      
+      // Create scheduled date with the specified time
+      tz.TZDateTime scheduledDate = tz.TZDateTime(
+        tz.local,
+        now.year,
+        now.month,
+        now.day,
+        timeOfDay.hour,
+        timeOfDay.minute,
+      );
+      
+      // If the time has already passed today, schedule for tomorrow
+      if (scheduledDate.isBefore(now)) {
+        scheduledDate = scheduledDate.add(const Duration(days: 1));
+      }
+      
+      // Log the scheduling attempt
+      AppLogger.info('Scheduling notification for ${scheduledDate.toString()}');
+      
+      // Schedule the notification
+      await flutterLocalNotificationsPlugin.zonedSchedule(
+        id,
+        title,
+        body,
+        scheduledDate,
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            'motivation_channel',
+            'Motivation Notifications',
+            channelDescription: 'Daily motivational reminders to play BijbelQuiz',
+            importance: Importance.max,
+            priority: Priority.high,
+            enableVibration: true,
+            playSound: true,
+            showWhen: true,
+            styleInformation: BigTextStyleInformation(''),
+          ),
+          iOS: const DarwinNotificationDetails(
+            presentAlert: true,
+            presentBadge: true,
+            presentSound: true,
+          ),
+          macOS: const DarwinNotificationDetails(
+            presentAlert: true,
+            presentBadge: true,
+            presentSound: true,
+          ),
+          linux: const LinuxNotificationDetails(
+            urgency: LinuxNotificationUrgency.normal,
+          ),
         ),
-        iOS: DarwinNotificationDetails(),
-        macOS: DarwinNotificationDetails(),
-        linux: LinuxNotificationDetails(),
-      ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
-      matchDateTimeComponents: DateTimeComponents.time,
-    );
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+        matchDateTimeComponents: DateTimeComponents.time,
+        payload: 'notification_$id',
+      );
+      
+      AppLogger.info('Successfully scheduled notification with id: $id');
+    } catch (e, stackTrace) {
+      AppLogger.error('Error scheduling notification: $e\n$stackTrace');
+      rethrow;
+    }
   }
 
   /// Cancels all scheduled notifications.
