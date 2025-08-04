@@ -4,7 +4,7 @@ import '../models/quiz_question.dart';
 import '../theme/app_theme.dart';
 import 'answer_button.dart';
 
-class QuestionCard extends StatelessWidget {
+class QuestionCard extends StatefulWidget {
   final QuizQuestion question;
   final int? selectedAnswerIndex;
   final bool isAnswering;
@@ -23,16 +23,86 @@ class QuestionCard extends StatelessWidget {
   });
 
   @override
+  State<QuestionCard> createState() => _QuestionCardState();
+}
+
+class _QuestionCardState extends State<QuestionCard> with SingleTickerProviderStateMixin {
+  late AnimationController _fadeController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _fadeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _fadeController,
+        curve: Curves.easeInOut,
+      ),
+    );
+    
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0.5, 0.0),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(
+        parent: _fadeController,
+        curve: Curves.easeOutCubic,
+      ),
+    );
+    
+    _fadeController.forward();
+  }
+
+  @override
+  void didUpdateWidget(QuestionCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.question.question != oldWidget.question.question) {
+      _fadeController.reset();
+      _fadeController.forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    _fadeController.dispose();
+    super.dispose();
+  }
+  @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final size = MediaQuery.of(context).size;
     final isDesktop = size.width > 800;
+    
+    Widget content = _buildQuestionContent(context, colorScheme, isDesktop);
+    
+    return AnimatedBuilder(
+      animation: _fadeController,
+      builder: (context, child) {
+        return FadeTransition(
+          opacity: _fadeAnimation,
+          child: SlideTransition(
+            position: _slideAnimation,
+            child: child,
+          ),
+        );
+      },
+      child: content,
+    );
+  }
+  
+  Widget _buildQuestionContent(BuildContext context, ColorScheme colorScheme, bool isDesktop) {
 
     Widget content;
-    switch (question.type) {
+    switch (widget.question.type) {
       case QuestionType.mc:
-        final options = question.allOptions;
-        final correctIndex = options.indexOf(question.correctAnswer);
+        final options = widget.question.allOptions;
+        final correctIndex = options.indexOf(widget.question.correctAnswer);
         content = Container(
           margin: EdgeInsets.symmetric(horizontal: isDesktop ? 20 : 16),
           child: Column(
@@ -70,7 +140,7 @@ class QuestionCard extends StatelessWidget {
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: isDesktop ? 12 : 8),
                         child: Text(
-                          question.question,
+                          widget.question.question,
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.w600,
@@ -79,7 +149,7 @@ class QuestionCard extends StatelessWidget {
                             letterSpacing: -0.2,
                             fontSize: getResponsiveFontSize(context, 24),
                           ),
-                          semanticsLabel: question.question,
+                          semanticsLabel: widget.question.question,
                         ),
                       ),
                       SizedBox(height: isDesktop ? 36 : 32),
@@ -88,10 +158,10 @@ class QuestionCard extends StatelessWidget {
                         options.length,
                         (index) {
                           AnswerFeedback feedback = AnswerFeedback.none;
-                          if (selectedAnswerIndex != null) {
-                            if (index == selectedAnswerIndex && index == correctIndex) {
+                          if (widget.selectedAnswerIndex != null) {
+                            if (index == widget.selectedAnswerIndex && index == correctIndex) {
                               feedback = AnswerFeedback.correct;
-                            } else if (index == selectedAnswerIndex && index != correctIndex) {
+                            } else if (index == widget.selectedAnswerIndex && index != correctIndex) {
                               feedback = AnswerFeedback.incorrect;
                             } else if (index == correctIndex) {
                               feedback = AnswerFeedback.revealedCorrect;
@@ -100,12 +170,12 @@ class QuestionCard extends StatelessWidget {
                           return Padding(
                             padding: EdgeInsets.only(bottom: isDesktop ? 14.0 : 12.0),
                             child: AnswerButton(
-                              onPressed: isAnswering || selectedAnswerIndex != null ? null : () => onAnswerSelected(index),
+                              onPressed: widget.isAnswering || widget.selectedAnswerIndex != null ? null : () => widget.onAnswerSelected(index),
                               feedback: feedback,
                               label: options[index],
                               colorScheme: colorScheme,
                               letter: String.fromCharCode(65 + index),
-                              isDisabled: isAnswering || selectedAnswerIndex != null,
+                              isDisabled: widget.isAnswering || widget.selectedAnswerIndex != null,
                             ),
                           );
                         },
@@ -119,8 +189,8 @@ class QuestionCard extends StatelessWidget {
         );
         break;
       case QuestionType.fitb:
-        final options = question.allOptions;
-        final correctIndex = options.indexOf(question.correctAnswer);
+        final options = widget.question.allOptions;
+        final correctIndex = options.indexOf(widget.question.correctAnswer);
         content = Container(
           margin: EdgeInsets.symmetric(horizontal: isDesktop ? 20 : 16),
           child: Column(
@@ -157,11 +227,11 @@ class QuestionCard extends StatelessWidget {
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: isDesktop ? 12 : 8),
                         child: _FitbAnimatedBlankRow(
-                          question: question,
+                          question: widget.question,
                           options: options,
-                          selectedAnswerIndex: selectedAnswerIndex,
-                          isAnswering: isAnswering,
-                          onAnswerSelected: onAnswerSelected,
+                          selectedAnswerIndex: widget.selectedAnswerIndex,
+                          isAnswering: widget.isAnswering,
+                          onAnswerSelected: widget.onAnswerSelected,
                           colorScheme: colorScheme,
                           isDesktop: isDesktop,
                         ),
@@ -172,10 +242,10 @@ class QuestionCard extends StatelessWidget {
                         options.length,
                         (index) {
                           AnswerFeedback feedback = AnswerFeedback.none;
-                          if (selectedAnswerIndex != null) {
-                            if (index == selectedAnswerIndex && index == correctIndex) {
+                          if (widget.selectedAnswerIndex != null) {
+                            if (index == widget.selectedAnswerIndex && index == correctIndex) {
                               feedback = AnswerFeedback.correct;
-                            } else if (index == selectedAnswerIndex && index != correctIndex) {
+                            } else if (index == widget.selectedAnswerIndex && index != correctIndex) {
                               feedback = AnswerFeedback.incorrect;
                             } else if (index == correctIndex) {
                               feedback = AnswerFeedback.revealedCorrect;
@@ -184,12 +254,12 @@ class QuestionCard extends StatelessWidget {
                           return Padding(
                             padding: EdgeInsets.only(bottom: isDesktop ? 14.0 : 12.0),
                             child: AnswerButton(
-                              onPressed: isAnswering || selectedAnswerIndex != null ? null : () => onAnswerSelected(index),
+                              onPressed: widget.isAnswering || widget.selectedAnswerIndex != null ? null : () => widget.onAnswerSelected(index),
                               feedback: feedback,
                               label: options[index],
                               colorScheme: colorScheme,
                               letter: null,
-                              isDisabled: isAnswering || selectedAnswerIndex != null,
+                              isDisabled: widget.isAnswering || widget.selectedAnswerIndex != null,
                             ),
                           );
                         },
@@ -207,7 +277,7 @@ class QuestionCard extends StatelessWidget {
           'Goed',
           'Fout',
         ];
-        final correctIndex = question.correctAnswer.toLowerCase() == 'goed' ? 0 : 1;
+        final correctIndex = widget.question.correctAnswer.toLowerCase() == 'goed' ? 0 : 1;
         content = Container(
           margin: EdgeInsets.symmetric(horizontal: isDesktop ? 20 : 16),
           child: Column(
@@ -243,7 +313,7 @@ class QuestionCard extends StatelessWidget {
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: isDesktop ? 12 : 8),
                         child: Text(
-                          question.question,
+                          widget.question.question,
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.w600,
@@ -252,7 +322,7 @@ class QuestionCard extends StatelessWidget {
                             letterSpacing: -0.2,
                             fontSize: getResponsiveFontSize(context, 28),
                           ),
-                          semanticsLabel: question.question,
+                          semanticsLabel: widget.question.question,
                         ),
                       ),
                       SizedBox(height: isDesktop ? 48 : 36),
@@ -260,10 +330,10 @@ class QuestionCard extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: List.generate(2, (index) {
                           AnswerFeedback feedback = AnswerFeedback.none;
-                          if (selectedAnswerIndex != null) {
-                            if (index == selectedAnswerIndex && index == correctIndex) {
+                          if (widget.selectedAnswerIndex != null) {
+                            if (index == widget.selectedAnswerIndex && index == correctIndex) {
                               feedback = AnswerFeedback.correct;
-                            } else if (index == selectedAnswerIndex && index != correctIndex) {
+                            } else if (index == widget.selectedAnswerIndex && index != correctIndex) {
                               feedback = AnswerFeedback.incorrect;
                             } else if (index == correctIndex) {
                               feedback = AnswerFeedback.revealedCorrect;
@@ -273,13 +343,13 @@ class QuestionCard extends StatelessWidget {
                             child: Padding(
                               padding: EdgeInsets.symmetric(horizontal: 8.0),
                               child: AnswerButton(
-                                onPressed: isAnswering || selectedAnswerIndex != null ? null : () => onAnswerSelected(index),
+                                onPressed: widget.isAnswering || widget.selectedAnswerIndex != null ? null : () => widget.onAnswerSelected(index),
                                 feedback: feedback,
                                 label: tfOptions[index],
                                 colorScheme: colorScheme,
                                 letter: null,
                                 isLarge: true,
-                                isDisabled: isAnswering || selectedAnswerIndex != null,
+                                isDisabled: widget.isAnswering || widget.selectedAnswerIndex != null,
                               ),
                             ),
                           );
@@ -298,24 +368,24 @@ class QuestionCard extends StatelessWidget {
 
     if (isDesktop) {
       // Only MC supports keyboard shortcuts for now
-      if (question.type == QuestionType.mc) {
-        final options = question.allOptions;
+      if (widget.question.type == QuestionType.mc) {
+        final options = widget.question.allOptions;
         content = Focus(
           autofocus: true,
           onKeyEvent: (FocusNode node, KeyEvent event) {
-            if (event is KeyDownEvent && !isAnswering && !isTransitioning) {
+            if (event is KeyDownEvent && !widget.isAnswering && !widget.isTransitioning) {
               String key = event.logicalKey.keyLabel.toLowerCase();
               if (key == 'a' && options.isNotEmpty) {
-                onAnswerSelected(0);
+                widget.onAnswerSelected(0);
                 return KeyEventResult.handled;
               } else if (key == 'b' && options.length > 1) {
-                onAnswerSelected(1);
+                widget.onAnswerSelected(1);
                 return KeyEventResult.handled;
               } else if (key == 'c' && options.length > 2) {
-                onAnswerSelected(2);
+                widget.onAnswerSelected(2);
                 return KeyEventResult.handled;
               } else if (key == 'd' && options.length > 3) {
-                onAnswerSelected(3);
+                widget.onAnswerSelected(3);
                 return KeyEventResult.handled;
               }
             }
@@ -355,14 +425,60 @@ class _FitbAnimatedBlankRow extends StatefulWidget {
 
 class _FitbAnimatedBlankRowState extends State<_FitbAnimatedBlankRow> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+  late Animation<Color?> _colorAnimation;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 600),
+      duration: const Duration(milliseconds: 300),
       vsync: this,
     );
+    
+    _scaleAnimation = TweenSequence<double>([
+      TweenSequenceItem(
+        tween: Tween(begin: 1.0, end: 1.1),
+        weight: 50,
+      ),
+      TweenSequenceItem(
+        tween: Tween(begin: 1.1, end: 1.0),
+        weight: 50,
+      ),
+    ]).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      ),
+    );
+    
+    _colorAnimation = ColorTween(
+      begin: widget.colorScheme.outlineVariant,
+      end: const Color(0xFF10B981),
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      ),
+    );
+    
+    // If we already have a selected answer, run the animation
+    if (widget.selectedAnswerIndex != null) {
+      _controller.forward();
+    }
+  }
+
+  @override
+  void didUpdateWidget(_FitbAnimatedBlankRow oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.selectedAnswerIndex != oldWidget.selectedAnswerIndex) {
+      if (widget.selectedAnswerIndex != null) {
+        _controller.reset();
+        _controller.forward();
+      } else {
+        _controller.reverse();
+      }
+    }
   }
 
   @override
@@ -438,26 +554,63 @@ class _FitbAnimatedBlankRowState extends State<_FitbAnimatedBlankRow> with Singl
       if (i < questionParts.length - 1) {
         children.add(
           AnimatedSwitcher(
-            duration: const Duration(milliseconds: 600),
-            transitionBuilder: (child, anim) {
-              return ScaleTransition(scale: anim, child: child);
+            duration: const Duration(milliseconds: 300),
+            switchInCurve: Curves.easeOutBack,
+            switchOutCurve: Curves.easeInBack,
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              return ScaleTransition(
+                scale: animation,
+                child: FadeTransition(
+                  opacity: animation,
+                  child: child,
+                ),
+              );
             },
             child: Container(
               key: ValueKey('blank_$i'),
               margin: const EdgeInsets.symmetric(horizontal: 8),
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
               decoration: BoxDecoration(
-                color: blankColor.withValues(alpha: (0.08 * 255)),
+                color: widget.selectedAnswerIndex != null 
+                    ? _colorAnimation.value?.withOpacity(0.1)
+                    : blankColor.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(12),
-                border: blankBorder,
-              ),
-              child: Text(
-                i == 0 ? blankText : '______', // Only show selected answer in first blank for now
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: i == 0 ? blankColor : widget.colorScheme.outlineVariant,
-                  fontSize: getResponsiveFontSize(context, 24),
+                border: Border.all(
+                  color: widget.selectedAnswerIndex != null 
+                      ? _colorAnimation.value ?? blankColor
+                      : blankColor,
+                  width: 3,
                 ),
+                boxShadow: widget.selectedAnswerIndex != null
+                    ? [
+                        BoxShadow(
+                          color: (_colorAnimation.value ?? blankColor).withOpacity(0.3),
+                          blurRadius: 8,
+                          spreadRadius: 0,
+                          offset: const Offset(0, 2),
+                        ),
+                      ]
+                    : null,
+              ),
+              child: AnimatedBuilder(
+                animation: _controller,
+                builder: (context, child) {
+                  return Transform.scale(
+                    scale: _scaleAnimation.value,
+                    child: Text(
+                      i == 0 ? blankText : '______',
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: i == 0 
+                            ? (widget.selectedAnswerIndex != null 
+                                ? _colorAnimation.value 
+                                : blankColor)
+                            : widget.colorScheme.outlineVariant,
+                        fontSize: getResponsiveFontSize(context, 24),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
           ),
