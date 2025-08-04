@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activeer BijbelQuiz</title>
+    <link rel="stylesheet" href="theme.css">
+</head>
+<body class="center-screen fade-in">
+    <div class="container card">
+        <h1>Activeer BijbelQuiz</h1>
+        <p>Voer je activatiecode in:</p>
+        <input type="text" id="activationCode" placeholder="XXXX-XXXX-XXXX">
+        <button onclick="verifyCode()" class="btn primary">Verifieer Code</button>
+        <div id="message"></div>
+    </div>
+
+    <script>
+        // Hardcoded valid activation codes
+        const VALID_CODES = ['BIJBEL2025', 'QUIZ1234', 'TESTCODE'];
+        const APK_URL = 'path/to/your/app-release.apk';
+
+        function verifyCode() {
+            const code = document.getElementById('activationCode').value.trim().toUpperCase();
+            const messageEl = document.getElementById('message');
+            const downloadLink = document.getElementById('download');
+
+            if (VALID_CODES.includes(code)) {
+                messageEl.textContent = 'Code geaccepteerd! Doorverwijzen...';
+                messageEl.style.color = 'var(--success)';
+                setTimeout(() => {
+                    window.location.href = `download.html?apk=${encodeURIComponent(APK_URL)}`;
+                }, 1000);
+            } else {
+                messageEl.textContent = 'Ongeldige code. Probeer het opnieuw.';
+                messageEl.style.color = 'var(--error)';
+                downloadLink.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download BijbelQuiz</title>
+    <link rel="stylesheet" href="theme.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body class="center-screen fade-in">
+    <div class="container card">
+        <i class="material-icons icon-large">download</i>
+        <h1>Download BijbelQuiz</h1>
+        <p>Klik op de knop hieronder om de app te downloaden.</p>
+        <a href="#" id="downloadBtn" class="btn primary btn-large">Download Android App</a>
+        <footer>
+            &copy; 2025 BijbelQuiz
+        </footer>
+    </div>
+
+    <script>
+        // Get APK URL from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const apkUrl = urlParams.get('apk');
+        
+        if (apkUrl) {
+            document.getElementById('downloadBtn').href = apkUrl;
+            document.getElementById('downloadBtn').setAttribute('target', '_blank');
+            document.getElementById('downloadBtn').setAttribute('rel', 'noopener');
+        }
+    </script>
+</body>
+</html>
