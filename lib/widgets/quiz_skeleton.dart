@@ -22,17 +22,18 @@ class QuizSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final orig = colorScheme.surfaceContainerHighest;
-    final baseColor = orig.withValues(
-      red: ((orig.r * 255.0).round() & 0xff).toDouble(),
-      green: ((orig.g * 255.0).round() & 0xff).toDouble(),
-      blue: ((orig.b * 255.0).round() & 0xff).toDouble(),
-      alpha: 0.3 * 255,
+    // Use Color.fromRGBO for better Android compatibility with alpha
+    final baseColor = Color.fromRGBO(
+      (orig.red * 255).round(),
+      (orig.green * 255).round(),
+      (orig.blue * 255).round(),
+      0.3, // 30% opacity
     );
-    final highlightColor = orig.withValues(
-      red: ((orig.r * 255.0).round() & 0xff).toDouble(),
-      green: ((orig.g * 255.0).round() & 0xff).toDouble(),
-      blue: ((orig.b * 255.0).round() & 0xff).toDouble(),
-      alpha: 0.6 * 255,
+    final highlightColor = Color.fromRGBO(
+      (orig.red * 255).round(),
+      (orig.green * 255).round(),
+      (orig.blue * 255).round(),
+      0.6, // 60% opacity
     );
     // Use metricsCount from parameter
     // Use answerCount from parameter
