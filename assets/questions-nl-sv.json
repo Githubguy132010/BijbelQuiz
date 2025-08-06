@@ -4917,7 +4917,7 @@
         "biblicalReference": null
     },
     {
-        "vraag": "In Efeze wordt de geestelijke wapenrusting beschreven",
+        "vraag": "In Éfeze wordt de geestelijke wapenrusting beschreven",
         "juisteAntwoord": "Waar",
         "moeilijkheidsgraad": 3,
         "type": "tf",
@@ -4925,10 +4925,10 @@
         "fouteAntwoorden": [
             "Niet waar"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Éfeze 6: 10-20"
     },
     {
-        "vraag": "Paulus schrijft het bijbelboek Efeze tijdens zijn eerste zendingsreis",
+        "vraag": "Paulus schrijft het bijbelboek Éfeze tijdens zijn eerste zendingsreis",
         "juisteAntwoord": "Niet waar",
         "moeilijkheidsgraad": 3,
         "type": "tf",
@@ -4936,10 +4936,10 @@
         "fouteAntwoorden": [
             "Waar"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Éfeze 3:1"
     },
     {
-        "vraag": "Filippenzen is gericht aan de Christenen in Griekenland",
+        "vraag": "Filippenzen is gericht aan de Christenen in Filippi",
         "juisteAntwoord": "Waar",
         "moeilijkheidsgraad": 4,
         "type": "tf",
@@ -4947,7 +4947,7 @@
         "fouteAntwoorden": [
             "Niet waar"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Fillipenzen"
     },
     {
         "vraag": "In Filippenzen staat \"Want het leven is mij Christus, en het sterven is mij gewin\"",
@@ -4958,7 +4958,7 @@
         "fouteAntwoorden": [
             "Niet waar"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Filippenzen 1:21" 
     },
     {
         "vraag": "In Kolossenzen worden de vruchten van de Geest beschreven",
@@ -4969,7 +4969,7 @@
         "fouteAntwoorden": [
             "Waar"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Kolossenzen"
     },
     {
         "vraag": "Paulus kende de Christenen van Kolosse persoonlijk",
@@ -4980,7 +4980,7 @@
         "fouteAntwoorden": [
             "Waar"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Kolossenzen 1"
     },
     {
         "vraag": "1 Thessalonicenzen is waarschijnlijk Paulus oudste brief",
@@ -4991,7 +4991,7 @@
         "fouteAntwoorden": [
             "Niet waar"
         ],
-        "biblicalReference": null
+        "biblicalReference": "1 Thessalonicenzen"
     },
     {
         "vraag": "In Thessalonicenzen roept Paulus op tot heilige wandel en broederlijke liefde",
@@ -5002,7 +5002,7 @@
         "fouteAntwoorden": [
             "Niet waar"
         ],
-        "biblicalReference": null
+        "biblicalReference": "1 Thessalonicenzen 4"
     },
     {
         "vraag": "In 2 Thessalonicenzen roept Paulus op tot standvastigheid",
@@ -5013,7 +5013,7 @@
         "fouteAntwoorden": [
             "Niet waar"
         ],
-        "biblicalReference": null
+        "biblicalReference": "2 Thessalonicenzen 2: 13-17"
     },
     {
         "vraag": "2 Thessalonicenzen is vooral een herhaling van de eerste brief",
@@ -5024,7 +5024,7 @@
         "fouteAntwoorden": [
             "Waar"
         ],
-        "biblicalReference": null
+        "biblicalReference": "2 Thessalonicenzen"
     },
     {
         "vraag": "Paulus schrijft in 1 Timothe\u00fcs over het ambt van ouderlingen en diakenen",
@@ -5035,7 +5035,7 @@
         "fouteAntwoorden": [
             "Niet waar"
         ],
-        "biblicalReference": null
+        "biblicalReference": "1 Timotheüs 3"
     },
     {
         "vraag": "Timothe\u00fcs was voorganger in Rome",
@@ -5046,7 +5046,7 @@
         "fouteAntwoorden": [
             "Waar"
         ],
-        "biblicalReference": null
+        "biblicalReference": "1 Timotheüs"
     },
     {
         "vraag": "Paulus schrijft in 1 Timothe\u00fcs over de rol van de vrouw in de gemeente",
@@ -5057,7 +5057,7 @@
         "fouteAntwoorden": [
             "Niet waar"
         ],
-        "biblicalReference": null
+        "biblicalReference": "1 Timotheüs"
     },
     {
         "vraag": "In 2 Timothe\u00fcs noemt Paulus \"Al de schrift is van God ingegeven\"",
@@ -5068,7 +5068,7 @@
         "fouteAntwoorden": [
             "Niet waar"
         ],
-        "biblicalReference": null
+        "biblicalReference": "2 Timotheüs 3:16"
     },
     {
         "vraag": "In 2 Timothe\u00fcs verwacht Paulus dat hij binnenkort op reis zal gaan",
@@ -5079,7 +5079,7 @@
         "fouteAntwoorden": [
             "Waar"
         ],
-        "biblicalReference": null
+        "biblicalReference": "2 Timotheüs"
     },
     {
         "vraag": "Titus was door Paulus achtergelaten op het eiland Cyprus",
@@ -5090,7 +5090,7 @@
         "fouteAntwoorden": [
             "Waar"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Titus 1:5"
     },
     {
         "vraag": "Titus bevat instructies voor het aanstellen van ouderlingen",
@@ -5101,10 +5101,10 @@
         "fouteAntwoorden": [
             "Niet waar"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Titus 1: 5-9"
     },
     {
-        "vraag": "Als nu _____ zag dat zij Jakob niet baarde, zo benijdde _____ haar zuster.",
+        "vraag": "Als nu ... zag dat zij Jakob niet baarde, zo benijdde ... haar zuster.",
         "juisteAntwoord": "Rachel",
         "moeilijkheidsgraad": 1,
         "type": "fitb",
@@ -5114,10 +5114,10 @@
             "Bilha",
             "Zilpa"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Genesis 30:1"
     },
     {
-        "vraag": "En Adam leefde _____ jaar en gewon een zoon naar zijn gelijkenis, naar zijn evenbeeld, en noemde zijn naam Seth",
+        "vraag": "En Adam leefde ... jaar en gewon een zoon naar zijn gelijkenis, naar zijn evenbeeld, en noemde zijn naam Seth",
         "juisteAntwoord": "130",
         "moeilijkheidsgraad": 4,
         "type": "fitb",
@@ -5127,10 +5127,10 @@
             "110",
             "140"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Genesis 5:3"
     },
     {
-        "vraag": "Zo waren dan de dagen van Henoch _____ jaar",
+        "vraag": "Zo waren dan de dagen van Henoch ... jaar",
         "juisteAntwoord": "365",
         "moeilijkheidsgraad": 4,
         "type": "fitb",
@@ -5140,23 +5140,23 @@
             "300",
             "782"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Genesis 5:23"
     },
     {
-        "vraag": "Maar Noach vond _____ in de ogen den Heeren (Genesis)",
-        "juisteAntwoord": "Genade",
+        "vraag": "Maar Noach vond ... in de ogen den Heeren",
+        "juisteAntwoord": "genade",
         "moeilijkheidsgraad": 1,
         "type": "fitb",
         "categories": [],
         "fouteAntwoorden": [
-            "Barmhartigheid",
-            "Vergeving",
-            "Goedertierenheid"
+            "barmhartigheid",
+            "vergeving",
+            "goedertierenheid"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Genesis 6:8"
     },
     {
-        "vraag": "En de Heere zeide: Zal ik voor _____ verbergen wat Ik doe (Genesis)?",
+        "vraag": "En de Heere zeide: Zal ik voor ... verbergen wat Ik doe?",
         "juisteAntwoord": "Abraham",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -5166,10 +5166,10 @@
             "Noach",
             "Lot"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Genesis 18:17"
     },
     {
-        "vraag": "Mozes leidde het volk uit _____ (Exodus)",
+        "vraag": "Mozes leidde het volk uit ... ",
         "juisteAntwoord": "Egypte",
         "moeilijkheidsgraad": 1,
         "type": "fitb",
@@ -5179,10 +5179,10 @@
             "Kana\u00e4n",
             "Assyri\u00eb"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Exodus 12"
     },
     {
-        "vraag": "De wet werd gegeven op de berg _____ (Exodus)",
+        "vraag": "De wet werd gegeven op de berg ... ",
         "juisteAntwoord": "Sina\u00ef",
         "moeilijkheidsgraad": 1,
         "type": "fitb",
@@ -5192,10 +5192,10 @@
             "Nebo",
             "Moria"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Exodus 19 en 20"
     },
     {
-        "vraag": "En zij zullen Mij een _____ maken, dat Ik in het midden van hen wone (Exodus)",
+        "vraag": "En zij zullen Mij een ... maken, dat Ik in het midden van hen wone",
         "juisteAntwoord": "heiligdom",
         "moeilijkheidsgraad": 4,
         "type": "fitb",
@@ -5205,10 +5205,10 @@
             "tabernakel",
             "tempel"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Éxodus 25:8"
     },
     {
-        "vraag": "Zijn snuiters en zijn _____ zullen louter goud zijn (Exodus)",
+        "vraag": "Zijn snuiters en zijn ... zullen louter goud zijn",
         "juisteAntwoord": "blusvaten",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -5218,10 +5218,10 @@
             "knopen",
             "rieten"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Éxodus 25:38"
     },
     {
-        "vraag": "Toen zeide hij (Mozes): Toon mij uw _____ (Exodus)",
+        "vraag": "Toen zeide hij (Mozes): Toon mij uw ... ",
         "juisteAntwoord": "heerlijkheid",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -5231,10 +5231,10 @@
             "genade",
             "grootheid"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Éxodus 33:18"
     },
     {
-        "vraag": "Breek ze in stukken en giet olie daarop: het is een _____ (Leviticus)",
+        "vraag": "Breek ze in stukken en giet olie daarop: het is een ... ",
         "juisteAntwoord": "spijsoffer",
         "moeilijkheidsgraad": 4,
         "type": "fitb",
@@ -5244,10 +5244,10 @@
             "vuuroffer",
             "dankoffer"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Leviticus 2:6"
     },
     {
-        "vraag": "Het is een _____ ; hij heeft zich voorzeker schuldig gemaakt aan den Heere (Leviticus)",
+        "vraag": "Het is een ... ; hij heeft zich voorzeker schuldig gemaakt aan den Heere",
         "juisteAntwoord": "schuldoffer",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -5257,10 +5257,10 @@
             "dankoffer",
             "zoenoffer"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Leviticus 5:19"
     },
     {
-        "vraag": "En de priester zal die aansteken op het altaar ten vuuroffer den Heere; het is een _____ (Leviticus)",
+        "vraag": "En de priester zal die aansteken op het altaar ten vuuroffer den Heere; het is een ... ",
         "juisteAntwoord": "schuldoffer",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -5270,10 +5270,10 @@
             "brandoffer",
             "dankoffer"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Leviticus 7:5"
     },
     {
-        "vraag": "Als Mozes dat hoorde, zo was het _____ in zijn ogen (Leviticus)",
+        "vraag": "Als Mozes dat hoorde, zo was het ... in zijn ogen",
         "juisteAntwoord": "goed",
         "moeilijkheidsgraad": 4,
         "type": "fitb",
@@ -5283,7 +5283,7 @@
             "recht",
             "liefelijk"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Leviticus 14:26"
     },
     {
         "vraag": "Ook zal de _____ van die olie op des priesters linkerhand gieten (Leviticus)",
