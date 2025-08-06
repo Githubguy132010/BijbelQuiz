@@ -253,7 +253,7 @@
         "biblicalReference": "Genesis 8"
     },
     {
-        "vraag": "De top van de toren van Babel moest reiken tot",
+        "vraag": "De top van de toren van Babel moest reiken tot ...",
         "juisteAntwoord": "in de hemel",
         "fouteAntwoorden": [
             "de wolken",
@@ -5299,7 +5299,7 @@
         "biblicalReference": null
     },
     {
-        "vraag": "Het boek Numeri begint met een telling van de _____ (Numeri)",
+        "vraag": "Het boek Numeri begint met een telling van de ... ",
         "juisteAntwoord": "Isra\u00eblieten",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -5309,10 +5309,10 @@
             "Levieten",
             "vreemdelingen"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Numeri 1"
     },
     {
-        "vraag": "Mozes dan sprak tot de kinderen Isra\u00ebls, dat zij het _____ houden zouden (Numeri)",
+        "vraag": "Mozes dan sprak tot de kinderen Isra\u00ebls, dat zij het ... houden zouden (Numeri)",
         "juisteAntwoord": "pascha",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -5322,10 +5322,10 @@
             "loofhuttenfeest",
             "geloof"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Numeri 9:4"
     },
     {
-        "vraag": "Van den stam van Juda _____, de zoon van Jefunne (Numeri)",
+        "vraag": "Van den stam van Juda ..., de zoon van Jefunne",
         "juisteAntwoord": "Kaleb",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -5335,10 +5335,10 @@
             "Issaschar",
             "Benjamin"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Numeri 13:6"
     },
     {
-        "vraag": "En _____ deed het; gelijk als de Heere hem geboden had, alzo deed hij (Numeri)",
+        "vraag": "En ... deed het; gelijk als de Heere hem geboden had, alzo deed hij",
         "juisteAntwoord": "Mozes",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -5348,10 +5348,10 @@
             "Levi",
             "Edom"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Numeri 17:11"
     },
     {
-        "vraag": "Maar de kinderen van _____ stierven niet (Numeri)",
+        "vraag": "Maar de kinderen van ... stierven niet",
         "juisteAntwoord": "Korach",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -5361,10 +5361,10 @@
             "Abiram",
             "Eliab"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Numeri 26:11"
     },
     {
-        "vraag": "Mozes sprak tot het volk voordat het beloofde land _____ (Deuteronomium)",
+        "vraag": "Mozes sprak tot het volk voordat ze het beloofde land ... ", 
         "juisteAntwoord": "binnenkwamen",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -5374,10 +5374,10 @@
             "veroverder",
             "vergeten"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Deuteronomium 1"
     },
     {
-        "vraag": "Mozes stierf op de berg _____ (Deutronomium)",
+        "vraag": "Mozes stierf op de berg ... ",
         "juisteAntwoord": "Nebo",
         "moeilijkheidsgraad": 1,
         "type": "fitb",
@@ -5387,10 +5387,11 @@
             "Horeb",
             "Hor"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Deuteronomium 34:5"
+ 
     },
     {
-        "vraag": "daartoe heeft de Heere tot mij gezegd: Gij zult over deze _____ niet gaan (Deuteronomium)",
+        "vraag": "daartoe heeft de Heere tot mij gezegd: Gij zult over deze ... niet gaan",
         "juisteAntwoord": "Jordaan",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -5400,10 +5401,10 @@
             "Rivier",
             "Berg"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Deuterononium 3:27"
     },
     {
-        "vraag": "Een _____ zult gij niet muilbanden, als hij dorst (Deuteronomium)",
+        "vraag": "Een ... zult gij niet muilbanden, als hij dorst",
         "juisteAntwoord": "os",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -5413,10 +5414,10 @@
             "ram",
             "beer"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Deuteronomium 25:4"
     },
     {
-        "vraag": "Want gij zult doen wat _____ is in de ogen des Heeren (Deuteronomium)",
+        "vraag": "Want gij zult doen wat ... is in de ogen des Heeren",
         "juisteAntwoord": "recht",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -5426,10 +5427,10 @@
             "kwaad",
             "billijk"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Deuteronomium 12:28"
     },
     {
-        "vraag": "Toen gebood Jozua den _____ des volks, zeggende: (Jozua)",
+        "vraag": "Toen gebood Jozua den ... des volks, zeggende: ",
         "juisteAntwoord": "ambtlieden",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -5439,10 +5440,10 @@
             "hoofden",
             "zonen"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Jozua"
     },
     {
-        "vraag": "En Hij zeide: Neen, maar Ik ben de _____ van het heir des Heeren (Jozua)",
+        "vraag": "En Hij zeide: Neen, maar Ik ben de ... van het heir des Heeren",
         "juisteAntwoord": "Vorst",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -5452,10 +5453,10 @@
             "Priester",
             "Profeet"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Jozua 5"
     },
     {
-        "vraag": "Toen bouwde Jozua een altaar den Heere, den God Isra\u00ebls, op den berg _____ (Jozua)",
+        "vraag": "Toen bouwde Jozua een altaar den Heere, den God Isra\u00ebls, op den berg ... ",
         "juisteAntwoord": "Ebal",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -5465,10 +5466,10 @@
             "Sina\u00ef",
             "Hermon"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Jozua 8:30"
     },
     {
-        "vraag": "Doch de koning van _____ grepen zij levend, en zij brachten hem tot Jozua (Jozua)",
+        "vraag": "Doch de koning van ... grepen zij levend, en zij brachten hem tot Jozua",
         "juisteAntwoord": "Ai",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -5478,11 +5479,11 @@
             "Ferez",
             "Gibeon"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Jozua 8:23"
     },
     {
-        "vraag": "Die vijf koningen zijn gevonden, verborgen in de spelonk bij _____ (Jozua)",
-        "juisteAntwoord": "Makkeda",
+        "vraag": "Die vijf koningen zijn gevonden, verborgen in de spelonk bij ... ",
+        "juisteAntwoord": "Makkéda",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
         "categories": [],
@@ -5491,10 +5492,10 @@
             "Machpela",
             "de profeten"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Jozua 10:16"
     },
     {
-        "vraag": "De eerste richter van Isra\u00ebl was ... (Richteren)",
+        "vraag": "De eerste richter van Isra\u00ebl was ... ",
         "juisteAntwoord": "Othni\u00ebl",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -5504,11 +5505,11 @@
             "Samgar",
             "Gideon"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Richteren 3"
     },
     {
-        "vraag": "... nu, een vrouw die een profetes was, de huisvrouw van Lappidoth (Richteren)",
-        "juisteAntwoord": "Debora",
+        "vraag": " ... nu, een vrouw die een profetes was, de huisvrouw van Lappidoth",
+        "juisteAntwoord": "Debóra",
         "moeilijkheidsgraad": 1,
         "type": "fitb",
         "categories": [],
@@ -5517,10 +5518,10 @@
             "Ja\u00ebl",
             "Priscilla"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Richteren 4:4"
     },
     {
-        "vraag": "Gideon vroeg om een teken van God met een ... (Richteren)",
+        "vraag": "Gídeon vroeg om een teken van God met een ... ",
         "juisteAntwoord": "wollen vlies",
         "moeilijkheidsgraad": 1,
         "type": "fitb",
@@ -5530,10 +5531,10 @@
             "visioen",
             "stem"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Richteren 6:37"
     },
     {
-        "vraag": "Toen zeiden de bomen tot de wijnstok: Kom gij, wees ... over ons (Richteren)",
+        "vraag": "Toen zeiden de bomen tot de wijnstok: Kom gij, wees ... over ons",
         "juisteAntwoord": "koning",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -5543,10 +5544,10 @@
             "vorst",
             "overste"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Richteren 9:12"
     },
     {
-        "vraag": "En ... beloofde den Heere een gelofte (Richteren)",
+        "vraag": "En ... beloofde den Heere een gelofte",
         "juisteAntwoord": "Jefta",
         "moeilijkheidsgraad": 1,
         "type": "fitb",
@@ -5556,11 +5557,11 @@
             "Gideon",
             "Efra\u00efm"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Richteren 11"
     },
     {
-        "vraag": "En ... , de man van Naomi stierf (Ruth)",
-        "juisteAntwoord": "Elimelech",
+        "vraag": "En ... , de man van Naomi stierf",
+        "juisteAntwoord": "Elimélech",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
         "categories": [],
@@ -5569,10 +5570,10 @@
             "Chiljon",
             "Boaz"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Ruth 1:3"
     },
     {
-        "vraag": "Noemt mij niet Naomi, noemt mij ... (Ruth)",
+        "vraag": "Noemt mij niet Naómi, noemt mij ... ",
         "juisteAntwoord": "Mara",
         "moeilijkheidsgraad": 1,
         "type": "fitb",
@@ -5582,10 +5583,10 @@
             "Ruth",
             "Rachel"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Ruth 1:20"
     },
     {
-        "vraag": "Naomi nu had een bloedvriend van haar man, een man, geweldig van ... (Ruth)",
+        "vraag": "Naómi nu had een bloedvriend van haar man, een man, geweldig van ... (Ruth)",
         "juisteAntwoord": "vermogen",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -5595,10 +5596,10 @@
             "geest",
             "goedheid"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Ruth 2:1"
     },
     {
-        "vraag": "De Heere vergelde u uw ... , en uw loon zij volkomen van de Heere (Ruth)",
+        "vraag": "De Heere vergelde u uw ... , en uw loon zij volkomen van de Heere",
         "juisteAntwoord": "daad",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -5608,10 +5609,10 @@
             "goedheid",
             "geloof"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Ruth 2:12"
     },
     {
-        "vraag": "Als zij nu opstond ... (Ruth)",
+        "vraag": "Als zij nu opstond ... ",
         "juisteAntwoord": "om op te lezen",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -5621,7 +5622,7 @@
             "om te arbeiden",
             "om haar te troosten"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Ruth"
     },
     {
         "vraag": "En zij zeide tot haar: Al wat gij ... , zal ik doen",
@@ -5634,10 +5635,10 @@
             "mij beveelt",
             "tot mij spreekt"
         ],
-        "biblicalReference": null
+        "biblicalReference": "1 Samuël"
     },
     {
-        "vraag": "Elkana ging jaarlijks offeren in ... (1 Samu\u00ebl)",
+        "vraag": "Elkana ging jaarlijks offeren in ... ",
         "juisteAntwoord": "Silo",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -5647,10 +5648,10 @@
             "de tempel",
             "de tabernakel"
         ],
-        "biblicalReference": null
+        "biblicalReference": "1 Samuël 1:3"
     },
     {
-        "vraag": "Maar wanneer een mens tegen de Heere zondigt, wie zal ... (1 Samu\u00ebl)",
+        "vraag": "Maar wanneer een mens tegen de Heere zondigt, wie zal ... ",
         "juisteAntwoord": "voor hem bidden",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -5660,10 +5661,10 @@
             "dan nog zoeken",
             "dan vinden"
         ],
-        "biblicalReference": null
+        "biblicalReference": "1 Samuël 2:25"
     },
     {
-        "vraag": "En ik zal Mij een getrouwen ... verwekken, die zal doen gelijk als in Mijn hart en in Mijn ziel zijn zal (1 Samu\u00ebl)",
+        "vraag": "En ik zal Mij een getrouwen ... verwekken, die zal doen gelijk als in Mijn hart en in Mijn ziel zijn zal",
         "juisteAntwoord": "priester",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -5673,10 +5674,10 @@
             "profeet",
             "zoon"
         ],
-        "biblicalReference": null
+        "biblicalReference": "1 Samuël 2:35"
     },
     {
-        "vraag": "Saul werd jaloers op David omdat hij ... (1 Samu\u00ebl)",
+        "vraag": "Saul werd jaloers op David omdat hij ... ",
         "juisteAntwoord": "meer lof ontving",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -5686,10 +5687,10 @@
             "meer vrienden had",
             "meer land bezat"
         ],
-        "biblicalReference": null
+        "biblicalReference": "1 Samuël 18"
     },
     {
-        "vraag": "David werd koning over Isra\u00ebl in de stad ... (2 Samu\u00ebl)",
+        "vraag": "David werd koning over Isra\u00ebl in de stad ... ",
         "juisteAntwoord": "Hebron",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -5699,10 +5700,10 @@
             "Bethlehem",
             "Jericho"
         ],
-        "biblicalReference": null
+        "biblicalReference": "2 Samuël 2"
     },
     {
-        "vraag": "David bracht de ark Gods naar ... (2 Samu\u00ebl)",
+        "vraag": "David bracht de ark Gods naar ... ",
         "juisteAntwoord": "Jeruzalem",
         "moeilijkheidsgraad": 2,
         "type": "mc",
@@ -5712,10 +5713,10 @@
             "Hebron",
             "Gilgal"
         ],
-        "biblicalReference": null
+        "biblicalReference": "2 Samuël 6"
     },
     {
-        "vraag": "De Heere zond de profeet ... tot David (2 Samu\u00ebl)",
+        "vraag": "De Heere zond de profeet ... tot David",
         "juisteAntwoord": "Nathan",
         "moeilijkheidsgraad": 1,
         "type": "mc",
@@ -5725,10 +5726,10 @@
             "Elisa",
             "Jesaja"
         ],
-        "biblicalReference": null
+        "biblicalReference": "2 Samuël 12:1"
     },
     {
-        "vraag": "Absalom vluchtte naar ... (2 Samu\u00ebl)",
+        "vraag": "Absalom vluchtte naar ... ",
         "juisteAntwoord": "Gesur",
         "moeilijkheidsgraad": 4,
         "type": "fitb",
@@ -5738,10 +5739,10 @@
             "Rabba",
             "Ziklag"
         ],
-        "biblicalReference": null
+        "biblicalReference": "2 Samuël 13:38"
     },
     {
-        "vraag": "Welke vrouw zei: Behoud o koning (2 Samu\u00ebl)",
+        "vraag": "Welke vrouw zei: Behoud o koning",
         "juisteAntwoord": "de Teko\u00eftische",
         "moeilijkheidsgraad": 5,
         "type": "fitb",
@@ -5751,36 +5752,36 @@
             "de Hetitische",
             "de Isra\u00eblitische"
         ],
-        "biblicalReference": null
+        "biblicalReference": "2 Samuël"
     },
     {
-        "vraag": "Wie wilde koning worden toen David oud was? (1 Koningen)",
-        "juisteAntwoord": "Adonia",
+        "vraag": "Wie wilde koning worden toen David oud was?",
+        "juisteAntwoord": "Adónia",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
         "categories": [],
         "fouteAntwoorden": [
-            "Salomo",
+            "Sálomo",
             "Joab",
             "Absalom"
         ],
-        "biblicalReference": null
+        "biblicalReference": "1 Koningen 1"
     },
     {
-        "vraag": "Roept mij ... , den priester (1 Koningen)",
+        "vraag": "Roept mij ... , den priester",
         "juisteAntwoord": "Zadok",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
         "categories": [],
         "fouteAntwoorden": [
             "Nathan",
-            "Benaja",
-            "Jojada"
+            "Benája",
+            "Jójada"
         ],
-        "biblicalReference": null
+        "biblicalReference": "1 Koningen 1:32"
     },
     {
-        "vraag": "en zij hebben hem doen rijden op ... des konings (1 Koningen)",
+        "vraag": "en zij hebben hem doen rijden op ... des konings",
         "juisteAntwoord": "de muilezelin",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -5790,10 +5791,10 @@
             "het veulen",
             "het paard"
         ],
-        "biblicalReference": null
+        "biblicalReference": "1 Koningen 1"
     },
     {
-        "vraag": "Ik ga heen in den weg der ganse aarde; zo zijt sterk en wees ... (1 Koningen)",
+        "vraag": "Ik ga heen in den weg der ganse aarde; zo zijt sterk en wees ... ",
         "juisteAntwoord": "een man",
         "moeilijkheidsgraad": 4,
         "type": "fitb",
@@ -5803,10 +5804,10 @@
             "een wachter",
             "Godvrezende"
         ],
-        "biblicalReference": null
+        "biblicalReference": "1 Koningen 2:2"
     },
     {
-        "vraag": "Doe dan naar uw ... , dat gij zijn grauwe haar niet met vrede in het graf laat dalen (1 Koningen)",
+        "vraag": "Doe dan naar uw ... , dat gij zijn grauwe haar niet met vrede in het graf laat dalen",
         "juisteAntwoord": "wijsheid",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -5816,23 +5817,23 @@
             "verstand",
             "vermogen"
         ],
-        "biblicalReference": null
+        "biblicalReference": "1 Koningen 2:6"
     },
     {
-        "vraag": "De koning van Isra\u00ebl in de tijd van Elisa was ... (2 Koningen)",
+        "vraag": "De koning van Isra\u00ebl in de tijd van Elisa was ... ",
         "juisteAntwoord": "Joram",
         "moeilijkheidsgraad": 4,
         "type": "fitb",
         "categories": [],
         "fouteAntwoorden": [
             "Achab",
-            "Salomo",
+            "Sálomo",
             "David"
         ],
-        "biblicalReference": null
+        "biblicalReference": "2 Koningen 3"
     },
     {
-        "vraag": "Hij dan zeide tot de jongen: ... hem tot zijn moeder (2 Koningen)",
+        "vraag": "Hij dan zeide tot de jongen: ... hem tot zijn moeder",
         "juisteAntwoord": "draag",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -5842,10 +5843,10 @@
             "leid",
             "geef"
         ],
-        "biblicalReference": null
+        "biblicalReference": "2 Koningen 4:27"
     },
     {
-        "vraag": "Als nu Elisa weder te ... kwam, zo was er honger in dat land (2 Koningen)",
+        "vraag": "Als nu Elísa weder te ... kwam, zo was er honger in dat land",
         "juisteAntwoord": "Gilgal",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -5855,10 +5856,10 @@
             "Ba\u00e4l-Salisa",
             "Syri\u00eb"
         ],
-        "biblicalReference": null
+        "biblicalReference": "2 Koningen 4:38" 
     },
     {
-        "vraag": "Zijn niet ... en ... , de rivieren van Damascus, beter dan alle wateren van Isra\u00ebl (2 Koningen)",
+        "vraag": "Zijn niet ... en ... , de rivieren van Damascus, beter dan alle wateren van Isra\u00ebl",
         "juisteAntwoord": "Abana, Farpar",
         "moeilijkheidsgraad": 5,
         "type": "fitb",
@@ -5868,10 +5869,10 @@
             "Pison, Gihon",
             "Jordaan, Nijl"
         ],
-        "biblicalReference": null
+        "biblicalReference": "2 Koningen 5:12"
     },
     {
-        "vraag": "dat het ijzer in het water viel, en hij riep en zeide: Ach, mijn heer; want het was ... (2 Koningen)",
+        "vraag": "dat het ijzer in het water viel, en hij riep en zeide: Ach, mijn heer; want het was ... ",
         "juisteAntwoord": "geleend",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -5881,10 +5882,10 @@
             "gekocht",
             "verouderd"
         ],
-        "biblicalReference": null
+        "biblicalReference": "2 Koningen 6:5"
     },
     {
-        "vraag": "1 Kronieken begint met een lijst van ... (1 Kronieken)",
+        "vraag": "1 Kronieken begint met een lijst van ... ",
         "juisteAntwoord": "stambomen",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -5894,10 +5895,10 @@
             "profeten",
             "priesters"
         ],
-        "biblicalReference": null
+        "biblicalReference": "1 Kronieken 1"
     },
     {
-        "vraag": "en zijn moeder had hem Jabez genoemd, zeggende: Want ik heb hem met smarten gebaard (1 Kronieken)",
+        "vraag": "en zijn moeder had hem ... genoemd, zeggende: Want ik heb hem met smarten gebaard (1 Kronieken)",
         "juisteAntwoord": "Jabez",
         "moeilijkheidsgraad": 1,
         "type": "fitb",
@@ -5907,10 +5908,10 @@
             "Hezron",
             "Etam"
         ],
-        "biblicalReference": null
+        "biblicalReference": "1 Kronieken 4:9"
     },
     {
-        "vraag": "En in de dagen van Saul voerden zij krijg tegen de ... ; die vielen door hun hand (1 Kronieken)",
+        "vraag": "En in de dagen van Saul voerden zij krijg tegen de ... ; die vielen door hun hand",
         "juisteAntwoord": "Hagarenen",
         "moeilijkheidsgraad": 5,
         "type": "fitb",
@@ -5920,10 +5921,10 @@
             "Rubennieten",
             "Hevieten"
         ],
-        "biblicalReference": null
+        "biblicalReference": "1 Kronieken 5:10"
     },
     {
-        "vraag": "A\u00e4ron nu en zijn zonen rookten op het altaar des ... en op het reukaltaar (1 Kronieken)",
+        "vraag": "A\u00e4ron nu en zijn zonen rookten op het altaar des ... en op het reukaltaar",
         "juisteAntwoord": "brandoffers",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -5933,10 +5934,10 @@
             "zondoffers",
             "dankoffers"
         ],
-        "biblicalReference": null
+        "biblicalReference": "1 Kronieken 6:49"
     },
     {
-        "vraag": "Alzo stierf Saul en zijn ... zonen (1 Kronieken)",
+        "vraag": "Alzo stierf Saul en zijn ... zonen",
         "juisteAntwoord": "twee",
         "moeilijkheidsgraad": 4,
         "type": "fitb",
@@ -5946,10 +5947,10 @@
             "vier",
             "vijf"
         ],
-        "biblicalReference": null
+        "biblicalReference": "1 Kronieken 10:13"
     },
     {
-        "vraag": "Salomo bouwde een tempel te Jeruzalem op den berg ... (2 Kronieken)",
+        "vraag": "Sálomo bouwde een tempel te Jeruzalem op den berg ... ",
         "juisteAntwoord": "Moria",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -5959,23 +5960,23 @@
             "Karmel",
             "Sion"
         ],
-        "biblicalReference": null
+        "biblicalReference": "2 Kronieken 3:1" 
     },
     {
-        "vraag": "De koning die de tempel herstelde was ... (2 Kronieken)",
-        "juisteAntwoord": "Josia",
+        "vraag": "De koning die de tempel herstelde was ... ",
+        "juisteAntwoord": "Josía",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
         "categories": [],
         "fouteAntwoorden": [
             "David",
-            "Salomo",
+            "Sálomo",
             "Achaz"
         ],
-        "biblicalReference": null
+        "biblicalReference": "2 Kronieken 34"
     },
     {
-        "vraag": "en hij noemde de naam van den rechter ... en van den linker Boaz (2 Kronieken)",
+        "vraag": "en hij noemde de naam van den rechter ... en van den linker Boaz",
         "juisteAntwoord": "Jachin",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -5985,10 +5986,10 @@
             "Jakob",
             "Jodon"
         ],
-        "biblicalReference": null
+        "biblicalReference": "2 Kronieken 3:17"
     },
     {
-        "vraag": "En zij brachten voor Salomo ... uit Egypte en uit al die landen (2 Kronieken)",
+        "vraag": "En zij brachten voor Sálomo ... uit Egypte en uit al die landen",
         "juisteAntwoord": "paarden",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -5998,10 +5999,10 @@
             "zilver",
             "kamelen"
         ],
-        "biblicalReference": null
+        "biblicalReference": "2 Kronieken 1:17"
     },
     {
-        "vraag": "En Salomo regeerde te Jeruzalem over gans Isra\u00ebl ... jaar (2 Kronieken)",
+        "vraag": "En Salomo regeerde te Jeruzalem over gans Isra\u00ebl ... jaar",
         "juisteAntwoord": "40",
         "moeilijkheidsgraad": 1,
         "type": "fitb",
@@ -6011,23 +6012,23 @@
             "34",
             "45"
         ],
-        "biblicalReference": null
+        "biblicalReference": "2 Kronieken"
     },
     {
-        "vraag": "De terugkeer van de ballingen begon onder koning ... (Ezra)",
+        "vraag": "De terugkeer van de ballingen begon onder koning ... ",
         "juisteAntwoord": "Kores",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
         "categories": [],
         "fouteAntwoorden": [
             "Darius",
-            "Nebukadnezar",
+            "Nebukadnézar",
             "Xerxes"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Ezra"
     },
     {
-        "vraag": "Ezra leidde de terugkeer van de Isra\u00eblieten naar ... (Ezra)",
+        "vraag": "Ezra leidde de terugkeer van de Isra\u00eblieten naar ... ", 
         "juisteAntwoord": "Jeruzalem",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -6037,10 +6038,10 @@
             "Babylon",
             "Moab"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Ezra"
     },
     {
-        "vraag": "En zij stelden de Levieten van... jaar oud en daarboven om opzicht te nemen over het werk van des Heeren huis",
+        "vraag": "En zij stelden de Levieten van ... jaar oud en daarboven om opzicht te nemen over het werk van des Heeren huis",
         "juisteAntwoord": "18",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6053,7 +6054,7 @@
         "biblicalReference": "Ezra 3:8"
     },
     {
-        "vraag": "De brief die gij aan ons geschikt hebt, is... voor mij gelezen",
+        "vraag": "De brief die gij aan ons geschikt hebt, is ... voor mij gelezen",
         "juisteAntwoord": "duidelijk",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6066,7 +6067,7 @@
         "biblicalReference": "Ezra 4:18"
     },
     {
-        "vraag": "Toen riep ik aldaar een vasten uit aan de rivier...",
+        "vraag": "Toen riep ik aldaar een vasten uit aan de rivier ...",
         "juisteAntwoord": "Ahava",
         "moeilijkheidsgraad": 5,
         "type": "fitb",
@@ -6079,7 +6080,7 @@
         "biblicalReference": "Ezra 8:21"
     },
     {
-        "vraag": "Ik nu was des konings...",
+        "vraag": "Ik nu was des konings ...",
         "juisteAntwoord": "schenker",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -6089,10 +6090,10 @@
             "priester",
             "profeet"
         ],
-        "biblicalReference": "Nehemia 1:11"
+        "biblicalReference": "Nehémia 1:11"
     },
     {
-        "vraag": "De muren van Jeruzalem werden herbouwd in... dagen",
+        "vraag": "De muren van Jeruzalem werden herbouwd in ... dagen",
         "juisteAntwoord": "52",
         "moeilijkheidsgraad": 1,
         "type": "fitb",
@@ -6102,10 +6103,10 @@
             "30",
             "70"
         ],
-        "biblicalReference": "Nehemia 6:15"
+        "biblicalReference": "Nehémia 6:15"
     },
     {
-        "vraag": "Nehemia was bezorgd over de ... van het volk (Nehemia 1: 6,7)",
+        "vraag": "Nehémia was bezorgd over de ... van het volk",
         "juisteAntwoord": "zonden",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -6115,10 +6116,10 @@
             "ziekten",
             "gaven"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Nehémia 1: 6,7"
     },
     {
-        "vraag": "Gedenk mijner, mijn God, ten goede, alles wat ik... gedaan heb",
+        "vraag": "Gedenk mijner, mijn God, ten goede, alles wat ik ... gedaan heb",
         "juisteAntwoord": "aan dit volk",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6128,10 +6129,10 @@
             "aan hen",
             "aan dezen"
         ],
-        "biblicalReference": "Nehemia 5:19"
+        "biblicalReference": "Nehémia 5:19"
     },
     {
-        "vraag": "Kom en laat ons tezamen vergaderen in de dorpen, in het dal...",
+        "vraag": "Kom en laat ons tezamen vergaderen in de dorpen, in het dal ...",
         "juisteAntwoord": "Ona",
         "moeilijkheidsgraad": 5,
         "type": "fitb",
@@ -6141,23 +6142,23 @@
             "Kison",
             "Hinnom"
         ],
-        "biblicalReference": "Nehemia 6:2"
+        "biblicalReference": "Nehémia 6:2"
     },
     {
-        "vraag": "Het geschiedde nu in de dagen van...",
-        "juisteAntwoord": "Ahasveros",
+        "vraag": "Het geschiedde nu in de dagen van ...",
+        "juisteAntwoord": "Ahasvéros",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
         "categories": [],
         "fouteAntwoorden": [
             "Ammon",
             "Moab",
-            "Mordechai"
+            "Mórdechai"
         ],
         "biblicalReference": "Esther 1:1"
     },
     {
-        "vraag": "Er waren..., groene en hemelsblauwe behangsels",
+        "vraag": "Er waren ..., groene en hemelsblauwe behangsels",
         "juisteAntwoord": "witte",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6170,7 +6171,7 @@
         "biblicalReference": "Esther 1:6"
     },
     {
-        "vraag": "in de tiende maand, welke is de maand..., in het zevende jaar zijns rijks",
+        "vraag": "in de tiende maand, welke is de maand ..., in het zevende jaar zijns rijks",
         "juisteAntwoord": "Tebeth",
         "moeilijkheidsgraad": 4,
         "type": "fitb",
@@ -6183,7 +6184,7 @@
         "biblicalReference": "Esther 2:16"
     },
     {
-        "vraag": "Toen riep Esther..., een van de kamerlingen des konings",
+        "vraag": "Toen riep Esther ..., een van de kamerlingen des konings",
         "juisteAntwoord": "Hatach",
         "moeilijkheidsgraad": 4,
         "type": "fitb",
@@ -6196,7 +6197,7 @@
         "biblicalReference": "Esther 4:5"
     },
     {
-        "vraag": "Bij de joden was licht en blijdschap en vreugde en...",
+        "vraag": "Bij de joden was licht en blijdschap en vreugde en ...",
         "juisteAntwoord": "eer",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6209,7 +6210,7 @@
         "biblicalReference": "Esther 8:16"
     },
     {
-        "vraag": "En hem werden... zonen en drie dochters geboren",
+        "vraag": "En hem werden ... zonen en drie dochters geboren",
         "juisteAntwoord": "7",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -6222,7 +6223,7 @@
         "biblicalReference": "Job 1:2"
     },
     {
-        "vraag": "In dit alles zondigde Job niet, en schreef Gode niets... toe",
+        "vraag": "In dit alles zondigde Job niet, en schreef Gode niets ... toe",
         "juisteAntwoord": "ongerijmds",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -6235,7 +6236,7 @@
         "biblicalReference": "Job 1:22"
     },
     {
-        "vraag": "Want hij doet smart aan en Hij...; Hij doorwondt en Zijn handen helen",
+        "vraag": "Want hij doet smart aan en Hij ...; Hij doorwondt en Zijn handen helen",
         "juisteAntwoord": "verbindt",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6248,7 +6249,7 @@
         "biblicalReference": "Job 5:18"
     },
     {
-        "vraag": "Leert mij, en ik zal... en geeft mij te verstaan waarin ik gedwaald heb",
+        "vraag": "Leert mij, en ik zal ... en geeft mij te verstaan waarin ik gedwaald heb",
         "juisteAntwoord": "zwijgen",
         "moeilijkheidsgraad": 4,
         "type": "fitb",
@@ -6261,7 +6262,7 @@
         "biblicalReference": "Job 6:24"
     },
     {
-        "vraag": "Toen antwoordde..., de Suhiet, en zeide:",
+        "vraag": "Toen antwoordde ..., de Suhiet, en zeide:",
         "juisteAntwoord": "Bildad",
         "moeilijkheidsgraad": 5,
         "type": "fitb",
@@ -6274,7 +6275,7 @@
         "biblicalReference": "Job 25:1"
     },
     {
-        "vraag": "Dient den Heere met..., en verheugt u met beving",
+        "vraag": "Dient den Heere met ..., en verheugt u met beving",
         "juisteAntwoord": "vreze",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6287,7 +6288,7 @@
         "biblicalReference": "Psalm 2:11"
     },
     {
-        "vraag": "Ik lag neder en sliep; ik ontwaakte, want de de Heere... mij",
+        "vraag": "Ik lag neder en sliep; ik ontwaakte, want de de Heere ... mij",
         "juisteAntwoord": "ondersteunde",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6300,7 +6301,7 @@
         "biblicalReference": "Psalm 3:6"
     },
     {
-        "vraag": "De Heere heeft mijn... gehoord; de Heere zal mijn gebed aannemen",
+        "vraag": "De Heere heeft mijn ... gehoord; de Heere zal mijn gebed aannemen",
         "juisteAntwoord": "smeking",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6313,7 +6314,7 @@
         "biblicalReference": "Psalm 6:10"
     },
     {
-        "vraag": "O Heere, onze Heere, hoe... is Uw Naam op de ganse aarde",
+        "vraag": "O Heere, onze Heere, hoe ... is Uw Naam op de ganse aarde",
         "juisteAntwoord": "heerlijk",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -6326,7 +6327,7 @@
         "biblicalReference": "Psalm 8:10"
     },
     {
-        "vraag": "Daarom zal ik U, o Heere, loven onder de heidenen, en Uw naam zal ik...",
+        "vraag": "Daarom zal ik U, o Heere, loven onder de heidenen, en Uw naam zal ik ...",
         "juisteAntwoord": "psalmzingen",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -6339,7 +6340,7 @@
         "biblicalReference": "Psalm 18:50"
     },
     {
-        "vraag": "De vreze des Heeren is het beginsel der...",
+        "vraag": "De vreze des Heeren is het beginsel der ...",
         "juisteAntwoord": "wetenschap",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -6352,7 +6353,7 @@
         "biblicalReference": "Spreuken 1:7"
     },
     {
-        "vraag": "Zo gij haar zoekt als zilver, en naspeurt als verborgen...",
+        "vraag": "Zo gij haar zoekt als zilver, en naspeurt als verborgen ...",
         "juisteAntwoord": "schatten",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6365,7 +6366,7 @@
         "biblicalReference": "Spreuken 2:4"
     },
     {
-        "vraag": "Vertrouw op de Heere met uw ganse hart, en steun op uw... niet",
+        "vraag": "Vertrouw op de Heere met uw ganse hart, en steun op uw ... niet",
         "juisteAntwoord": "verstand",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -6378,7 +6379,7 @@
         "biblicalReference": "Spreuken 3:5"
     },
     {
-        "vraag": "Ik onderwijs u in den weg der wijsheid; ik doe u treden in... sporen",
+        "vraag": "Ik onderwijs u in den weg der wijsheid; ik doe u treden in ... sporen",
         "juisteAntwoord": "rechte",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6391,7 +6392,7 @@
         "biblicalReference": "Spreuken 4:11"
     },
     {
-        "vraag": "Wentel uw... op den Heere, en uw gedachten zullen bevestigd worden",
+        "vraag": "Wentel uw ... op den Heere, en uw gedachten zullen bevestigd worden",
         "juisteAntwoord": "werken",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6404,8 +6405,8 @@
         "biblicalReference": "Spreuken 16:3"
     },
     {
-        "vraag": "Alles heeft een... tijd",
-        "juisteAntwoord": "bestemende",
+        "vraag": "Alles heeft een ... tijd",
+        "juisteAntwoord": "bestemde",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
         "categories": [],
@@ -6417,8 +6418,8 @@
         "biblicalReference": "Prediker 3:1"
     },
     {
-        "vraag": "De schrijver van Prediker wordt toegeschreven aan...",
-        "juisteAntwoord": "Salomo",
+        "vraag": "De schrijver van Prediker wordt toegeschreven aan ...",
+        "juisteAntwoord": "Sálomo",
         "moeilijkheidsgraad": 1,
         "type": "fitb",
         "categories": [],
@@ -6430,7 +6431,7 @@
         "biblicalReference": "Prediker 1:1"
     },
     {
-        "vraag": "Ook heeft zij de... niet gezien, noch bekend; zij heeft meer rust dan hij",
+        "vraag": "Ook heeft zij de ... niet gezien, noch bekend; zij heeft meer rust dan hij",
         "juisteAntwoord": "zon",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6443,7 +6444,7 @@
         "biblicalReference": "Prediker 6:5"
     },
     {
-        "vraag": "en wie een muur doorbreekt, een... zal hem bijten",
+        "vraag": "en wie een muur doorbreekt, een ... zal hem bijten",
         "juisteAntwoord": "slang",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -6456,7 +6457,7 @@
         "biblicalReference": "Prediker 10:8"
     },
     {
-        "vraag": "en veel lezen is vermoeiing des...",
+        "vraag": "en veel lezen is vermoeiing des ...",
         "juisteAntwoord": "vleses",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -6469,7 +6470,7 @@
         "biblicalReference": "Prediker 12:12"
     },
     {
-        "vraag": "Trek mij, wij zullen u...",
+        "vraag": "Trek mij, wij zullen u ...",
         "juisteAntwoord": "nalopen",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -6482,7 +6483,7 @@
         "biblicalReference": "Hooglied 1:4"
     },
     {
-        "vraag": "De balken onzer huizen zijn...",
+        "vraag": "De balken onzer huizen zijn ...",
         "juisteAntwoord": "ceders",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6495,7 +6496,7 @@
         "biblicalReference": "Hooglied 1:17"
     },
     {
-        "vraag": "Want zie, zie... is voorbij;",
+        "vraag": "Want zie, de ... is voorbij;",
         "juisteAntwoord": "winter",
         "moeilijkheidsgraad": 1,
         "type": "fitb",
@@ -6508,7 +6509,7 @@
         "biblicalReference": "Hooglied 2:11"
     },
     {
-        "vraag": "Eer ik het wist, zette Mij Mijn ziel op de wagens van Mijn... volk",
+        "vraag": "Eer ik het wist, zette Mij Mijn ziel op de wagens van Mijn ... volk",
         "juisteAntwoord": "vrijwillig",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6521,7 +6522,7 @@
         "biblicalReference": "Hooglied 6:12"
     },
     {
-        "vraag": "Salomo had een wijngaard te...",
+        "vraag": "Salomo had een wijngaard te ...",
         "juisteAntwoord": "Ba\u00e4l-Hamon",
         "moeilijkheidsgraad": 5,
         "type": "fitb",
@@ -6534,7 +6535,7 @@
         "biblicalReference": "Hooglied 8:11"
     },
     {
-        "vraag": "Het overblijfsel zal wederkeren, het overblijfsel..., tot den sterken God",
+        "vraag": "Het overblijfsel zal wederkeren, het overblijfsel ..., tot den sterken God",
         "juisteAntwoord": "Jakobs",
         "moeilijkheidsgraad": 4,
         "type": "fitb",
@@ -6547,7 +6548,7 @@
         "biblicalReference": "Jesaja 10:21"
     },
     {
-        "vraag": "De koe en de... zullen tezamen weiden",
+        "vraag": "De koe en de ... zullen tezamen weiden",
         "juisteAntwoord": "berin",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6560,7 +6561,7 @@
         "biblicalReference": "Jesaja 11:7"
     },
     {
-        "vraag": "Psalmzingt de Heere, want Hij heeft... dingen gedaan",
+        "vraag": "Psalmzingt de Heere, want Hij heeft ... dingen gedaan",
         "juisteAntwoord": "heerlijke",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6573,7 +6574,7 @@
         "biblicalReference": "Jesaja 12:5"
     },
     {
-        "vraag": "en de profeet Jesaja, de zoon van..., kwam tot hem",
+        "vraag": "en de profeet Jesaja, de zoon van ..., kwam tot hem",
         "juisteAntwoord": "Amoz",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6586,7 +6587,7 @@
         "biblicalReference": "Jesaja 38:1"
     },
     {
-        "vraag": "O Sion, gij... van goede boodschap",
+        "vraag": "O Sion, gij ... van goede boodschap",
         "juisteAntwoord": "verkondigster",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6599,7 +6600,7 @@
         "biblicalReference": "Jesaja 40:9"
     },
     {
-        "vraag": "Toen zeide ik: Ach Heere Heere, zie, ik kan niet spreken, want ik ben...",
+        "vraag": "Toen zeide ik: Ach Heere Heere, zie, ik kan niet spreken, want ik benn...",
         "juisteAntwoord": "jong",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6612,7 +6613,7 @@
         "biblicalReference": "Jeremia 1:6"
     },
     {
-        "vraag": "want Ik ben met u, om u te..., spreekt de Heere",
+        "vraag": "want Ik ben met u, om u te ..., spreekt de Heere",
         "juisteAntwoord": "redden",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6625,7 +6626,7 @@
         "biblicalReference": "Jeremia 1:8"
     },
     {
-        "vraag": "Er zal mij een... komen die hun te sterk zal zijn",
+        "vraag": "Er zal mij een ... komen die hun te sterk zal zijn",
         "juisteAntwoord": "wind",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6638,7 +6639,7 @@
         "biblicalReference": "Jeremia 4:12"
     },
     {
-        "vraag": "Zie, gij vertrouwt op valse..., die geen nut doen",
+        "vraag": "Zie, gij vertrouwt op valse ..., die geen nut doen",
         "juisteAntwoord": "woorden",
         "moeilijkheidsgraad": 4,
         "type": "fitb",
@@ -6651,7 +6652,7 @@
         "biblicalReference": "Jeremia 7:8"
     },
     {
-        "vraag": "Gij zijt mijn... ten dage des kwaads",
+        "vraag": "Gij zijt mijn ... ten dage des kwaads",
         "juisteAntwoord": "Toevlucht",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6664,7 +6665,7 @@
         "biblicalReference": "Jeremia 17:17"
     },
     {
-        "vraag": "Mijn ziel gedenkt er wel... aan, en zij bukt zich neder in mij",
+        "vraag": "Mijn ziel gedenkt er wel ... aan, en zij bukt zich neder in mij",
         "juisteAntwoord": "terdege",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6677,7 +6678,7 @@
         "biblicalReference": "Klaagliederen 3:20"
     },
     {
-        "vraag": "Het zijn de... des Heeren, dat wij niet vernield zijn",
+        "vraag": "Het zijn de ... des Heeren, dat wij niet vernield zijn",
         "juisteAntwoord": "goedertierenheden",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6690,7 +6691,7 @@
         "biblicalReference": "Klaagliederen 3:22"
     },
     {
-        "vraag": "Zij zijn allen morgen nieuw, Uw... is groot",
+        "vraag": "Zij zijn allen morgen nieuw, Uw ... is groot",
         "juisteAntwoord": "trouw",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6703,7 +6704,7 @@
         "biblicalReference": "Klaagliederen 3:23"
     },
     {
-        "vraag": "Want hij plaagt en bedroeft des mensen kinderen niet...",
+        "vraag": "Want hij plaagt en bedroeft des mensen kinderen niet ...",
         "juisteAntwoord": "van harte",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6716,7 +6717,7 @@
         "biblicalReference": "Klaagliederen 3:33"
     },
     {
-        "vraag": "Gij hebt al hun... gezien, al hun gedachten tegen mij",
+        "vraag": "Gij hebt al hun ... gezien, al hun gedachten tegen mij",
         "juisteAntwoord": "wraak",
         "moeilijkheidsgraad": 4,
         "type": "fitb",
@@ -6729,7 +6730,7 @@
         "biblicalReference": "Klaagliederen 3:60"
     },
     {
-        "vraag": "Toen opende ik mijn mond, en Hij gaf mij die rol te...",
+        "vraag": "Toen opende ik mijn mond, en Hij gaf mij die rol te ...",
         "juisteAntwoord": "eten",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6742,7 +6743,7 @@
         "biblicalReference": "Ezechi\u00ebl 3:2"
     },
     {
-        "vraag": "Mensenkind, zet uw aangezicht tegen de bergen...",
+        "vraag": "Mensenkind, zet uw aangezicht tegen de bergen ...",
         "juisteAntwoord": "Isra\u00ebls",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6755,7 +6756,7 @@
         "biblicalReference": "Ezechi\u00ebl 6:2"
     },
     {
-        "vraag": "En Hij zeide tot mij: Mensenkind, graaf nu in dien...",
+        "vraag": "En Hij zeide tot mij: Mensenkind, graaf nu in dien ...",
         "juisteAntwoord": "wand",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6768,7 +6769,7 @@
         "biblicalReference": "Ezechi\u00ebl 8:8"
     },
     {
-        "vraag": "En de bewoonde steden zullen... worden",
+        "vraag": "En de bewoonde steden zullen ... worden",
         "juisteAntwoord": "woest",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6781,7 +6782,7 @@
         "biblicalReference": "Ezechi\u00ebl 12:20"
     },
     {
-        "vraag": "Ofschoon Noach, Dani\u00ebl en... in het midden van hetzelve waren",
+        "vraag": "Ofschoon Noach, Dani\u00ebl en ... in het midden van hetzelve waren",
         "juisteAntwoord": "Job",
         "moeilijkheidsgraad": 4,
         "type": "fitb",
@@ -6794,7 +6795,7 @@
         "biblicalReference": "Ezechi\u00ebl 14:20"
     },
     {
-        "vraag": "en dat men hen onderwees in de spraak der...",
+        "vraag": "en dat men hen onderwees in de spraak der ...",
         "juisteAntwoord": "Chaldee\u00ebn",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -6807,8 +6808,8 @@
         "biblicalReference": "Dani\u00ebl 1:4"
     },
     {
-        "vraag": "en Dani\u00ebl noemde hij...",
-        "juisteAntwoord": "Beltsazar",
+        "vraag": "en Dani\u00ebl noemde hij ...",
+        "juisteAntwoord": "Béltsazar",
         "moeilijkheidsgraad": 1,
         "type": "fitb",
         "categories": [],
@@ -6820,7 +6821,7 @@
         "biblicalReference": "Dani\u00ebl 1:7"
     },
     {
-        "vraag": "Beproef toch uw knechten... dagen lang, en men geve ons van het gezaaide te eten en water te drinken",
+        "vraag": "Beproef toch uw knechten ... dagen lang, en men geve ons van het gezaaide te eten en water te drinken",
         "juisteAntwoord": "10",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -6859,8 +6860,8 @@
         "biblicalReference": "Dani\u00ebl 5:28"
     },
     {
-        "vraag": "en in de dagen van..., zoon van Joas, koning van Isra\u00ebl",
-        "juisteAntwoord": "Jerobeam",
+        "vraag": "en in de dagen van ..., zoon van Joas, koning van Isra\u00ebl",
+        "juisteAntwoord": "Jeróbeam",
         "moeilijkheidsgraad": 5,
         "type": "fitb",
         "categories": [],
@@ -6963,7 +6964,7 @@
         "biblicalReference": "Jo\u00ebl 2:21"
     },
     {
-        "vraag": "al wie de Naam des Heeren zal aanroepen, zal ... worden (Jo\u00ebl 2: 32)",
+        "vraag": "al wie de Naam des Heeren zal aanroepen, zal ... worden",
         "juisteAntwoord": "behouden",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6973,11 +6974,11 @@
             "bewaard",
             "bekeerd"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Joël 2:32"
     },
     {
-        "vraag": "... zal tot een verwoesting worden",
-        "juisteAntwoord": "Egypte",
+        "vraag": "En ... zal worden tot een wildernis en woestheid",
+        "juisteAntwoord": "Egypteland",
         "moeilijkheidsgraad": 4,
         "type": "fitb",
         "categories": [],
@@ -6986,6 +6987,6 @@
             "Edom",
             "Jeruzalem"
         ],
-        "biblicalReference": "Jo\u00ebl 3:19"
+        "biblicalReference": "Ezechiël 29:9"
     }
 ]
