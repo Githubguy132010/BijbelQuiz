@@ -4917,7 +4917,7 @@
         "biblicalReference": null
     },
     {
-        "vraag": "In Éfeze wordt de geestelijke wapenrusting beschreven",
+        "vraag": "In \u00c9feze wordt de geestelijke wapenrusting beschreven",
         "juisteAntwoord": "Waar",
         "moeilijkheidsgraad": 3,
         "type": "tf",
@@ -4925,10 +4925,10 @@
         "fouteAntwoorden": [
             "Niet waar"
         ],
-        "biblicalReference": "Éfeze 6: 10-20"
+        "biblicalReference": "\u00c9feze 6: 10-20"
     },
     {
-        "vraag": "Paulus schrijft het bijbelboek Éfeze tijdens zijn eerste zendingsreis",
+        "vraag": "Paulus schrijft het bijbelboek \u00c9feze tijdens zijn eerste zendingsreis",
         "juisteAntwoord": "Niet waar",
         "moeilijkheidsgraad": 3,
         "type": "tf",
@@ -4936,7 +4936,7 @@
         "fouteAntwoorden": [
             "Waar"
         ],
-        "biblicalReference": "Éfeze 3:1"
+        "biblicalReference": "\u00c9feze 3:1"
     },
     {
         "vraag": "Filippenzen is gericht aan de Christenen in Filippi",
@@ -4958,7 +4958,7 @@
         "fouteAntwoorden": [
             "Niet waar"
         ],
-        "biblicalReference": "Filippenzen 1:21" 
+        "biblicalReference": "Filippenzen 1:21"
     },
     {
         "vraag": "In Kolossenzen worden de vruchten van de Geest beschreven",
@@ -5035,7 +5035,7 @@
         "fouteAntwoorden": [
             "Niet waar"
         ],
-        "biblicalReference": "1 Timotheüs 3"
+        "biblicalReference": "1 Timothe\u00fcs 3"
     },
     {
         "vraag": "Timothe\u00fcs was voorganger in Rome",
@@ -5046,7 +5046,7 @@
         "fouteAntwoorden": [
             "Waar"
         ],
-        "biblicalReference": "1 Timotheüs"
+        "biblicalReference": "1 Timothe\u00fcs"
     },
     {
         "vraag": "Paulus schrijft in 1 Timothe\u00fcs over de rol van de vrouw in de gemeente",
@@ -5057,7 +5057,7 @@
         "fouteAntwoorden": [
             "Niet waar"
         ],
-        "biblicalReference": "1 Timotheüs"
+        "biblicalReference": "1 Timothe\u00fcs"
     },
     {
         "vraag": "In 2 Timothe\u00fcs noemt Paulus \"Al de schrift is van God ingegeven\"",
@@ -5068,7 +5068,7 @@
         "fouteAntwoorden": [
             "Niet waar"
         ],
-        "biblicalReference": "2 Timotheüs 3:16"
+        "biblicalReference": "2 Timothe\u00fcs 3:16"
     },
     {
         "vraag": "In 2 Timothe\u00fcs verwacht Paulus dat hij binnenkort op reis zal gaan",
@@ -5079,7 +5079,7 @@
         "fouteAntwoorden": [
             "Waar"
         ],
-        "biblicalReference": "2 Timotheüs"
+        "biblicalReference": "2 Timothe\u00fcs"
     },
     {
         "vraag": "Titus was door Paulus achtergelaten op het eiland Cyprus",
@@ -5205,7 +5205,7 @@
             "tabernakel",
             "tempel"
         ],
-        "biblicalReference": "Éxodus 25:8"
+        "biblicalReference": "\u00c9xodus 25:8"
     },
     {
         "vraag": "Zijn snuiters en zijn ... zullen louter goud zijn",
@@ -5218,7 +5218,7 @@
             "knopen",
             "rieten"
         ],
-        "biblicalReference": "Éxodus 25:38"
+        "biblicalReference": "\u00c9xodus 25:38"
     },
     {
         "vraag": "Toen zeide hij (Mozes): Toon mij uw ... ",
@@ -5231,7 +5231,7 @@
             "genade",
             "grootheid"
         ],
-        "biblicalReference": "Éxodus 33:18"
+        "biblicalReference": "\u00c9xodus 33:18"
     },
     {
         "vraag": "Breek ze in stukken en giet olie daarop: het is een ... ",
@@ -5364,7 +5364,7 @@
         "biblicalReference": "Numeri 26:11"
     },
     {
-        "vraag": "Mozes sprak tot het volk voordat ze het beloofde land ... ", 
+        "vraag": "Mozes sprak tot het volk voordat ze het beloofde land ... ",
         "juisteAntwoord": "binnenkwamen",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -5388,7 +5388,6 @@
             "Hor"
         ],
         "biblicalReference": "Deuteronomium 34:5"
- 
     },
     {
         "vraag": "daartoe heeft de Heere tot mij gezegd: Gij zult over deze ... niet gaan",
@@ -5483,7 +5482,7 @@
     },
     {
         "vraag": "Die vijf koningen zijn gevonden, verborgen in de spelonk bij ... ",
-        "juisteAntwoord": "Makkéda",
+        "juisteAntwoord": "Makk\u00e9da",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
         "categories": [],
@@ -5509,7 +5508,7 @@
     },
     {
         "vraag": " ... nu, een vrouw die een profetes was, de huisvrouw van Lappidoth",
-        "juisteAntwoord": "Debóra",
+        "juisteAntwoord": "Deb\u00f3ra",
         "moeilijkheidsgraad": 1,
         "type": "fitb",
         "categories": [],
@@ -5521,7 +5520,7 @@
         "biblicalReference": "Richteren 4:4"
     },
     {
-        "vraag": "Gídeon vroeg om een teken van God met een ... ",
+        "vraag": "G\u00eddeon vroeg om een teken van God met een ... ",
         "juisteAntwoord": "wollen vlies",
         "moeilijkheidsgraad": 1,
         "type": "fitb",
@@ -5561,7 +5560,7 @@
     },
     {
         "vraag": "En ... , de man van Naomi stierf",
-        "juisteAntwoord": "Elimélech",
+        "juisteAntwoord": "Elim\u00e9lech",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
         "categories": [],
@@ -5573,7 +5572,7 @@
         "biblicalReference": "Ruth 1:3"
     },
     {
-        "vraag": "Noemt mij niet Naómi, noemt mij ... ",
+        "vraag": "Noemt mij niet Na\u00f3mi, noemt mij ... ",
         "juisteAntwoord": "Mara",
         "moeilijkheidsgraad": 1,
         "type": "fitb",
@@ -5586,7 +5585,7 @@
         "biblicalReference": "Ruth 1:20"
     },
     {
-        "vraag": "Naómi nu had een bloedvriend van haar man, een man, geweldig van ... (Ruth)",
+        "vraag": "Na\u00f3mi nu had een bloedvriend van haar man, een man, geweldig van ... (Ruth)",
         "juisteAntwoord": "vermogen",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -5635,7 +5634,7 @@
             "mij beveelt",
             "tot mij spreekt"
         ],
-        "biblicalReference": "1 Samuël"
+        "biblicalReference": "1 Samu\u00ebl"
     },
     {
         "vraag": "Elkana ging jaarlijks offeren in ... ",
@@ -5648,7 +5647,7 @@
             "de tempel",
             "de tabernakel"
         ],
-        "biblicalReference": "1 Samuël 1:3"
+        "biblicalReference": "1 Samu\u00ebl 1:3"
     },
     {
         "vraag": "Maar wanneer een mens tegen de Heere zondigt, wie zal ... ",
@@ -5661,7 +5660,7 @@
             "dan nog zoeken",
             "dan vinden"
         ],
-        "biblicalReference": "1 Samuël 2:25"
+        "biblicalReference": "1 Samu\u00ebl 2:25"
     },
     {
         "vraag": "En ik zal Mij een getrouwen ... verwekken, die zal doen gelijk als in Mijn hart en in Mijn ziel zijn zal",
@@ -5674,7 +5673,7 @@
             "profeet",
             "zoon"
         ],
-        "biblicalReference": "1 Samuël 2:35"
+        "biblicalReference": "1 Samu\u00ebl 2:35"
     },
     {
         "vraag": "Saul werd jaloers op David omdat hij ... ",
@@ -5687,7 +5686,7 @@
             "meer vrienden had",
             "meer land bezat"
         ],
-        "biblicalReference": "1 Samuël 18"
+        "biblicalReference": "1 Samu\u00ebl 18"
     },
     {
         "vraag": "David werd koning over Isra\u00ebl in de stad ... ",
@@ -5700,7 +5699,7 @@
             "Bethlehem",
             "Jericho"
         ],
-        "biblicalReference": "2 Samuël 2"
+        "biblicalReference": "2 Samu\u00ebl 2"
     },
     {
         "vraag": "David bracht de ark Gods naar ... ",
@@ -5713,7 +5712,7 @@
             "Hebron",
             "Gilgal"
         ],
-        "biblicalReference": "2 Samuël 6"
+        "biblicalReference": "2 Samu\u00ebl 6"
     },
     {
         "vraag": "De Heere zond de profeet ... tot David",
@@ -5726,7 +5725,7 @@
             "Elisa",
             "Jesaja"
         ],
-        "biblicalReference": "2 Samuël 12:1"
+        "biblicalReference": "2 Samu\u00ebl 12:1"
     },
     {
         "vraag": "Absalom vluchtte naar ... ",
@@ -5739,7 +5738,7 @@
             "Rabba",
             "Ziklag"
         ],
-        "biblicalReference": "2 Samuël 13:38"
+        "biblicalReference": "2 Samu\u00ebl 13:38"
     },
     {
         "vraag": "Welke vrouw zei: Behoud o koning",
@@ -5752,16 +5751,16 @@
             "de Hetitische",
             "de Isra\u00eblitische"
         ],
-        "biblicalReference": "2 Samuël"
+        "biblicalReference": "2 Samu\u00ebl"
     },
     {
         "vraag": "Wie wilde koning worden toen David oud was?",
-        "juisteAntwoord": "Adónia",
+        "juisteAntwoord": "Ad\u00f3nia",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
         "categories": [],
         "fouteAntwoorden": [
-            "Sálomo",
+            "S\u00e1lomo",
             "Joab",
             "Absalom"
         ],
@@ -5775,8 +5774,8 @@
         "categories": [],
         "fouteAntwoorden": [
             "Nathan",
-            "Benája",
-            "Jójada"
+            "Ben\u00e1ja",
+            "J\u00f3jada"
         ],
         "biblicalReference": "1 Koningen 1:32"
     },
@@ -5827,7 +5826,7 @@
         "categories": [],
         "fouteAntwoorden": [
             "Achab",
-            "Sálomo",
+            "S\u00e1lomo",
             "David"
         ],
         "biblicalReference": "2 Koningen 3"
@@ -5846,7 +5845,7 @@
         "biblicalReference": "2 Koningen 4:27"
     },
     {
-        "vraag": "Als nu Elísa weder te ... kwam, zo was er honger in dat land",
+        "vraag": "Als nu El\u00edsa weder te ... kwam, zo was er honger in dat land",
         "juisteAntwoord": "Gilgal",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -5856,7 +5855,7 @@
             "Ba\u00e4l-Salisa",
             "Syri\u00eb"
         ],
-        "biblicalReference": "2 Koningen 4:38" 
+        "biblicalReference": "2 Koningen 4:38"
     },
     {
         "vraag": "Zijn niet ... en ... , de rivieren van Damascus, beter dan alle wateren van Isra\u00ebl",
@@ -5950,7 +5949,7 @@
         "biblicalReference": "1 Kronieken 10:13"
     },
     {
-        "vraag": "Sálomo bouwde een tempel te Jeruzalem op den berg ... ",
+        "vraag": "S\u00e1lomo bouwde een tempel te Jeruzalem op den berg ... ",
         "juisteAntwoord": "Moria",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -5960,17 +5959,17 @@
             "Karmel",
             "Sion"
         ],
-        "biblicalReference": "2 Kronieken 3:1" 
+        "biblicalReference": "2 Kronieken 3:1"
     },
     {
         "vraag": "De koning die de tempel herstelde was ... ",
-        "juisteAntwoord": "Josía",
+        "juisteAntwoord": "Jos\u00eda",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
         "categories": [],
         "fouteAntwoorden": [
             "David",
-            "Sálomo",
+            "S\u00e1lomo",
             "Achaz"
         ],
         "biblicalReference": "2 Kronieken 34"
@@ -5989,7 +5988,7 @@
         "biblicalReference": "2 Kronieken 3:17"
     },
     {
-        "vraag": "En zij brachten voor Sálomo ... uit Egypte en uit al die landen",
+        "vraag": "En zij brachten voor S\u00e1lomo ... uit Egypte en uit al die landen",
         "juisteAntwoord": "paarden",
         "moeilijkheidsgraad": 3,
         "type": "fitb",
@@ -6022,13 +6021,13 @@
         "categories": [],
         "fouteAntwoorden": [
             "Darius",
-            "Nebukadnézar",
+            "Nebukadn\u00e9zar",
             "Xerxes"
         ],
         "biblicalReference": "Ezra"
     },
     {
-        "vraag": "Ezra leidde de terugkeer van de Isra\u00eblieten naar ... ", 
+        "vraag": "Ezra leidde de terugkeer van de Isra\u00eblieten naar ... ",
         "juisteAntwoord": "Jeruzalem",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -6090,7 +6089,7 @@
             "priester",
             "profeet"
         ],
-        "biblicalReference": "Nehémia 1:11"
+        "biblicalReference": "Neh\u00e9mia 1:11"
     },
     {
         "vraag": "De muren van Jeruzalem werden herbouwd in ... dagen",
@@ -6103,10 +6102,10 @@
             "30",
             "70"
         ],
-        "biblicalReference": "Nehémia 6:15"
+        "biblicalReference": "Neh\u00e9mia 6:15"
     },
     {
-        "vraag": "Nehémia was bezorgd over de ... van het volk",
+        "vraag": "Neh\u00e9mia was bezorgd over de ... van het volk",
         "juisteAntwoord": "zonden",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
@@ -6116,7 +6115,7 @@
             "ziekten",
             "gaven"
         ],
-        "biblicalReference": "Nehémia 1: 6,7"
+        "biblicalReference": "Neh\u00e9mia 1: 6,7"
     },
     {
         "vraag": "Gedenk mijner, mijn God, ten goede, alles wat ik ... gedaan heb",
@@ -6129,7 +6128,7 @@
             "aan hen",
             "aan dezen"
         ],
-        "biblicalReference": "Nehémia 5:19"
+        "biblicalReference": "Neh\u00e9mia 5:19"
     },
     {
         "vraag": "Kom en laat ons tezamen vergaderen in de dorpen, in het dal ...",
@@ -6142,18 +6141,18 @@
             "Kison",
             "Hinnom"
         ],
-        "biblicalReference": "Nehémia 6:2"
+        "biblicalReference": "Neh\u00e9mia 6:2"
     },
     {
         "vraag": "Het geschiedde nu in de dagen van ...",
-        "juisteAntwoord": "Ahasvéros",
+        "juisteAntwoord": "Ahasv\u00e9ros",
         "moeilijkheidsgraad": 2,
         "type": "fitb",
         "categories": [],
         "fouteAntwoorden": [
             "Ammon",
             "Moab",
-            "Mórdechai"
+            "M\u00f3rdechai"
         ],
         "biblicalReference": "Esther 1:1"
     },
@@ -6419,7 +6418,7 @@
     },
     {
         "vraag": "De schrijver van Prediker wordt toegeschreven aan ...",
-        "juisteAntwoord": "Sálomo",
+        "juisteAntwoord": "S\u00e1lomo",
         "moeilijkheidsgraad": 1,
         "type": "fitb",
         "categories": [],
@@ -6809,7 +6808,7 @@
     },
     {
         "vraag": "en Dani\u00ebl noemde hij ...",
-        "juisteAntwoord": "Béltsazar",
+        "juisteAntwoord": "B\u00e9ltsazar",
         "moeilijkheidsgraad": 1,
         "type": "fitb",
         "categories": [],
@@ -6861,7 +6860,7 @@
     },
     {
         "vraag": "en in de dagen van ..., zoon van Joas, koning van Isra\u00ebl",
-        "juisteAntwoord": "Jeróbeam",
+        "juisteAntwoord": "Jer\u00f3beam",
         "moeilijkheidsgraad": 5,
         "type": "fitb",
         "categories": [],
@@ -6974,7 +6973,7 @@
             "bewaard",
             "bekeerd"
         ],
-        "biblicalReference": "Joël 2:32"
+        "biblicalReference": "Jo\u00ebl 2:32"
     },
     {
         "vraag": "En ... zal worden tot een wildernis en woestheid",
@@ -6987,6 +6986,6 @@
             "Edom",
             "Jeruzalem"
         ],
-        "biblicalReference": "Ezechiël 29:9"
+        "biblicalReference": "Ezechi\u00ebl 29:9"
     }
 ]
