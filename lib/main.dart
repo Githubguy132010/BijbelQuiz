@@ -69,30 +69,33 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
   @override
   void initState() {
     super.initState();
-    // Defer heavy service initialization to after first frame
+    // Defer service initialization; don't block first render
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final performanceService = PerformanceService();
       final connectionService = ConnectionService();
       final questionCacheService = QuestionCacheService();
 
-      await Future.wait([
+      // Kick off initialization in background
+      final initFuture = Future.wait([
         performanceService.initialize(),
         connectionService.initialize(),
         questionCacheService.initialize(),
       ]);
 
+      // Expose services immediately so UI can build without waiting
+      setState(() {
+        _performanceService = performanceService;
+        _connectionService = connectionService;
+        _questionCacheService = questionCacheService;
+        _servicesInitialized = true;
+      });
+
+      // Continue with any post-init work when ready
+      await initFuture;
+
       if (!kIsWeb && !Platform.isLinux) {
         WidgetsBinding.instance.addPostFrameCallback((_) async {
           await NotificationService().init();
-          // Removed: Notification permission request and scheduling
-          // if (settingsProvider.notificationEnabled) {
-          //   final granted = await NotificationService.requestNotificationPermission();
-          //   if (granted) {
-          //     await NotificationService().scheduleDailyMotivationNotifications();
-          //   }
-          // } else {
-          //   await NotificationService().cancelAllNotifications();
-          // }
         });
       } else if (!kIsWeb && Platform.isLinux) {
         WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -100,13 +103,6 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
           await NotificationService().cancelAllNotifications();
         });
       }
-
-      setState(() {
-        _performanceService = performanceService;
-        _connectionService = connectionService;
-        _questionCacheService = questionCacheService;
-        _servicesInitialized = true;
-      });
     });
   }
 
@@ -128,7 +124,7 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
     final settings = Provider.of<SettingsProvider>(context);
     final gameStats = Provider.of<GameStatsProvider>(context);
     // Show a loading indicator if settings are still loading
-    if (!_servicesInitialized || settings.isLoading || gameStats.isLoading) {
+    if (!_servicesInitialized) {
       final platformDispatcher = WidgetsBinding.instance.platformDispatcher;
       final size = platformDispatcher.views.isNotEmpty
           ? platformDispatcher.views.first.physicalSize / platformDispatcher.views.first.devicePixelRatio
@@ -183,7 +179,9 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
     
     // Show guide if needed after app is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!settings.hasSeenGuide && gameStats.navigatorKey.currentContext != null) {
+      if (!settings.isLoading &&
+          !settings.hasSeenGuide &&
+          gameStats.navigatorKey.currentContext != null) {
         Navigator.of(gameStats.navigatorKey.currentContext!).push(
           MaterialPageRoute(
             builder: (context) => const GuideScreen(),

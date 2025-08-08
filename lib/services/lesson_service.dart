@@ -21,8 +21,6 @@ class LessonService {
     int maxQuestionsPerLesson = 10,
   }) async {
     try {
-      // Ensure question metadata is warm to avoid initial jank in first lesson
-      await _questionCache.getQuestions(language, startIndex: 0, count: 1);
 
       final lessons = List<Lesson>.generate(maxLessons, (i) {
         final id = 'lesson_${i.toString().padLeft(4, '0')}';
