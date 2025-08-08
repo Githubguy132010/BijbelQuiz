@@ -1,24 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:collection/collection.dart';
 import '../models/quiz_question.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'logger.dart';
 
-/// Cache entry for storing questions with access time
-class _QuestionCacheEntry {
-  final QuizQuestion question;
-  final int lastAccessed;
-  
-  _QuestionCacheEntry(this.question) : lastAccessed = DateTime.now().millisecondsSinceEpoch;
-  
-  void updateAccessTime() {
-    // No need to update lastAccessed as we use the LRU list for tracking
-  }
-}
+ // Simplified memory cache: store QuizQuestion directly; access tracked via LRU list
 
 /// Configuration for question loading and caching
 class QuestionCacheConfig {
@@ -37,7 +25,7 @@ class QuestionCacheService {
   static const String _appVersionKey = 'app_version';
   
   // LRU Cache implementation
-  final Map<String, _QuestionCacheEntry> _memoryCache = {};
+  final Map<String, QuizQuestion> _memoryCache = {};
   final List<String> _lruList = [];
   
   late SharedPreferences _prefs;
@@ -279,7 +267,7 @@ class QuestionCacheService {
     }
     
     // Add to cache
-    _memoryCache[cacheKey] = _QuestionCacheEntry(question);
+    _memoryCache[cacheKey] = question;
     _updateLru(language, index);
   }
   
@@ -303,10 +291,10 @@ class QuestionCacheService {
   /// Get a question from memory cache
   QuizQuestion? _getQuestionFromMemory(String language, int index) {
     final cacheKey = _getQuestionCacheKey(language, index);
-    final entry = _memoryCache[cacheKey];
-    if (entry != null) {
+    final question = _memoryCache[cacheKey];
+    if (question != null) {
       _updateLru(language, index);
-      return entry.question;
+      return question;
     }
     return null;
   }
@@ -378,37 +366,6 @@ class QuestionCacheService {
     }
   }
 
-  /// Cache questions to persistent storage
-  Future<void> _cacheQuestions(String language, List<QuizQuestion> questions) async {
-    if (!_isInitialized) return;
-    
-    try {
-      // Only cache a limited number of questions to avoid storage issues
-      final questionsToCache = questions.length > QuestionCacheConfig.maxPersistentCacheSize
-          ? questions.sublist(0, QuestionCacheConfig.maxPersistentCacheSize)
-          : questions;
-          
-      // Update metadata cache
-      final metadata = questionsToCache.map((q) => <String, dynamic>{
-        'difficulty': q.difficulty,
-        'categories': q.categories,
-        'type': _questionTypeToString(q.type),
-      }).toList();
-      
-      await _cacheMetadata(language, metadata);
-      
-      // Cache individual questions
-      for (int i = 0; i < questionsToCache.length; i++) {
-        final question = questionsToCache[i];
-        final questionKey = '${_cacheKey}_${language}_$i';
-        await _prefs.setString(questionKey, json.encode(question.toJson()));
-      }
-      
-      AppLogger.info('Cached ${questionsToCache.length} questions for $language');
-    } catch (e) {
-      AppLogger.error('Error caching questions', e);
-    }
-  }
 
   /// Clear all cached data
   Future<void> clearCache() async {
@@ -443,10 +400,8 @@ class QuestionCacheService {
     int questionCount = _memoryCache.length;
     int totalQuestionSize = 0;
     
-    _memoryCache.forEach((key, entry) {
+    _memoryCache.forEach((key, question) {
       try {
-        // Safely access question properties
-        final question = entry.question;
         totalQuestionSize += question.question.length * 2; // UTF-16 chars
         totalQuestionSize += question.correctAnswer.length * 2;
         totalQuestionSize += question.incorrectAnswers.fold<int>(

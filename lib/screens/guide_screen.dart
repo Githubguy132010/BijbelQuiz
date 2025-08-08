@@ -21,35 +21,7 @@ class _GuideScreenState extends State<GuideScreen> {
 
   List<GuidePage> get _pages {
     final showNotificationPage = !kIsWeb && !Platform.isLinux;
-    return [
-      GuidePage(
-        title: 'Welkom bij BijbelQuiz!',
-        description: 'Test je bijbelkennis',
-        icon: Icons.church,
-      ),
-      GuidePage(
-        title: 'Meerkeuzevragen',
-        description: 'Beantwoord vragen over Bijbelverhalen, geschiedenis en meer',
-        icon: Icons.quiz,
-      ),
-      GuidePage(
-        title: 'Volg Je Voortgang',
-        description: 'Houd je scores bij en verbeter jezelf in de loop van de tijd.',
-        icon: Icons.insights,
-      ),
-      GuidePage(
-        title: 'Pas Je Ervaring Aan',
-        description: 'Pas taal, thema en spelsnelheid aan in de instellingen. Heeft u nog vragen? Contacteer onze klantenservice.',
-        icon: Icons.settings,
-      ),
-      if (showNotificationPage)
-        GuidePage(
-          title: 'Blijf Gemotiveerd!',
-          description: 'Schakel meldingen in om dagelijkse motivatie en herinneringen te ontvangen voor BijbelQuiz.',
-          icon: Icons.notifications_active_outlined,
-          isNotificationPage: true,
-        ),
-    ];
+    return buildGuidePages(showNotificationPage: showNotificationPage);
   }
 
   @override
@@ -204,6 +176,44 @@ class GuidePage {
     required this.icon,
     this.isNotificationPage = false,
   });
+}
+
+List<GuidePage> buildGuidePages({required bool showNotificationPage}) {
+  final pages = <GuidePage>[
+    GuidePage(
+      title: 'Welkom bij BijbelQuiz!',
+      description: 'Test je bijbelkennis',
+      icon: Icons.church,
+    ),
+    GuidePage(
+      title: 'Meerkeuzevragen',
+      description: 'Beantwoord vragen over Bijbelverhalen, geschiedenis en meer',
+      icon: Icons.quiz,
+    ),
+    GuidePage(
+      title: 'Volg Je Voortgang',
+      description: 'Houd je scores bij en verbeter jezelf in de loop van de tijd.',
+      icon: Icons.insights,
+    ),
+    GuidePage(
+      title: 'Pas Je Ervaring Aan',
+      description: 'Pas taal, thema en spelsnelheid aan in de instellingen. Heeft u nog vragen? Contacteer onze klantenservice.',
+      icon: Icons.settings,
+    ),
+  ];
+
+  if (showNotificationPage) {
+    pages.add(
+      GuidePage(
+        title: 'Blijf Gemotiveerd!',
+        description: 'Schakel meldingen in om dagelijkse motivatie en herinneringen te ontvangen voor BijbelQuiz.',
+        icon: Icons.notifications_active_outlined,
+        isNotificationPage: true,
+      ),
+    );
+  }
+
+  return pages;
 }
 
 class GuidePageView extends StatefulWidget {
@@ -381,35 +391,7 @@ class _GuideScreenTestHarnessState extends State<GuideScreenTestHarness> {
     super.initState();
     _pageController = PageController();
     final showNotificationPage = !kIsWeb && !Platform.isLinux;
-    _pages = [
-      GuidePage(
-        title: 'Welkom bij BijbelQuiz!',
-        description: 'Test je bijbelkennis',
-        icon: Icons.church,
-      ),
-      GuidePage(
-        title: 'Meerkeuzevragen',
-        description: 'Beantwoord vragen over Bijbelverhalen, geschiedenis en meer',
-        icon: Icons.quiz,
-      ),
-      GuidePage(
-        title: 'Volg Je Voortgang',
-        description: 'Houd je scores bij en verbeter jezelf in de loop van de tijd.',
-        icon: Icons.insights,
-      ),
-      GuidePage(
-        title: 'Pas Je Ervaring Aan',
-        description: 'Pas thema en spelsnelheid aan in de instellingen. Heeft u nog vragen? Contacteer onze klantenservice.',
-        icon: Icons.settings,
-      ),
-      if (showNotificationPage)
-        GuidePage(
-          title: 'Blijf Gemotiveerd!',
-          description: 'Schakel meldingen in om dagelijkse motivatie en herinneringen te ontvangen voor BijbelQuiz.',
-          icon: Icons.notifications_active_outlined,
-          isNotificationPage: true,
-        ),
-    ];
+    _pages = buildGuidePages(showNotificationPage: showNotificationPage);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.onPageShown?.call(_currentPage, _pages.length);
     });
