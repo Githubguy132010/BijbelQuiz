@@ -242,15 +242,15 @@ class _HeaderActionButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        width: 40,
+        height: 40,
+        alignment: Alignment.center,
         decoration: BoxDecoration(
           color: cs.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: cs.outlineVariant),
         ),
-        child: Center(
-          child: Icon(icon, color: cs.onSurface.withOpacity(0.8), size: 20),
-        ),
+        child: Icon(icon, color: cs.onSurface.withOpacity(0.8), size: 20),
       ),
     );
   }
