@@ -71,6 +71,10 @@ dependencies {
 }
 
 tasks.withType(JavaCompile) {
-    options.compilerArgs << "-Xlint:-options"
-    options.compilerArgs << "-Xlint:-deprecation"
-} 
+    // Suppress javac notes/warnings like:
+    // "Note: ... uses or overrides a deprecated API."
+    options.deprecation = false
+    options.warnings = false
+    options.compilerArgs << "-Xlint:none"
+    options.compilerArgs << "-nowarn"
+}
