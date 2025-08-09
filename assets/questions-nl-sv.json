@@ -460,7 +460,7 @@
         "categories": [
             "Genesis"
         ],
-        "biblicalReference": "Genesis 24"
+        "biblicalReference": "Genesis 24:67"
     },
     {
         "vraag": "Wie volgt Mozes op?",
@@ -475,7 +475,7 @@
         "categories": [
             "Jozua"
         ],
-        "biblicalReference": "Jozua 1"
+        "biblicalReference": "Jozua 1:1"
     },
     {
         "vraag": "Waar sloeg Mozes op de rots?",
@@ -493,7 +493,7 @@
         "biblicalReference": "Exodus 17:7"
     },
     {
-        "vraag": "Na ... is een groot gedeelte van Kana\u00e4n veroverd (Jozua)",
+        "vraag": "Na ... is een groot gedeelte van Kana\u00e4n veroverd",
         "juisteAntwoord": "7 jaar",
         "fouteAntwoorden": [
             "4 jaar",
@@ -505,7 +505,7 @@
         "categories": [
             "Jozua"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Jozua"
     },
     {
         "vraag": "Na het overlijden van Jozua...",
@@ -580,7 +580,7 @@
         "categories": [
             "Richteren"
         ],
-        "biblicalReference": "Richteren 3"
+        "biblicalReference": "Richteren 3: 9, 10"
     },
     {
         "vraag": "Wie zijn de meest bekende richters?",
@@ -593,10 +593,9 @@
         "moeilijkheidsgraad": 1,
         "type": "mc",
         "categories": [
-            "Richteren",
-            "Samu\u00ebl"
+            "Richteren"
         ],
-        "biblicalReference": null
+        "biblicalReference": "Richteren"
     },
     {
         "vraag": "Met hoeveel man verjaagt Gideon een groot leger van de Midianieten?",
@@ -6826,5 +6825,19 @@
             "Jeruzalem"
         ],
         "biblicalReference": "Ezechiël 29:9"
+    },
+    {
+        "vraag": "alzo dat die akker in hun eigen taal genoemd wordt ... , dat is een akker des bloeds",
+        "juisteAntwoord": "Akeldama",
+        "moeilijkheidsgraad": 2,
+        "type": "fitb",
+        "categories": [],
+        "fouteAntwoorden": [
+            "Kedron",
+            "Akkad",
+            "Akeldam"
+        ],
+        "biblicalReference": "Handelingen 1:19"
     }
+
 ]

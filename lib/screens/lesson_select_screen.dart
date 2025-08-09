@@ -163,86 +163,104 @@ class _LessonSelectScreenState extends State<LessonSelectScreen> {
                     ],
                   ),
                 )
-              : RefreshIndicator(
-                  onRefresh: _loadLessons,
-                  child: CustomScrollView(
-                    slivers: [
-                      // Hero progress + CTA section
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _ProgressHeader(
-                                lessons: _lessons,
-                                continueLesson: continueLesson,
-                                onAfterQuizReturn: _loadLessons,
+              : LayoutBuilder(
+                  builder: (context, constraints) {
+                    final w = constraints.maxWidth;
+                    final h = constraints.maxHeight;
+                    // Guard against transient zero-sized viewport during lifecycle changes.
+                    if (!w.isFinite || !h.isFinite || w <= 0 || h <= 0) {
+                      return const SizedBox.shrink();
+                    }
+                    return RefreshIndicator(
+                      onRefresh: _loadLessons,
+                      child: CustomScrollView(
+                        slivers: [
+                          // Hero progress + CTA section
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _ProgressHeader(
+                                    lessons: _lessons,
+                                    continueLesson: continueLesson,
+                                    onAfterQuizReturn: _loadLessons,
+                                  ),
+                                  const SizedBox(height: 8),
+                                ],
                               ),
-                              const SizedBox(height: 8),
-                            ],
-                          ),
-                        ),
-                      ),
-
-
-                      if (filteredIndices.isNotEmpty)
-                        SliverPadding(
-                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-                          sliver: SliverGrid(
-                            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                              maxCrossAxisExtent: tileMaxExtent,
-                              mainAxisSpacing: 14,
-                              crossAxisSpacing: 14,
-                              childAspectRatio: gridAspect,
                             ),
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                                final realIndex = filteredIndices[index];
-                                final lesson = _lessons[realIndex];
-                                final unlocked = progress.isLessonUnlocked(realIndex);
-                                final stars = progress.bestStarsFor(lesson.id);
-                                final recommended = totalLessons > 0 && realIndex == continueIdx;
+                          ),
 
-                                final playable = unlocked && realIndex == continueIdx;
+                          if (filteredIndices.isNotEmpty)
+                            SliverLayoutBuilder(
+                              builder: (context, constraints) {
+                                final cross = constraints.crossAxisExtent;
+                                // Guard against transient zero-width cross axis which makes SliverGrid assert.
+                                if (!cross.isFinite || cross <= 0) {
+                                  return const SliverToBoxAdapter(child: SizedBox.shrink());
+                                }
+                                return SliverPadding(
+                                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                                  sliver: SliverGrid(
+                                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                                      maxCrossAxisExtent: tileMaxExtent,
+                                      mainAxisSpacing: 14,
+                                      crossAxisSpacing: 14,
+                                      childAspectRatio: gridAspect,
+                                    ),
+                                    delegate: SliverChildBuilderDelegate(
+                                      (context, index) {
+                                        final realIndex = filteredIndices[index];
+                                        final lesson = _lessons[realIndex];
+                                        final unlocked = progress.isLessonUnlocked(realIndex);
+                                        final stars = progress.bestStarsFor(lesson.id);
+                                        final recommended = totalLessons > 0 && realIndex == continueIdx;
 
-                                return _LessonTile(
-                                  lesson: lesson,
-                                  index: realIndex,
-                                  unlocked: unlocked,
-                                  playable: playable,
-                                  stars: stars,
-                                  recommended: unlocked && recommended,
-                                  onTap: () async {
-                                    if (!unlocked) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text('Les is nog vergrendeld')),
-                                      );
-                                      return;
-                                    }
-                                    if (!playable) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text('Je kunt alleen de meest recente ontgrendelde les spelen')),
-                                      );
-                                      return;
-                                    }
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (_) => QuizScreen(lesson: lesson, sessionLimit: lesson.maxQuestions),
-                                      ),
-                                    );
-                                    // After returning from the quiz, ensure the grid extends if needed.
-                                    if (!mounted) return;
-                                    await _loadLessons();
-                                  },
+                                        final playable = unlocked && realIndex == continueIdx;
+
+                                        return _LessonTile(
+                                          lesson: lesson,
+                                          index: realIndex,
+                                          unlocked: unlocked,
+                                          playable: playable,
+                                          stars: stars,
+                                          recommended: unlocked && recommended,
+                                          onTap: () async {
+                                            if (!unlocked) {
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                const SnackBar(content: Text('Les is nog vergrendeld')),
+                                              );
+                                              return;
+                                            }
+                                            if (!playable) {
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                const SnackBar(content: Text('Je kunt alleen de meest recente ontgrendelde les spelen')),
+                                              );
+                                              return;
+                                            }
+                                            await Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (_) => QuizScreen(lesson: lesson, sessionLimit: lesson.maxQuestions),
+                                              ),
+                                            );
+                                            // After returning from the quiz, ensure the grid extends if needed.
+                                            if (!mounted) return;
+                                            await _loadLessons();
+                                          },
+                                        );
+                                      },
+                                      childCount: filteredIndices.length,
+                                    ),
+                                  ),
                                 );
                               },
-                              childCount: filteredIndices.length,
                             ),
-                          ),
-                        ),
-                    ],
-                  ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
     );
   }
@@ -603,22 +621,32 @@ class _LessonGridSkeleton extends StatelessWidget {
                 ? 0.98
                 : 0.92;
 
-    return GridView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: 6,
-      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: tileMaxExtent,
-        mainAxisSpacing: 14,
-        crossAxisSpacing: 14,
-        childAspectRatio: gridAspect,
-      ),
-      itemBuilder: (_, __) => Container(
-        decoration: BoxDecoration(
-          color: colorScheme.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: colorScheme.outlineVariant),
-        ),
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final w = constraints.maxWidth;
+        // Guard against transient zero-width layouts which cause GridView's
+        // SliverGridDelegate to assert crossAxisExtent > 0.0.
+        if (!w.isFinite || w <= 0) {
+          return const SizedBox.shrink();
+        }
+        return GridView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: 6,
+          gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: tileMaxExtent,
+            mainAxisSpacing: 14,
+            crossAxisSpacing: 14,
+            childAspectRatio: gridAspect,
+          ),
+          itemBuilder: (_, __) => Container(
+            decoration: BoxDecoration(
+              color: colorScheme.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: colorScheme.outlineVariant),
+            ),
+          ),
+        );
+      },
     );
   }
 }
