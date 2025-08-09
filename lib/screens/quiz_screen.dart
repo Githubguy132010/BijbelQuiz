@@ -21,6 +21,7 @@ import 'dart:async';
 import '../services/logger.dart';
 import 'dart:math';
 import '../widgets/quiz_skeleton.dart';
+import '../widgets/top_snackbar.dart';
 
 /// The main quiz screen that displays questions and handles user interactions
 /// with performance optimizations for low-end devices and poor connections.
@@ -122,9 +123,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
     // Attach error handler for sound service
     _soundService.onError = (message) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
-        );
+        showTopSnackBar(context, message, style: TopSnackBarStyle.error);
       }
     };
   }
@@ -1286,9 +1285,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
                                       });
                                       
                                     } else {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(content: Text('Niet genoeg sterren om over te slaan!')),
-                                      );
+                                      showTopSnackBar(context, 'Niet genoeg sterren om over te slaan!', style: TopSnackBarStyle.warning);
                                     }
                                   }
                                 : null,

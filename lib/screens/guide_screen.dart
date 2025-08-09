@@ -7,6 +7,7 @@ import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import '../services/logger.dart';
 import '../widgets/quiz_skeleton.dart';
+import '../widgets/top_snackbar.dart';
 
 class GuideScreen extends StatefulWidget {
   const GuideScreen({super.key});
@@ -154,12 +155,9 @@ class _GuideScreenState extends State<GuideScreen> {
       if (!mounted) return;
       Navigator.of(localContext).pop();
     } catch (e) {
-      final messenger = ScaffoldMessenger.of(localContext);
       if (!mounted) return;
       final errorMessage = 'Setup voltooien mislukt. Probeer het opnieuw.';
-      messenger.showSnackBar(
-        SnackBar(content: Text(errorMessage)),
-      );
+      showTopSnackBar(localContext, errorMessage, style: TopSnackBarStyle.error);
     }
   }
 }
@@ -261,11 +259,7 @@ class GuidePageViewState extends State<GuidePageView> {
       _permissionGranted = granted;
     });
     if (!granted && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-                  content: Text('Meldingstoestemming geweigerd.'),
-        ),
-      );
+      showTopSnackBar(context, 'Meldingstoestemming geweigerd.', style: TopSnackBarStyle.warning);
     }
   }
 

@@ -8,6 +8,7 @@ import 'screens/guide_screen.dart';
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb, kDebugMode;
 import 'services/notification_service.dart';
+import 'widgets/top_snackbar.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'screens/feature_test_screen.dart';
 import 'services/question_cache_service.dart';
@@ -33,9 +34,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     // Attach error handler for notification service
     NotificationService.onError = (message) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
-        );
+        showTopSnackBar(context, message, style: TopSnackBarStyle.error);
       }
     };
   }
@@ -44,9 +43,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final Uri url = Uri.parse('https://oneuptime.com/status-page/df067f1b-2beb-42d2-9ddd-719e9ce51238');
     if (!await launchUrl(url)) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Kon de statuspagina niet openen.')),
-        );
+        showTopSnackBar(context, 'Kon de statuspagina niet openen.', style: TopSnackBarStyle.error);
       }
     }
   }
@@ -455,11 +452,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onPressed: () async {
                 await QuestionCacheService().clearCache();
                 if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Vragencache gewist!'),
-                    ),
-                  );
+                  showTopSnackBar(context, 'Vragencache gewist!', style: TopSnackBarStyle.success);
                 }
               },
               label: 'Vragencache wissen',
@@ -481,11 +474,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   await launchUrl(emailLaunchUri);
                 } else {
                   if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Kon e-mailclient niet openen'),
-                      ),
-                    );
+                    showTopSnackBar(context, 'Kon e-mailclient niet openen', style: TopSnackBarStyle.error);
                   }
                 }
               },
@@ -965,11 +954,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       // Use a post-frame callback to ensure the context is still valid
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (localContext.mounted) {
-          ScaffoldMessenger.of(localContext).showSnackBar(
-            SnackBar(
-              content: Text('Kon niet controleren op updates. Probeer het later opnieuw.'),
-            ),
-          );
+          showTopSnackBar(localContext, 'Kon niet controleren op updates. Probeer het later opnieuw.', style: TopSnackBarStyle.error);
         }
       });
     }

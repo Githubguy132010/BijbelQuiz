@@ -6,6 +6,7 @@ import '../providers/lesson_progress_provider.dart';
 import '../providers/settings_provider.dart';
 import '../services/lesson_service.dart';
 import '../screens/quiz_screen.dart';
+import '../widgets/top_snackbar.dart';
 
 class LessonSelectScreen extends StatefulWidget {
   const LessonSelectScreen({super.key});
@@ -229,15 +230,11 @@ class _LessonSelectScreenState extends State<LessonSelectScreen> {
                                           recommended: unlocked && recommended,
                                           onTap: () async {
                                             if (!unlocked) {
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                const SnackBar(content: Text('Les is nog vergrendeld')),
-                                              );
+                                              showTopSnackBar(context, 'Les is nog vergrendeld', style: TopSnackBarStyle.warning);
                                               return;
                                             }
                                             if (!playable) {
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                const SnackBar(content: Text('Je kunt alleen de meest recente ontgrendelde les spelen')),
-                                              );
+                                              showTopSnackBar(context, 'Je kunt alleen de meest recente ontgrendelde les spelen', style: TopSnackBarStyle.info);
                                               return;
                                             }
                                             await Navigator.of(context).push(

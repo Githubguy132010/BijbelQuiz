@@ -11,6 +11,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
 import '../services/sound_service.dart';
 import '../services/logger.dart';
+import '../widgets/top_snackbar.dart';
 
 class FeatureTestScreen extends StatefulWidget {
   const FeatureTestScreen({super.key});
@@ -38,24 +39,18 @@ class _FeatureTestScreenState extends State<FeatureTestScreen> {
     final soundService = SoundService();
     soundService.onError = (message) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
-        );
+        showTopSnackBar(context, message, style: TopSnackBarStyle.error);
       }
     };
     NotificationService.onError = (message) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
-        );
+        showTopSnackBar(context, message, style: TopSnackBarStyle.error);
       }
     };
     final gameStatsProvider = Provider.of<GameStatsProvider>(context, listen: false);
     gameStatsProvider.onError = (message) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(message)),
-        );
+        showTopSnackBar(context, message, style: TopSnackBarStyle.error);
       }
     };
     WidgetsBinding.instance.addPostFrameCallback((_) => _runAllTests());
@@ -203,7 +198,6 @@ class _FeatureTestScreenState extends State<FeatureTestScreen> {
   Future<void> _testDialogAndSnackbar() async {
     _logAdd('Testing dialog and snackbar...');
     final localContext = context;
-    final messenger = ScaffoldMessenger.of(localContext);
     await showDialog(
       context: localContext,
       builder: (ctx) => AlertDialog(
@@ -221,9 +215,7 @@ class _FeatureTestScreenState extends State<FeatureTestScreen> {
     _logAdd('Dialog: Shown and closed.');
     // Show a snackbar
     if (!mounted) return;
-    messenger.showSnackBar(
-      const SnackBar(content: Text('This is a test snackbar.')),
-    );
+    showTopSnackBar(localContext, 'This is a test snackbar.');
     await Future.delayed(const Duration(milliseconds: 800));
     if (!mounted) return;
     _logAdd('Snackbar: Shown.');
@@ -346,9 +338,7 @@ class _FeatureTestScreenState extends State<FeatureTestScreen> {
                       await Clipboard.setData(ClipboardData(text: logText));
                       if (!mounted) return;
                       if (!context.mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Log copied to clipboard!')),
-                      );
+                      showTopSnackBar(context, 'Log copied to clipboard!', style: TopSnackBarStyle.success);
                     },
                   ),
                 ],

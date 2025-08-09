@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import '../providers/game_stats_provider.dart';
 import '../providers/settings_provider.dart';
 import '../theme/app_theme.dart';
+import '../widgets/top_snackbar.dart';
 
 class StoreScreen extends StatefulWidget {
   const StoreScreen({super.key});
@@ -401,16 +402,7 @@ class _StoreScreenState extends State<StoreScreen> {
                 );
               }
             } else {
-              ScaffoldMessenger.of(localContext).showSnackBar(
-                SnackBar(
-                  content: Text('Niet genoeg sterren!'),
-                  backgroundColor: colorScheme.error,
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              );
+              showTopSnackBar(localContext, 'Niet genoeg sterren!', style: TopSnackBarStyle.error);
             }
           },
           child: Padding(
@@ -544,29 +536,10 @@ class _StoreScreenState extends State<StoreScreen> {
                 await localSettings.unlockTheme(themeKey);
                 if (!localContext.mounted) return;
                 final message = '$title ontgrendeld!';
-                final messenger = ScaffoldMessenger.of(localContext);
-                messenger.showSnackBar(
-                  SnackBar(
-                    content: Text(message),
-                    backgroundColor: colorScheme.primary,
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                );
+                showTopSnackBar(localContext, message, style: TopSnackBarStyle.success);
               }
             } else {
-              ScaffoldMessenger.of(localContext).showSnackBar(
-                SnackBar(
-                  content: Text('Niet genoeg sterren!'),
-                  backgroundColor: colorScheme.error,
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              );
+              showTopSnackBar(localContext, 'Niet genoeg sterren!', style: TopSnackBarStyle.error);
             }
           },
           child: Padding(
