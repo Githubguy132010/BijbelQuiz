@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../services/activation_service.dart';
-import '../widgets/top_snackbar.dart';
 import 'package:provider/provider.dart';
 import '../providers/settings_provider.dart';
 import './guide_screen.dart';
@@ -118,7 +117,6 @@ class _ActivationScreenState extends State<ActivationScreen> {
       final ok = await _service.verifyCode(code);
       if (!mounted) return;
       if (ok) {
-        showTopSnackBar(context, 'Activatie geslaagd', style: TopSnackBarStyle.success);
         widget.onActivated();
       } else {
         setState(() => _error = 'Ongeldige code. Probeer het opnieuw.');
