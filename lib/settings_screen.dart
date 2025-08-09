@@ -410,10 +410,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
               isSmallScreen,
               isDesktop,
               onPressed: () => _showResetAndLogoutDialog(context, settings),
-              label: 'Reset and logout',
+              label: 'Resetten en uitloggen',
               icon: Icons.logout,
               isDestructive: true,
-              subtitle: 'Clear all data and deactivate app',
+              subtitle: 'Alle gegevens wissen en app deactiveren',
             ),
             _buildActionButton(
               context,
@@ -843,12 +843,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
       context: localContext,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Reset and logout'),
-          content: const Text('This will clear all scores, progress, cache, settings, and activation. The app will be deactivated and require a new activation code. This action cannot be undone.'),
+          title: const Text('Resetten en uitloggen'),
+          content: const Text('Dit verwijdert alle scores, voortgang, cache, instellingen en activatie. De app wordt gedeactiveerd en vereist een nieuwe activatiecode. Deze actie kan niet ongedaan worden gemaakt.'),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: const Text('Annuleren'),
             ),
             TextButton(
               onPressed: () async {
@@ -886,7 +886,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               style: TextButton.styleFrom(
                 foregroundColor: Theme.of(context).colorScheme.error,
               ),
-              child: const Text('Reset and logout'),
+              child: const Text('Resetten en uitloggen'),
             ),
           ],
         );
