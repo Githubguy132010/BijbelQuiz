@@ -197,7 +197,7 @@ class _ActivationScreenState extends State<ActivationScreen> {
                       ],
                       onSubmitted: (_) => _verify(),
                       decoration: InputDecoration(
-                        hintText: 'Bijv. BIJBEL2025',
+                        hintText: 'Voer je activatiecode in',
                         filled: true,
                         fillColor: cs.surface,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
