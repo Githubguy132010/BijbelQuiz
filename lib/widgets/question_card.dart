@@ -136,20 +136,31 @@ class _QuestionCardState extends State<QuestionCard> with SingleTickerProviderSt
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // Question text with enhanced typography
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: isDesktop ? 12 : 8),
-                        child: Text(
-                          widget.question.question,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: colorScheme.onSurface,
-                            height: 1.5,
-                            letterSpacing: -0.2,
-                            fontSize: getResponsiveFontSize(context, 24),
+                      // Responsive question text with better overflow handling
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxHeight: MediaQuery.of(context).size.height * 0.3, // Limit height to 30% of screen
+                        ),
+                        child: SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                            child: Text(
+                              widget.question.question,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: colorScheme.onSurface,
+                                height: 1.4,
+                                letterSpacing: -0.1,
+                                fontSize: isDesktop 
+                                  ? 24 
+                                  : MediaQuery.of(context).size.shortestSide < 360 ? 18 : 20,
+                              ),
+                              overflow: TextOverflow.visible,
+                              textScaleFactor: MediaQuery.of(context).textScaleFactor.clamp(0.8, 1.2), // Limit text scaling
+                              semanticsLabel: widget.question.question,
+                            ),
                           ),
-                          semanticsLabel: widget.question.question,
                         ),
                       ),
                       SizedBox(height: isDesktop ? 36 : 32),
