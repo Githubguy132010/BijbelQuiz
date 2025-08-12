@@ -261,7 +261,7 @@ class _GuidePageViewState extends State<GuidePageView> {
     });
 
     try {
-      final url = Uri.parse('https://backendbijbelquiz.vercel.app/donate');
+      final url = Uri.parse('https://backendbijbelquiz.vercel.app/donate.ts');
       if (await canLaunchUrl(url)) {
         await launchUrl(
           url,

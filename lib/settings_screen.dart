@@ -180,7 +180,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const SizedBox(height: 12),
                 FilledButton.tonalIcon(
                   onPressed: () async {
-                    final Uri url = Uri.parse('https://backendbijbelquiz.vercel.app/donate.php');
+                    final Uri url = Uri.parse('https://backendbijbelquiz.vercel.app/donate.ts');
                     if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
                       if (mounted) {
                         showTopSnackBar(
