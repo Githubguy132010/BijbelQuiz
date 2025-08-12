@@ -12,9 +12,7 @@ import 'widgets/top_snackbar.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'screens/feature_test_screen.dart';
 import 'services/question_cache_service.dart';
-import 'services/activation_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'screens/activation_screen.dart';
 import 'screens/lesson_select_screen.dart';
 import 'widgets/quiz_skeleton.dart';
 import 'l10n/strings_nl.dart' as strings;
@@ -863,8 +861,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   await QuestionCacheService().clearCache();
                   await NotificationService().cancelAllNotifications();
 
-                  // Deactivate app and wipe all persisted data
-                  await ActivationService().clearActivation();
+                  // Clear all persisted data
                   final prefs = await SharedPreferences.getInstance();
                   await prefs.clear();
 
@@ -876,10 +873,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                 if (!context.mounted) return;
                 nav.pop(); // Close dialog
-                // Route back to activation gate, wiping navigation stack
+                // Route back to lesson select screen, wiping navigation stack
                 nav.pushAndRemoveUntil(
                   MaterialPageRoute(
-                    builder: (_) => ActivationGate(child: const LessonSelectScreen()),
+                    builder: (_) => const LessonSelectScreen(),
                   ),
                   (route) => false,
                 );

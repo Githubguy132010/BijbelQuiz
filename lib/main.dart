@@ -23,11 +23,6 @@ import 'screens/store_screen.dart';
 import 'providers/lesson_progress_provider.dart';
 import 'screens/lesson_select_screen.dart';
 import 'settings_screen.dart';
-import 'services/activation_service.dart';
-import 'services/emergency_service.dart';
-import 'screens/activation_screen.dart';
-
-
 
 /// The main entry point of the BijbelQuiz application with performance optimizations.
 void main() async {
@@ -69,15 +64,11 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
   PerformanceService? _performanceService;
   ConnectionService? _connectionService;
   QuestionCacheService? _questionCacheService;
-  EmergencyService? _emergencyService;
   bool _servicesInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    // Initialize emergency service first to set up the navigator key
-    _emergencyService = EmergencyService();
-    
     // Defer service initialization; don't block first render
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final performanceService = PerformanceService();
@@ -90,11 +81,6 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
         connectionService.initialize(),
         questionCacheService.initialize(),
       ]);
-
-      // Start emergency service polling after the first frame is rendered
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _emergencyService!.startPolling();
-      });
 
       // Expose services immediately so UI can build without waiting
       setState(() {
@@ -120,111 +106,72 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
     });
   }
 
-  ThemeData? getCustomTheme(String? key) {
-    switch (key) {
-      case 'oled':
-        return oledTheme;
-      case 'green':
-        return greenTheme;
-      case 'orange':
-        return orangeTheme;
-      default:
-        return null;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Show guide on first run if not seen yet
+    final settings = Provider.of<SettingsProvider>(context, listen: false);
+    if (!settings.isLoading && !settings.hasSeenGuide) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const GuideScreen(),
+            ),
+          );
+          // Mark guide as seen after showing it
+          settings.markGuideAsSeen();
+        }
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final settings = Provider.of<SettingsProvider>(context, listen: false);
-    final gameStats = Provider.of<GameStatsProvider>(context, listen: false);
-    final isDesktop = MediaQuery.of(context).size.width > 1200 || kIsWeb;
-    final isTablet = MediaQuery.of(context).size.width > 600 && !isDesktop;
-    final isSmallPhone = MediaQuery.of(context).size.width < 350;
-    // Show a loading indicator if settings are still loading
-    if (!_servicesInitialized) {
-      return MaterialApp(
-        key: const ValueKey('loading'),
-        title: strings.AppStrings.appName,
-        debugShowCheckedModeBanner: false,
-        theme: appLightTheme,
-        darkTheme: appDarkTheme,
-        themeMode: settings.themeMode,
-        localizationsDelegates: const [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: const [
-          Locale('nl', ''), // Dutch only
-        ],
-        locale: const Locale('nl', ''), // Force Dutch locale
-        home: Scaffold(
-          body: Center(
-            child: QuizSkeleton(
-              isDesktop: isDesktop,
-              isTablet: isTablet,
-              isSmallPhone: isSmallPhone,
-            ),
-          ),
-        ),
-      );
-    }
     // Collect deferred providers
     final List<SingleChildWidget> deferredProviders = [
       if (_performanceService != null) Provider.value(value: _performanceService!),
       if (_connectionService != null) Provider.value(value: _connectionService!),
       if (_questionCacheService != null) Provider.value(value: _questionCacheService!),
     ];
-    // Determine theme
-    ThemeData? customTheme;
-    if (settings.selectedCustomThemeKey != null &&
-        settings.isThemeUnlocked(settings.selectedCustomThemeKey!)) {
-      customTheme = getCustomTheme(settings.selectedCustomThemeKey);
-    }
-    final app = MaterialApp(
-      key: ValueKey('${settings.selectedCustomThemeKey}_${settings.themeMode}'),
-      navigatorKey: EmergencyService.navigatorKey,
-      title: strings.AppStrings.appName,
-      debugShowCheckedModeBanner: false,
-      theme: customTheme ?? appLightTheme,
-      darkTheme: customTheme ?? appDarkTheme,
-      themeMode: customTheme != null ? ThemeMode.light : settings.themeMode,
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('nl', ''), // Dutch only
-      ],
-      locale: const Locale('nl', ''), // Force Dutch locale
-      routes: {
-        '/store': (context) => const StoreScreen(),
-        '/settings': (context) => const SettingsScreen(),
-      },
-      home: ActivationGate(child: const LessonSelectScreen()),
-    );
     
-    // Show guide if needed after app is built
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final activated = await ActivationService().isActivated();
-      if (!settings.isLoading &&
-          activated &&
-          !settings.hasSeenGuide &&
-          gameStats.navigatorKey.currentContext != null) {
-        Navigator.of(gameStats.navigatorKey.currentContext!).push(
-          MaterialPageRoute(
-            builder: (context) => const GuideScreen(),
-          ),
+    // Build the main app widget
+    final app = Consumer<SettingsProvider>(
+      builder: (context, settings, _) {
+        return MaterialApp(
+          navigatorKey: GlobalKey<NavigatorState>(),
+          title: 'BijbelQuiz',
+          debugShowCheckedModeBanner: false,
+          theme: appLightTheme,
+          darkTheme: appDarkTheme,
+          themeMode: settings.themeMode,
+          localizationsDelegates: const [
+            // Remove StringsDelegate as it's not defined in strings_nl.dart
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('nl', ''), // Dutch
+          ],
+          locale: const Locale('nl', ''), // Force Dutch locale
+          routes: {
+            '/store': (context) => const StoreScreen(),
+            '/settings': (context) => const SettingsScreen(),
+          },
+          home: const LessonSelectScreen(),
         );
-      }
-    });
+      },
+    );
+
+    // Wrap with providers if any
     if (deferredProviders.isNotEmpty) {
       return MultiProvider(
         providers: deferredProviders,
         child: app,
       );
     }
+    
     return app;
   }
 
