@@ -24,7 +24,10 @@ class _GuideScreenState extends State<GuideScreen> {
 
   List<GuidePage> get _pages {
     final showNotificationPage = !kIsWeb && !Platform.isLinux;
-    return buildGuidePages(showNotificationPage: showNotificationPage);
+    return buildGuidePages(
+      showNotificationPage: showNotificationPage,
+      context: context,
+    );
   }
 
   @override
@@ -184,7 +187,7 @@ class GuidePage {
   });
 }
 
-List<GuidePage> buildGuidePages({required bool showNotificationPage}) {
+List<GuidePage> buildGuidePages({required bool showNotificationPage, required BuildContext context}) {
   final pages = <GuidePage>[
     GuidePage(
       title: strings.AppStrings.welcomeTitle,
@@ -219,17 +222,20 @@ List<GuidePage> buildGuidePages({required bool showNotificationPage}) {
     );
   }
 
-  // Add donation page
-  pages.add(
-    GuidePage(
-      title: 'Ondersteun Ons',
-      description: 'Vind je deze app nuttig? Overweeg dan een donatie om ons te helpen de app te onderhouden en te verbeteren. Elke bijdrage wordt gewaardeerd!',
-      icon: Icons.favorite,
-      buttonText: 'Doneer Nu',
-      buttonIcon: Icons.volunteer_activism,
-      isDonationPage: true,
-    ),
-  );
+  // Only add donation page if user hasn't donated yet
+  final settings = Provider.of<SettingsProvider>(context, listen: false);
+  if (!settings.hasDonated) {
+    pages.add(
+      GuidePage(
+        title: 'Ondersteun Ons',
+        description: 'Vind je deze app nuttig? Overweeg dan een donatie om ons te helpen de app te onderhouden en te verbeteren. Elke bijdrage wordt gewaardeerd!',
+        icon: Icons.favorite,
+        buttonText: 'Doneer Nu',
+        buttonIcon: Icons.volunteer_activism,
+        isDonationPage: true,
+      ),
+    );
+  }
 
   return pages;
 }
@@ -263,6 +269,10 @@ class _GuidePageViewState extends State<GuidePageView> {
     try {
       final url = Uri.parse('https://backendbijbelquiz.vercel.app/donate.ts');
       if (await canLaunchUrl(url)) {
+        // Mark as donated before launching the URL
+        final settings = Provider.of<SettingsProvider>(context, listen: false);
+        await settings.markAsDonated();
+        
         await launchUrl(
           url,
           mode: LaunchMode.externalApplication,
@@ -459,8 +469,12 @@ class _GuideScreenTestHarnessState extends State<GuideScreenTestHarness> {
     super.initState();
     _pageController = PageController();
     final showNotificationPage = !kIsWeb && !Platform.isLinux;
-    _pages = buildGuidePages(showNotificationPage: showNotificationPage);
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _pages = buildGuidePages(
+        showNotificationPage: showNotificationPage,
+        context: context,
+      );
+      setState(() {}); // Rebuild after initializing pages
       widget.onPageShown?.call(_currentPage, _pages.length);
     });
   }

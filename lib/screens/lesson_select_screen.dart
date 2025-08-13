@@ -6,6 +6,7 @@ import '../providers/lesson_progress_provider.dart';
 import '../providers/settings_provider.dart';
 import '../services/lesson_service.dart';
 import '../screens/quiz_screen.dart';
+import '../screens/guide_screen.dart';
 import '../widgets/top_snackbar.dart';
 import '../l10n/strings_nl.dart' as strings;
 
@@ -28,6 +29,24 @@ class _LessonSelectScreenState extends State<LessonSelectScreen> {
   void initState() {
     super.initState();
     _loadLessons();
+    
+    // Check if we need to show the guide screen
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      
+      final settings = Provider.of<SettingsProvider>(context, listen: false);
+      if (!settings.isLoading && !settings.hasSeenGuide) {
+        if (!mounted) return;
+        
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const GuideScreen(),
+          ),
+        );
+        // Mark guide as seen after showing it
+        settings.markGuideAsSeen();
+      }
+    });
   }
 
   Future<void> _loadLessons() async {

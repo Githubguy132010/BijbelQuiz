@@ -11,6 +11,7 @@ class SettingsProvider extends ChangeNotifier {
   static const String _muteKey = 'mute';
   static const String _hapticFeedbackKey = 'haptic_feedback';
   static const String _notificationEnabledKey = 'notification_enabled';
+  static const String _hasDonatedKey = 'has_donated';
   
   SharedPreferences? _prefs;
   String _language = 'nl';
@@ -20,6 +21,7 @@ class SettingsProvider extends ChangeNotifier {
   bool _mute = false;
   String _hapticFeedback = 'medium'; // 'disabled', 'soft', 'medium'
   bool _notificationEnabled = true;
+  bool _hasDonated = false;
   bool _isLoading = true;
   String? _error;
   String? _selectedCustomThemeKey;
@@ -57,6 +59,7 @@ class SettingsProvider extends ChangeNotifier {
 
   /// Whether notifications are enabled
   bool get notificationEnabled => _notificationEnabled;
+  bool get hasDonated => _hasDonated;
 
   String? get selectedCustomThemeKey => _selectedCustomThemeKey;
   Set<String> get unlockedThemes => _unlockedThemes;
@@ -94,6 +97,7 @@ class SettingsProvider extends ChangeNotifier {
       _mute = _prefs?.getBool(_muteKey) ?? false;
       _hapticFeedback = _prefs?.getString(_hapticFeedbackKey) ?? 'medium';
       _notificationEnabled = _prefs?.getBool(_notificationEnabledKey) ?? true;
+      _hasDonated = _prefs?.getBool(_hasDonatedKey) ?? false;
       final unlocked = _prefs?.getStringList(_unlockedThemesKey);
       if (unlocked != null) {
         _unlockedThemes = unlocked.toSet();
@@ -145,6 +149,19 @@ class SettingsProvider extends ChangeNotifier {
   }
 
   /// Updates the mute setting
+  /// Marks that the user has made a donation
+  Future<void> markAsDonated() async {
+    try {
+      _hasDonated = true;
+      await _prefs?.setBool(_hasDonatedKey, true);
+      notifyListeners();
+    } catch (e) {
+      _error = 'Failed to update donation status: ${e.toString()}';
+      notifyListeners();
+      rethrow;
+    }
+  }
+
   Future<void> setMute(bool enabled) async {
     try {
       _mute = enabled;

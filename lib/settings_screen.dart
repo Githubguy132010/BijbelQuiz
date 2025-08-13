@@ -145,65 +145,69 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Donation Section - Custom implementation without title/icon
-        Card(
-          elevation: isDesktop ? 2 : 1,
-          color: colorScheme.surfaceContainerHighest,
-          margin: EdgeInsets.symmetric(vertical: isSmallScreen ? 4 : 8, horizontal: 0),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(isSmallScreen ? 12 : 18),
-          ),
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: isSmallScreen ? 8 : 12,
-              horizontal: isDesktop ? 16 : (isSmallScreen ? 8 : 12),
+        // Donation Section - Only show if user hasn't donated yet
+        if (!settings.hasDonated) 
+          Card(
+            elevation: isDesktop ? 2 : 1,
+            color: colorScheme.surfaceContainerHighest,
+            margin: EdgeInsets.symmetric(vertical: isSmallScreen ? 4 : 8, horizontal: 0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(isSmallScreen ? 12 : 18),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  'Ondersteun ons',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: colorScheme.onSurface,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  strings.AppStrings.donateExplanation,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurface.withOpacity(0.8),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 12),
-                FilledButton.tonalIcon(
-                  onPressed: () async {
-                    final Uri url = Uri.parse('https://backendbijbelquiz.vercel.app/donate.ts');
-                    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
-                      if (mounted) {
-                        showTopSnackBar(
-                          context,
-                          strings.AppStrings.couldNotOpenDonationPage,
-                          style: TopSnackBarStyle.error,
-                        );
-                      }
-                    }
-                  },
-                  icon: const Icon(Icons.favorite, size: 18),
-                  label: Text(
-                    strings.AppStrings.donateButton,
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  style: FilledButton.styleFrom(
-                    backgroundColor: colorScheme.primaryContainer,
-                    foregroundColor: colorScheme.onPrimaryContainer,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: isSmallScreen ? 8 : 12,
+                horizontal: isDesktop ? 16 : (isSmallScreen ? 8 : 12),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    'Ondersteun ons',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: colorScheme.onSurface,
+                      fontWeight: FontWeight.w600,
                     ),
+                    textAlign: TextAlign.center,
                   ),
+                  const SizedBox(height: 8),
+                  Text(
+                    strings.AppStrings.donateExplanation,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurface.withOpacity(0.8),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 12),
+                  FilledButton.tonalIcon(
+                    onPressed: () async {
+                      final Uri url = Uri.parse('https://backendbijbelquiz.vercel.app/donate.ts');
+                      // Mark as donated before launching the URL
+                      await settings.markAsDonated();
+                      
+                      if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+                        if (mounted) {
+                          showTopSnackBar(
+                            context,
+                            strings.AppStrings.couldNotOpenDonationPage,
+                            style: TopSnackBarStyle.error,
+                          );
+                        }
+                      }
+                    },
+                    icon: const Icon(Icons.favorite, size: 18),
+                    label: Text(
+                      strings.AppStrings.donateButton,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: colorScheme.primaryContainer,
+                      foregroundColor: colorScheme.onPrimaryContainer,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
                 ),
                 const SizedBox(height: 4),
               ],
@@ -917,6 +921,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             TextButton(
               onPressed: () async {
                 final nav = Navigator.of(context);
+                final settings = Provider.of<SettingsProvider>(context, listen: false);
                 try {
                   // Reset in-memory providers first
                   await gameStats.resetStats();
@@ -930,21 +935,43 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   final prefs = await SharedPreferences.getInstance();
                   await prefs.clear();
 
-                  // Reload settings from cleared storage
-                  await Provider.of<SettingsProvider>(context, listen: false).reloadSettings();
+                  // Reset the settings provider to initial state
+                  await settings.reloadSettings();
+                  
+                  // Explicitly set hasSeenGuide to false
+                  await settings.resetGuideStatus();
                 } catch (_) {
                   // ignore errors silently here; we'll proceed to restart flow
                 }
 
                 if (!context.mounted) return;
                 nav.pop(); // Close dialog
-                // Route back to lesson select screen, wiping navigation stack
+                
+                // Navigate to LessonSelectScreen which will show the guide
+                // since we've reset the guide status
                 nav.pushAndRemoveUntil(
                   MaterialPageRoute(
                     builder: (_) => const LessonSelectScreen(),
                   ),
                   (route) => false,
                 );
+                
+                // Force a rebuild of the widget tree to ensure the guide shows up
+                if (context.mounted) {
+                  // Use a small delay to ensure the navigation is complete
+                  Future.delayed(const Duration(milliseconds: 100), () {
+                    if (context.mounted) {
+                      final settings = Provider.of<SettingsProvider>(context, listen: false);
+                      if (!settings.hasSeenGuide) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const GuideScreen(),
+                          ),
+                        );
+                      }
+                    }
+                  });
+                }
               },
               style: TextButton.styleFrom(
                 foregroundColor: Theme.of(context).colorScheme.error,
