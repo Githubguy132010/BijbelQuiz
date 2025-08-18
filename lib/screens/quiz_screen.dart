@@ -51,6 +51,10 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
   final Set<String> _usedQuestions = {};
   List<QuizQuestion> _allQuestions = [];
   bool _allQuestionsLoaded = false;
+  
+  // Track recently used questions to prevent immediate repetitions
+  static const int _recentlyUsedLimit = 50; // Prevent repetition among last 50 questions
+  final List<String> _recentlyUsedQuestions = [];
 
   // Lesson session mode (cap session to N questions with completion screen)
   bool get _lessonMode => widget.lesson != null && widget.sessionLimit != null;
@@ -633,6 +637,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
   /// Reset the question pool for a new language or session
   void _resetQuestionPool() {
     _usedQuestions.clear();
+    _recentlyUsedQuestions.clear();
     _allQuestionsLoaded = false;
     _allQuestions.clear();
     // Reinitialize quiz with new language
@@ -643,6 +648,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
   void _resetForNewGame() {
     AppLogger.info('Resetting question pool for new game session');
     _usedQuestions.clear();
+    _recentlyUsedQuestions.clear();
     _allQuestions.shuffle(Random()); // Reshuffle for variety
     // Don't clear _allQuestions or _allQuestionsLoaded since we want to keep the loaded questions
   }
@@ -727,16 +733,19 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
 
     if (totalQuestions > 0) {
       final correctRatio = totalQuestions > 0 ? gameStats.score / totalQuestions : 0.0;
-      if (correctRatio > 0.8) {
-        targetDifficulty += 0.02;
-      } else if (correctRatio > 0.65) {
-        targetDifficulty += 0.01;
-      } else if (correctRatio < 0.4) {
-        targetDifficulty -= 0.01;
+      // More responsive difficulty adjustment
+      if (correctRatio > 0.9) {
+        targetDifficulty += 0.05; // Increased from 0.02
+      } else if (correctRatio > 0.75) {
+        targetDifficulty += 0.03; // Increased from 0.01
+      } else if (correctRatio < 0.3) {
+        targetDifficulty -= 0.05; // Increased from 0.01
+      } else if (correctRatio < 0.5) {
+        targetDifficulty -= 0.03; // Increased from 0.01
       }
-      // Dampen shifts in long sessions
-      if (totalQuestions > 50) {
-        targetDifficulty = currentDifficulty + (targetDifficulty - currentDifficulty) * 0.5;
+      // Dampen shifts in long sessions but less aggressively
+      if (totalQuestions > 30) { // Reduced from 50
+        targetDifficulty = currentDifficulty + (targetDifficulty - currentDifficulty) * 0.7; // Increased from 0.5
       }
     }
 
@@ -754,6 +763,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
     if (availableQuestions.isEmpty) {
       AppLogger.info('All questions used, resetting question pool');
       _usedQuestions.clear();
+      _recentlyUsedQuestions.clear(); // Clear recent questions too
       // Reshuffle questions for better distribution across the database
       _allQuestions.shuffle(Random());
       availableQuestions = List<QuizQuestion>.from(_allQuestions);
@@ -778,12 +788,29 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
       eligibleQuestions = availableQuestions;
     }
 
+    // Filter out recently used questions (more recent first)
+    List<QuizQuestion> filteredQuestions = eligibleQuestions.where((q) => 
+        !_recentlyUsedQuestions.contains(q.question)).toList();
+    
+    // If all eligible questions are recent, use the full eligible list
+    if (filteredQuestions.isEmpty && eligibleQuestions.isNotEmpty) {
+      filteredQuestions = eligibleQuestions;
+      // Clear the recent list to prevent getting stuck
+      _recentlyUsedQuestions.clear();
+    }
+
     // Random pick among eligible
     final random = Random();
-    final selectedQuestion = eligibleQuestions[random.nextInt(eligibleQuestions.length)];
+    final selectedQuestion = filteredQuestions[random.nextInt(filteredQuestions.length)];
 
     // Mark as used
     _usedQuestions.add(selectedQuestion.question);
+    
+    // Add to recently used list (maintain limit)
+    _recentlyUsedQuestions.add(selectedQuestion.question);
+    if (_recentlyUsedQuestions.length > _recentlyUsedLimit) {
+      _recentlyUsedQuestions.removeAt(0);
+    }
 
     return selectedQuestion;
   }
@@ -874,28 +901,28 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
     double targetDifficulty = currentDifficulty;
     final correctRatio = totalQuestions > 0 ? correctAnswers / totalQuestions : 0.5;
 
-    // Base adjustment (small, smooth steps)
+    // More responsive base adjustment
     if (isCorrect) {
-      targetDifficulty += 0.05;
+      targetDifficulty += 0.08; // Increased from 0.05
       if (streak >= 3) targetDifficulty += 0.05 * (streak ~/ 3); // reward sustained streaks
-      if (timeRemaining > 10) targetDifficulty += 0.03; // faster answers push up slightly
+      if (timeRemaining > 10) targetDifficulty += 0.05; // Increased from 0.03
     } else {
-      targetDifficulty -= 0.07;
-      if (streak == 0) targetDifficulty -= 0.03; // streak broken
-      if (timeRemaining < 5) targetDifficulty -= 0.02; // slow & wrong
+      targetDifficulty -= 0.1; // Increased from 0.07
+      if (streak == 0) targetDifficulty -= 0.05; // Increased from 0.03
+      if (timeRemaining < 5) targetDifficulty -= 0.03; // Slow & wrong
     }
 
-    // Long-term bias
+    // More responsive long-term bias
     if (correctRatio > 0.85) {
-      targetDifficulty += 0.03;
+      targetDifficulty += 0.05; // Increased from 0.03
     } else if (correctRatio < 0.5) {
-      targetDifficulty -= 0.03;
+      targetDifficulty -= 0.05; // Increased from 0.03
     }
 
     // Add some randomness to prevent getting stuck on the same difficulty level
     // This helps ensure we sample questions across the difficulty spectrum
     final random = Random();
-    targetDifficulty += (random.nextDouble() - 0.5) * 0.1; // ±0.05 random adjustment
+    targetDifficulty += (random.nextDouble() - 0.5) * 0.15; // Increased from 0.1
 
     // Clamp to normalized domain
     return targetDifficulty.clamp(0.0, 2.0);
