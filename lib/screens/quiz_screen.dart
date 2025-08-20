@@ -866,9 +866,10 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
       _handleAnswerSequence(isCorrect);
     } else if (_quizState.question.type == QuestionType.tf) {
       // For true/false: index 0 = 'Goed', index 1 = 'Fout'
-      final tfOptions = ['Goed', 'Fout'];
-      final selectedAnswer = tfOptions[selectedIndex];
-      final isCorrect = selectedAnswer.toLowerCase() == _quizState.question.correctAnswer.toLowerCase();
+      // Determine if the answer is correct by comparing indices rather than text
+      final lcCorrect = _quizState.question.correctAnswer.toLowerCase();
+      final correctIndex = (lcCorrect == 'waar' || lcCorrect == 'true' || lcCorrect == 'goed') ? 0 : 1;
+      final isCorrect = selectedIndex == correctIndex;
       final settings = Provider.of<SettingsProvider>(context, listen: false);
 
       // Add haptic feedback for answer selection

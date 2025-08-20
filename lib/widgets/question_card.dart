@@ -288,7 +288,9 @@ class _QuestionCardState extends State<QuestionCard> with SingleTickerProviderSt
           'Goed',
           'Fout',
         ];
-        final correctIndex = widget.question.correctAnswer.toLowerCase() == 'goed' ? 0 : 1;
+        // Determine correct index based on the actual correct answer
+        final lcCorrect = widget.question.correctAnswer.toLowerCase();
+        final correctIndex = (lcCorrect == 'waar' || lcCorrect == 'true' || lcCorrect == 'goed') ? 0 : 1;
         content = Container(
           margin: EdgeInsets.symmetric(horizontal: isDesktop ? 20 : 16),
           child: Column(
