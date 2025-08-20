@@ -395,21 +395,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
           isDesktop,
           title: 'Over',
           children: [
-            _buildSettingItem(
-              context,
-              settings,
-              colorScheme,
-              isSmallScreen,
-              isDesktop,
-              title: 'App bijwerken',
-              subtitle: 'Controleer op een nieuwe versie van de app',
-              icon: Icons.update,
-              child: IconButton(
-                icon: const Icon(Icons.update),
-                onPressed: () => _checkForUpdate(context),
-                tooltip: 'Controleer op updates',
+            // Only show update option on non-web platforms
+            if (!kIsWeb)
+              _buildSettingItem(
+                context,
+                settings,
+                colorScheme,
+                isSmallScreen,
+                isDesktop,
+                title: 'App bijwerken',
+                subtitle: 'Controleer op een nieuwe versie van de app',
+                icon: Icons.update,
+                child: IconButton(
+                  icon: const Icon(Icons.update),
+                  onPressed: () => _checkForUpdate(context),
+                  tooltip: 'Controleer op updates',
+                ),
               ),
-            ),
             _buildSettingItem(
               context,
               settings,
