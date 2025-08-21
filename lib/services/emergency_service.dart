@@ -19,7 +19,7 @@ class EmergencyMessage {
     return EmergencyMessage(
       message: json['message'],
       isBlocking: json['isBlocking'] ?? false,
-      expiresAt: DateTime.fromMillisecondsSinceEpoch(json['expiresAt'] * 1000),
+      expiresAt: DateTime.fromMillisecondsSinceEpoch(json['expiresAt']),
     );
   }
 }

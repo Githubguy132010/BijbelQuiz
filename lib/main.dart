@@ -16,6 +16,7 @@ import 'services/notification_service.dart';
 import 'services/performance_service.dart';
 import 'services/connection_service.dart';
 import 'services/question_cache_service.dart';
+import 'services/emergency_service.dart';
 import 'screens/store_screen.dart';
 import 'providers/lesson_progress_provider.dart';
 import 'screens/lesson_select_screen.dart';
@@ -61,6 +62,7 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
   PerformanceService? _performanceService;
   ConnectionService? _connectionService;
   QuestionCacheService? _questionCacheService;
+  EmergencyService? _emergencyService;
   bool _hasShownGuide = false;
 
   @override
@@ -71,6 +73,7 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
       final performanceService = PerformanceService();
       final connectionService = ConnectionService();
       final questionCacheService = QuestionCacheService();
+      final emergencyService = EmergencyService();
 
       // Kick off initialization in background
       final initFuture = Future.wait([
@@ -84,10 +87,14 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
         _performanceService = performanceService;
         _connectionService = connectionService;
         _questionCacheService = questionCacheService;
+        _emergencyService = emergencyService;
       });
 
       // Continue with any post-init work when ready
       await initFuture;
+
+      // Start polling for emergency messages
+      emergencyService.startPolling();
 
       if (!kIsWeb && !Platform.isLinux) {
         WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -130,6 +137,7 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
       if (_performanceService != null) Provider.value(value: _performanceService!),
       if (_connectionService != null) Provider.value(value: _connectionService!),
       if (_questionCacheService != null) Provider.value(value: _questionCacheService!),
+      if (_emergencyService != null) Provider.value(value: _emergencyService!),
     ];
     
     // Build the main app widget
@@ -163,7 +171,7 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
         }
         
         return MaterialApp(
-          navigatorKey: GlobalKey<NavigatorState>(),
+          navigatorKey: EmergencyService.navigatorKey,
           title: 'BijbelQuiz',
           debugShowCheckedModeBanner: false,
           theme: lightTheme,
