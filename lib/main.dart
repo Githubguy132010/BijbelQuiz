@@ -135,13 +135,42 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
     // Build the main app widget
     final app = Consumer<SettingsProvider>(
       builder: (context, settings, _) {
+        // Determine which theme to use based on settings
+        final ThemeData lightTheme;
+        final ThemeData darkTheme;
+        
+        if (settings.selectedCustomThemeKey != null) {
+          switch (settings.selectedCustomThemeKey) {
+            case 'oled':
+              lightTheme = oledTheme;
+              darkTheme = oledTheme;
+              break;
+            case 'green':
+              lightTheme = greenTheme;
+              darkTheme = greenTheme;
+              break;
+            case 'orange':
+              lightTheme = orangeTheme;
+              darkTheme = orangeTheme;
+              break;
+            default:
+              lightTheme = appLightTheme;
+              darkTheme = appDarkTheme;
+          }
+        } else {
+          lightTheme = appLightTheme;
+          darkTheme = appDarkTheme;
+        }
+        
         return MaterialApp(
           navigatorKey: GlobalKey<NavigatorState>(),
           title: 'BijbelQuiz',
           debugShowCheckedModeBanner: false,
-          theme: appLightTheme,
-          darkTheme: appDarkTheme,
-          themeMode: settings.themeMode,
+          theme: lightTheme,
+          darkTheme: darkTheme,
+          themeMode: settings.selectedCustomThemeKey != null 
+              ? ThemeMode.light  // Custom themes are always applied as light theme
+              : settings.themeMode,  // Use system preference when no custom theme
           localizationsDelegates: const [
             // Remove StringsDelegate as it's not defined in strings_nl.dart
             GlobalMaterialLocalizations.delegate,
