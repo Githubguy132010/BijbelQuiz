@@ -7,6 +7,7 @@ interface VersionInfo {
   downloadEndpoint: string;
   platform: string;
   currentVersion?: string;
+  [key: string]: string | undefined;  // Add index signature to allow dynamic property access
 }
 
 interface PlatformVersions {
@@ -23,32 +24,38 @@ const versions: PlatformVersions = {
   android: {
     version: "0.7.0",
     releaseNotes: "• Nieuwe vragen toegevoegd\n• Prestatieverbeteringen\n• Bug fixes",
-    downloadEndpoint: "/api/download?platform=android"
+    downloadEndpoint: "/api/download?platform=android",
+    platform: "android"
   },
   ios: {
     version: "0.7.0",
     releaseNotes: "• Nieuwe vragen toegevoegd\n• Prestatieverbeteringen\n• Bug fixes",
-    downloadEndpoint: "/api/download?platform=ios"
+    downloadEndpoint: "/api/download?platform=ios",
+    platform: "ios"
   },
   windows: {
     version: "0.7.0",
     releaseNotes: "• Nieuwe vragen toegevoegd\n• Prestatieverbeteringen\n• Bug fixes",
-    downloadEndpoint: "/api/download?platform=windows"
+    downloadEndpoint: "/api/download?platform=windows",
+    platform: "windows"
   },
   macos: {
     version: "0.7.0",
     releaseNotes: "• Nieuwe vragen toegevoegd\n• Prestatieverbeteringen\n• Bug fixes",
-    downloadEndpoint: "/api/download?platform=macos"
+    downloadEndpoint: "/api/download?platform=macos",
+    platform: "macos"
   },
   linux: {
     version: "0.7.0",
     releaseNotes: "• Nieuwe vragen toegevoegd\n• Prestatieverbeteringen\n• Bug fixes",
-    downloadEndpoint: "/api/download?platform=linux"
+    downloadEndpoint: "/api/download?platform=linux",
+    platform: "linux"
   },
   web: {
     version: "0.7.0",
     releaseNotes: "• Nieuwe vragen toegevoegd\n• Prestatieverbeteringen\n• Bug fixes",
-    downloadEndpoint: "/api/download?platform=web"
+    downloadEndpoint: "/api/download?platform=web",
+    platform: "web"
   }
 };
 
@@ -57,32 +64,38 @@ const testVersions: PlatformVersions = {
   android: {
     version: "0.8.0",
     releaseNotes: "• Nieuwe vragen toegevoegd\n• Prestatieverbeteringen\n• Bug fixes\n• Nieuwe functies",
-    downloadEndpoint: "/api/download?platform=android"
+    downloadEndpoint: "/api/download?platform=android",
+    platform: "android"
   },
   ios: {
     version: "0.8.0",
     releaseNotes: "• Nieuwe vragen toegevoegd\n• Prestatieverbeteringen\n• Bug fixes\n• Nieuwe functies",
-    downloadEndpoint: "/api/download?platform=ios"
+    downloadEndpoint: "/api/download?platform=ios",
+    platform: "ios"
   },
   windows: {
     version: "0.8.0",
     releaseNotes: "• Nieuwe vragen toegevoegd\n• Prestatieverbeteringen\n• Bug fixes\n• Nieuwe functies",
-    downloadEndpoint: "/api/download?platform=windows"
+    downloadEndpoint: "/api/download?platform=windows",
+    platform: "windows"
   },
   macos: {
     version: "0.8.0",
     releaseNotes: "• Nieuwe vragen toegevoegd\n• Prestatieverbeteringen\n• Bug fixes\n• Nieuwe functies",
-    downloadEndpoint: "/api/download?platform=macos"
+    downloadEndpoint: "/api/download?platform=macos",
+    platform: "macos"
   },
   linux: {
     version: "0.8.0",
     releaseNotes: "• Nieuwe vragen toegevoegd\n• Prestatieverbeteringen\n• Bug fixes\n• Nieuwe functies",
-    downloadEndpoint: "/api/download?platform=linux"
+    downloadEndpoint: "/api/download?platform=linux",
+    platform: "linux"
   },
   web: {
     version: "0.8.0",
     releaseNotes: "• Nieuwe vragen toegevoegd\n• Prestatieverbeteringen\n• Bug fixes\n• Nieuwe functies",
-    downloadEndpoint: "/api/download?platform=web"
+    downloadEndpoint: "/api/download?platform=web",
+    platform: "web"
   }
 };
 
