@@ -44,6 +44,18 @@ BijbelQuiz is a cross-platform Bible quiz app designed to test and improve your 
 - `android/`, `ios/`, `linux/`, `macos/`, `windows/` - Platform-specific code
 - `test/` - Tests
 
+## Troubleshooting Notifications
+
+If you're not receiving daily motivation notifications on Android:
+
+1. Make sure notifications are enabled in the app settings
+2. Check that the app has permission to send notifications in your device settings
+3. For Android 12+, ensure the app has permission to schedule exact alarms
+4. Try force stopping the app and restarting it
+5. Check that battery optimization is not restricting the app
+
+On some Android devices, you may need to manually enable the app to run in the background or disable battery optimization for notifications to work properly.
+
 ## Contributing
 
 Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.

@@ -6,7 +6,7 @@ class SettingsProvider extends ChangeNotifier {
   static const String _themeModeKey = 'theme_mode';
   static const String _customThemeKey = 'custom_theme';
   static const String _unlockedThemesKey = 'unlocked_themes';
-  static const String _slowModeKey = 'slow_mode';
+  static const String _slowModeKey = 'game_speed';
   static const String _hasSeenGuideKey = 'has_seen_guide';
   static const String _muteKey = 'mute';
   static const String _hapticFeedbackKey = 'haptic_feedback';
@@ -17,7 +17,7 @@ class SettingsProvider extends ChangeNotifier {
   SharedPreferences? _prefs;
   String _language = 'nl';
   ThemeMode _themeMode = ThemeMode.system;
-  bool _slowMode = false;
+  String _gameSpeed = 'medium'; // 'slow', 'medium', 'fast'
   bool _hasSeenGuide = false;
   bool _mute = false;
   String _hapticFeedback = 'medium'; // 'disabled', 'soft', 'medium'
@@ -41,8 +41,11 @@ class SettingsProvider extends ChangeNotifier {
   /// The current theme mode setting
   ThemeMode get themeMode => _themeMode;
   
-  /// Whether slow mode is enabled
-  bool get slowMode => _slowMode;
+  /// The current game speed setting
+  String get gameSpeed => _gameSpeed;
+  
+  /// Whether slow mode is enabled (backward compatibility)
+  bool get slowMode => _gameSpeed == 'slow';
 
   /// Whether the user has seen the guide
   bool get hasSeenGuide => _hasSeenGuide;
@@ -95,7 +98,14 @@ class SettingsProvider extends ChangeNotifier {
       _language = 'nl';
       final themeModeIndex = _prefs?.getInt(_themeModeKey) ?? 0;
       _themeMode = ThemeMode.values[themeModeIndex];
-      _slowMode = _prefs?.getBool(_slowModeKey) ?? false;
+      // Load old boolean slow mode setting for backward compatibility
+      final oldSlowMode = _prefs?.getBool(_slowModeKey) ?? false;
+      _gameSpeed = oldSlowMode ? 'slow' : 'medium';
+      
+      // Migrate to new string-based setting if needed
+      if (oldSlowMode) {
+        await _prefs?.setString(_slowModeKey, 'slow');
+      }
       _hasSeenGuide = _prefs?.getBool(_hasSeenGuideKey) ?? false;
       _mute = _prefs?.getBool(_muteKey) ?? false;
       _hapticFeedback = _prefs?.getString(_hapticFeedbackKey) ?? 'medium';
@@ -139,14 +149,31 @@ class SettingsProvider extends ChangeNotifier {
     }
   }
 
-  /// Updates the slow mode setting
+  /// Updates the slow mode setting (backward compatibility)
   Future<void> setSlowMode(bool enabled) async {
     try {
-      _slowMode = enabled;
-      await _prefs?.setBool(_slowModeKey, enabled);
+      _gameSpeed = enabled ? 'slow' : 'medium';
+      await _prefs?.setString(_slowModeKey, _gameSpeed);
       notifyListeners();
     } catch (e) {
       _error = 'Failed to save slow mode setting: ${e.toString()}';
+      notifyListeners();
+      rethrow;
+    }
+  }
+  
+  /// Updates the game speed setting
+  Future<void> setGameSpeed(String speed) async {
+    if (speed != 'slow' && speed != 'medium' && speed != 'fast') {
+      throw ArgumentError('Game speed must be "slow", "medium", or "fast"');
+    }
+
+    try {
+      _gameSpeed = speed;
+      await _prefs?.setString(_slowModeKey, speed);
+      notifyListeners();
+    } catch (e) {
+      _error = 'Failed to save game speed setting: ${e.toString()}';
       notifyListeners();
       rethrow;
     }

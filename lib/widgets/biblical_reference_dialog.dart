@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../l10n/strings_nl.dart' as strings;
-import 'top_snackbar.dart';
 
 class BiblicalReferenceDialog extends StatefulWidget {
   final String reference;

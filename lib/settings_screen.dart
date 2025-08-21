@@ -318,15 +318,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
               colorScheme,
               isSmallScreen,
               isDesktop,
-              title: 'Langzame modus',
-              subtitle: 'Geeft je meer tijd om elke vraag te beantwoorden',
-              icon: Icons.timer,
-              child: Switch(
-                value: settings.slowMode,
-                onChanged: (bool value) {
-                  settings.setSlowMode(value);
+              title: 'Spelsnelheid',
+              subtitle: 'Kies de snelheid van het spel',
+              icon: Icons.speed,
+              child: DropdownButton<String>(
+                value: settings.gameSpeed,
+                items: [
+                  DropdownMenuItem(
+                    value: 'slow',
+                    child: Text('Langzaam'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'medium',
+                    child: Text('Gemiddeld'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'fast',
+                    child: Text('Snel'),
+                  ),
+                ],
+                onChanged: (String? value) {
+                  if (value != null) {
+                    settings.setGameSpeed(value);
+                  }
                 },
-                activeColor: colorScheme.primary,
+                style: TextStyle(
+                  color: colorScheme.onSurface,
+                  fontSize: isSmallScreen ? 12 : 14,
+                ),
+                dropdownColor: colorScheme.surfaceContainerHighest,
               ),
             ),
             _buildSettingItem(

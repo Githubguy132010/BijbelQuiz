@@ -120,6 +120,12 @@ class NotificationService {
     return deviceInfo.version.sdkInt >= 33; // Android 13 is API level 33
   }
 
+  Future<bool> _isAndroid12OrHigher() async {
+    if (!Platform.isAndroid) return false;
+    final deviceInfo = await DeviceInfoPlugin().androidInfo;
+    return deviceInfo.version.sdkInt >= 31; // Android 12 is API level 31
+  }
+
   // Handle iOS/macOS local notification
   static Future<void> _onDidReceiveLocalNotification(
     int id,
@@ -143,6 +149,8 @@ class NotificationService {
 
     if (kIsWeb) return;
 
+    AppLogger.info('Scheduling daily motivation notifications');
+
     // Genereer 3 willekeurige tijden tussen 8:00 en 22:00 voor vandaag
     final now = DateTime.now();
     final random = Random(now.year * 10000 + now.month * 100 + now.day); // Seed voor reproduceerbaarheid per dag
@@ -160,19 +168,19 @@ class NotificationService {
     times.sort((a, b) => a.hour != b.hour ? a.hour - b.hour : a.minute - b.minute);
 
     final List<String> messages = [
-      'Doe mee met een quiz! 🚀',
+      'Doe mee met een quiz! \ud83d\ude80',
       'Neem een pauze en speel BijbelQuiz!',
       'Test je kennis met een Bijbelquiz!',
-      'Daag jezelf uit met een quiz! 💡',
-      'Vergroot je kennis—vraag voor vraag!',
+      'Daag jezelf uit met een quiz! \ud83d\udca1',
+      'Vergroot je kennis\u2014vraag voor vraag!',
       'Klaar voor een leuke Bijbeluitdaging?',
       'Houd je geest scherp met BijbelQuiz!',
       'Ontdek iets nieuws in de Bijbel!',
-      'Blijf actief—speel BijbelQuiz!',
+      'Blijf actief\u2014speel BijbelQuiz!',
       'Een korte quiz fleurt je dag op!',
       'Test nu je Bijbelkennis!',
       'Hoeveel weet jij? Kom erachter!',
-      'Leren is een reis—geniet van de quiz!',
+      'Leren is een reis\u2014geniet van de quiz!',
     ];
     messages.shuffle(random);
 
@@ -194,15 +202,28 @@ class NotificationService {
     }
 
     try {
+      int successCount = 0;
       for (int i = 0; i < times.length; i++) {
-        await _scheduleDailyNotification(
-          id: 100 + i,
-          title: 'BijbelQuiz',
-          body: messages[i],
-          timeOfDay: times[i],
-        );
+        try {
+          await _scheduleDailyNotification(
+            id: 100 + i,
+            title: 'BijbelQuiz',
+            body: messages[i],
+            timeOfDay: times[i],
+          );
+          successCount++;
+        } catch (e) {
+          AppLogger.error('Failed to schedule notification $i: $e');
+        }
+      }
+      AppLogger.info('Successfully scheduled $successCount out of ${times.length} notifications');
+      if (successCount == 0 && times.isNotEmpty) {
+        onError?.call('Kon geen enkele melding plannen. Controleer de toestemmingen voor meldingen in de app-instellingen.');
+      } else if (successCount < times.length) {
+        onError?.call('Kon slechts $successCount van de ${times.length} meldingen plannen.');
       }
     } catch (e) {
+      AppLogger.error('Error scheduling notifications: $e');
       onError?.call('Kon meldingen niet plannen: ${e.toString()}');
     }
   }
@@ -239,7 +260,31 @@ class NotificationService {
       // Log the scheduling attempt
       AppLogger.info('Scheduling notification for ${scheduledDate.toString()}');
       
-      // Schedule the notification
+      // For Android 12+, we need to check for exact alarm permission
+      AndroidScheduleMode scheduleMode = AndroidScheduleMode.exactAllowWhileIdle;
+      if (await _isAndroid12OrHigher()) {
+        try {
+          // Check if we can schedule exact alarms
+          final androidImplementation = flutterLocalNotificationsPlugin
+              .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+          
+          if (androidImplementation != null) {
+            final canScheduleExactAlarms = await androidImplementation.canScheduleExactNotifications();
+            AppLogger.info('Can schedule exact alarms: $canScheduleExactAlarms');
+            
+            // If we can't schedule exact alarms, use inexact scheduling
+            if (canScheduleExactAlarms == false) {
+              scheduleMode = AndroidScheduleMode.inexact;
+            }
+          }
+        } catch (e) {
+          AppLogger.error('Error checking exact alarm permission: $e');
+          // Fall back to inexact scheduling if we can't check
+          scheduleMode = AndroidScheduleMode.inexact;
+        }
+      }
+      
+      // Schedule the notification with updated parameters for Android 12+
       await flutterLocalNotificationsPlugin.zonedSchedule(
         id,
         title,
@@ -271,13 +316,13 @@ class NotificationService {
             urgency: LinuxNotificationUrgency.normal,
           ),
         ),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        androidScheduleMode: scheduleMode,
         uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
         matchDateTimeComponents: DateTimeComponents.time,
         payload: 'notification_$id',
       );
       
-      AppLogger.info('Successfully scheduled notification with id: $id');
+      AppLogger.info('Successfully scheduled notification with id: $id using schedule mode: $scheduleMode');
     } catch (e, stackTrace) {
       AppLogger.error('Error scheduling notification: $e\n$stackTrace');
       rethrow;
@@ -300,6 +345,22 @@ class NotificationService {
       if (Platform.isAndroid) {
         final androidImplementation = plugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
         if (androidImplementation != null) {
+          // For Android 12+, we also need to check exact alarm permissions
+          final service = NotificationService();
+          if (await service._isAndroid12OrHigher()) {
+            try {
+              final canScheduleExact = await androidImplementation.canScheduleExactNotifications();
+              AppLogger.info('Can schedule exact notifications: $canScheduleExact');
+              if (canScheduleExact == false) {
+                AppLogger.info('App may need exact notification permission for reliable notifications on Android 12+');
+                // Note: On Android 12+, users may need to manually enable this in settings
+                // We can't automatically request this permission, but we can inform the user
+              }
+            } catch (e) {
+              AppLogger.error('Error checking exact notification permission: $e');
+            }
+          }
+          
           final granted = await androidImplementation.requestNotificationsPermission();
           return granted ?? true;
         }
@@ -318,7 +379,10 @@ class NotificationService {
       }
       return true;
     } catch (e) {
+      AppLogger.error('Error requesting notification permission: $e');
       return true;
     }
   }
-} 
+  
+  /// Checks if exact alarms are allowed on Android 12+ devices
+  } 
