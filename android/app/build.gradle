@@ -1,10 +1,13 @@
 import java.util.Properties
 
 def keyProperties = new Properties()
-def keyPropertiesFile = file('key.properties')
+def keyPropertiesFile = rootProject.file('key.properties')
 if (keyPropertiesFile.exists()) {
     keyProperties.load(new FileInputStream(keyPropertiesFile))
     println "[DEBUG] All keyProperties: ${keyProperties}"
+    println "[DEBUG] Store file path: ${keyProperties['storeFile']}"
+} else {
+    println "[ERROR] key.properties file not found at: ${keyPropertiesFile.absolutePath}"
 }
 
 apply plugin: 'com.android.application'
