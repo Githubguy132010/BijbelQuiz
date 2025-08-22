@@ -10,6 +10,10 @@
     {
       "src": "/api/(.*)",
       "dest": "/api/$1.ts"
+    },
+    {
+      "src": "/donate.html",
+      "dest": "/donate-redirect.html"
     }
   ]
 }
