@@ -210,7 +210,7 @@ List<GuidePage> buildGuidePages({required bool showNotificationPage, required Bu
     ),
     GuidePage(
       title: 'Pas Je Ervaring Aan',
-      description: 'Pas je thema, speelsnelheid en de geluidseffecten aan in de instellingen. Heeft u nog vragen? Neem gerust contact met ons op.',
+      description: 'Pas je thema, speelsnelheid en de geluidseffecten aan in de instellingen. Heeft u nog vragen of suggesties? We horen graag van je via thomasnowprod@proton.me',
       icon: Icons.settings,
     ),
   ];
@@ -232,7 +232,7 @@ List<GuidePage> buildGuidePages({required bool showNotificationPage, required Bu
     pages.add(
       GuidePage(
         title: 'Ondersteun Ons',
-        description: 'Vind je deze app nuttig? Overweeg dan een donatie om ons te helpen de app te onderhouden en te verbeteren. Elke bijdrage wordt gewaardeerd!',
+        description: 'Vind je deze app nuttig? Overweeg dan een donatie om ons te helpen de app te onderhouden en te verbeteren. 50% van elke donatie gaat naar een goed doel. Elke bijdrage wordt gewaardeerd!',
         icon: Icons.favorite,
         buttonText: 'Doneer Nu',
         buttonIcon: Icons.volunteer_activism,
@@ -403,6 +403,9 @@ class _GuidePageViewState extends State<GuidePageView> {
       );
     }
     
+    // Check if this is the "Pas Je Ervaring Aan" page
+    final isCustomizationPage = widget.page.title == 'Pas Je Ervaring Aan';
+    
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: LayoutBuilder(
@@ -438,6 +441,110 @@ class _GuidePageViewState extends State<GuidePageView> {
                           ),
                       textAlign: TextAlign.center,
                     ),
+                    if (isCustomizationPage) ...[
+                      const SizedBox(height: 32),
+                      Consumer<SettingsProvider>(
+                        builder: (context, settings, child) {
+                          return Column(
+                            children: [
+                              // Game Speed Dropdown
+                              Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: widget.colorScheme.surfaceContainerHighest,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Spelsnelheid',
+                                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                            color: widget.colorScheme.onSurface,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    DropdownButtonFormField<String>(
+                                      value: settings.gameSpeed,
+                                      items: [
+                                        DropdownMenuItem(
+                                          value: 'slow',
+                                          child: Text('Langzaam'),
+                                        ),
+                                        DropdownMenuItem(
+                                          value: 'medium',
+                                          child: Text('Gemiddeld'),
+                                        ),
+                                        DropdownMenuItem(
+                                          value: 'fast',
+                                          child: Text('Snel'),
+                                        ),
+                                      ],
+                                      onChanged: (String? value) {
+                                        if (value != null) {
+                                          settings.setGameSpeed(value);
+                                        }
+                                      },
+                                      decoration: InputDecoration(
+                                        filled: true,
+                                        fillColor: widget.colorScheme.surface,
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(8),
+                                          borderSide: BorderSide.none,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              // Sound Effects Toggle
+                              Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: widget.colorScheme.surfaceContainerHighest,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Geluidseffecten',
+                                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                                  color: widget.colorScheme.onSurface,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            'Schakel alle spelgeluiden in of uit',
+                                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                  color: widget.colorScheme.onSurface.withValues(alpha: 0.7),
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Switch(
+                                      value: settings.mute,
+                                      onChanged: (bool value) {
+                                        settings.setMute(value);
+                                      },
+                                      activeColor: widget.colorScheme.primary,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+                      ),
+                    ],
                     if (widget.page.buttonText != null) ...[
                       const SizedBox(height: 32),
                       ElevatedButton.icon(
