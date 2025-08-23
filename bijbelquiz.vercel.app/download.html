@@ -119,8 +119,8 @@
             const platformGrid = document.getElementById('platformGrid');
             const singleDownloadActions = document.getElementById('singleDownloadActions');
             
-            // Create platform cards for main platforms (Android and Windows)
-            const mainPlatforms = ['android', 'windows'];
+            // Create platform cards for main platforms (Android only for now, Windows temporarily hidden)
+            const mainPlatforms = ['android']; // Removed 'windows' temporarily
             mainPlatforms.forEach(platformKey => {
                 const platformInfo = platforms[platformKey];
                 const platformCard = document.createElement('div');
