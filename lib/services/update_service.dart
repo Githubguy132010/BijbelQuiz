@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info_plus/package_info_plus.dart';
@@ -16,11 +17,49 @@ class UpdateService {
   // Unified download page URL
   String get downloadPageUrl => 'https://bijbelquiz.vercel.app/download.html';
   
+  // Timer for periodic checks
+  Timer? _periodicTimer;
+  
+  // Callback for when an update is found
+  Function(UpdateInfo)? onUpdateAvailable;
+  
   // Singleton pattern
   static final UpdateService _instance = UpdateService._internal();
   factory UpdateService() => _instance;
   UpdateService._internal();
 
+  /// Starts periodic update checks (every 12 hours)
+  void startPeriodicChecks() {
+    // Cancel any existing timer
+    _periodicTimer?.cancel();
+    
+    // Run initial check
+    checkForUpdateAndNotify();
+    
+    // Schedule recurring checks every 12 hours (in milliseconds)
+    _periodicTimer = Timer.periodic(const Duration(hours: 12), (timer) {
+      checkForUpdateAndNotify();
+    });
+  }
+  
+  /// Stops periodic checks
+  void stopPeriodicChecks() {
+    _periodicTimer?.cancel();
+    _periodicTimer = null;
+  }
+  
+  /// Checks for updates and shows notification if available
+  Future<void> checkForUpdateAndNotify() async {
+    try {
+      final updateInfo = await checkForUpdate();
+      if (updateInfo != null && onUpdateAvailable != null) {
+        onUpdateAvailable!(updateInfo);
+      }
+    } catch (e) {
+      // Silently fail - we don't want update checks to break the app
+    }
+  }
+  
   /// Checks if an update is available
   Future<UpdateInfo?> checkForUpdate() async {
     try {
