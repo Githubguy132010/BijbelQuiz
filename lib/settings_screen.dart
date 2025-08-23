@@ -963,23 +963,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final localContext = context;
     try {
       final updateService = UpdateService();
-      final updateInfo = await updateService.checkForUpdate();
+      // Directly open the download page without checking for updates first
+      final url = Uri.parse(updateService.downloadPageUrl);
       
-      if (localContext.mounted) {
-        if (updateInfo != null) {
-          // Show update dialog
-          showDialog(
-            context: localContext,
-            builder: (BuildContext context) {
-              return UpdateDialog(updateInfo: updateInfo);
-            },
-          );
-        } else {
-          // No update available
+      if (!await launchUrl(url)) {
+        if (localContext.mounted) {
           showTopSnackBar(
             localContext, 
-            'Je gebruikt de nieuwste versie van BijbelQuiz!', 
-            style: TopSnackBarStyle.success
+            strings.AppStrings.couldNotOpenDownloadPage, 
+            style: TopSnackBarStyle.error
           );
         }
       }
@@ -989,7 +981,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         if (localContext.mounted) {
           showTopSnackBar(
             localContext, 
-            'Kon niet controleren op updates. Probeer het later opnieuw.', 
+            strings.AppStrings.couldNotOpenDownloadPage, 
             style: TopSnackBarStyle.error
           );
         }

@@ -16,13 +16,13 @@ apply plugin: 'dev.flutter.flutter-gradle-plugin'
 
 android {
     namespace "com.thomasnowproductions.bijbelquiz"
-    compileSdkVersion 35
+    compileSdkVersion 36
     ndkVersion "27.0.12077973"
 
     defaultConfig {
         applicationId "com.thomasnowproductions.bijbelquiz"
-        minSdkVersion 21
-        targetSdkVersion 35
+        minSdkVersion flutter.minSdkVersion
+        targetSdkVersion 36
         versionCode 1
         versionName "1.0.0"
         multiDexEnabled true
