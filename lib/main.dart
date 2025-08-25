@@ -9,7 +9,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'providers/settings_provider.dart';
 import 'providers/game_stats_provider.dart';
-import 'screens/guide_screen.dart';
 import 'theme/app_theme.dart';
 import 'services/logger.dart';
 import 'services/notification_service.dart';
@@ -64,7 +63,6 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
   ConnectionService? _connectionService;
   QuestionCacheService? _questionCacheService;
   EmergencyService? _emergencyService;
-  bool _hasShownGuide = false;
 
   // Add mounted getter for older Flutter versions
   @override
@@ -118,20 +116,7 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Show guide on first run if not seen yet (fallback)
-    final settings = Provider.of<SettingsProvider>(context, listen: false);
-    if (!settings.isLoading && !settings.hasSeenGuide && !_hasShownGuide) {
-      _hasShownGuide = true;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const GuideScreen(),
-            ),
-          );
-        }
-      });
-    }
+    // Guide showing logic moved to LessonSelectScreen for better control
   }
   
 

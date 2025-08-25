@@ -23,27 +23,32 @@ class _LessonSelectScreenState extends State<LessonSelectScreen> {
   bool _loading = true;
   String? _error;
   List<Lesson> _lessons = const [];
+  bool _guideCheckCompleted = false; // Prevent multiple guide checks
   // Search and filters removed for simplified UI
 
   @override
   void initState() {
     super.initState();
     _loadLessons();
-    
-    // Check if we need to show the guide screen
+
+    // Check if we need to show the guide screen (only once)
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkAndShowGuide();
     });
   }
 
   void _checkAndShowGuide() {
-    if (!mounted) return;
-    
+    if (!mounted || _guideCheckCompleted) return;
+
     final settings = Provider.of<SettingsProvider>(context, listen: false);
+
+    // Mark that we've completed the guide check to prevent multiple calls
+    _guideCheckCompleted = true;
+
     // Add a small delay to ensure everything is properly initialized
     Future.delayed(const Duration(milliseconds: 100), () {
       if (!mounted) return;
-      
+
       if (!settings.isLoading && !settings.hasSeenGuide) {
         if (mounted) {
           Navigator.of(context).push(
@@ -59,8 +64,8 @@ class _LessonSelectScreenState extends State<LessonSelectScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Also check when dependencies change (e.g., after reset)
-    if (mounted) {
+    // Only check for guide if we haven't already completed the check
+    if (mounted && !_guideCheckCompleted) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _checkAndShowGuide();
       });
