@@ -14,16 +14,7 @@
         <div id="pageContent">
             <p id="pageDescription">Kies uw platform om de app te downloaden.</p>
         </div>
-        
-        <div id="loadingMessage" style="display: none;">
-            <p>Versie-informatie laden...</p>
-        </div>
-        
-        <div id="errorMessage" class="error-message" style="display: none;">
-            <p>Fout bij het laden van update-informatie.</p>
-            <button id="retryBtn" class="btn secondary">Opnieuw proberen</button>
-        </div>
-        
+
         <!-- Platform selection grid -->
         <div id="platformGrid" class="platform-grid" style="display: none;">
             <!-- Platforms will be dynamically inserted here -->
@@ -54,9 +45,6 @@
         const currentVersion = urlParams.get('current') || null;
         const isUpdate = currentVersion !== null;
         
-        // Determine API base URL (localhost for development, production otherwise)
-        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        const apiBaseUrl = isLocalhost ? 'http://localhost:3001/api' : 'https://backendbijbelquiz.vercel.app/api';
         
         // Platform configuration - pointing directly to downloads directory with file extensions
         const platforms = {
@@ -64,49 +52,83 @@
                 name: 'Android',
                 icon: 'android',
                 description: 'Android App',
-                downloadUrl: 'https://bijbelquiz.vercel.app/downloads/android.apk'
+                downloadUrl: 'https://bijbelquiz.vercel.app/downloads/android.apk',
+                currentVersion: '1.1.0'
             },
             'ios': {
                 name: 'iOS',
                 icon: 'phone_iphone',
                 description: 'iOS App',
-                downloadUrl: 'https://bijbelquiz.vercel.app/downloads/ios.ipa'
+                downloadUrl: 'https://bijbelquiz.vercel.app/downloads/ios.ipa',
+                currentVersion: '1.1.0'
             },
             'windows': {
                 name: 'Windows',
                 icon: 'desktop_windows',
                 description: 'Desktop App',
-                downloadUrl: 'https://bijbelquiz.vercel.app/downloads/windows.exe'
+                downloadUrl: 'https://bijbelquiz.vercel.app/downloads/windows.exe',
+                currentVersion: '1.1.0'
             },
             'macos': {
                 name: 'macOS',
                 icon: 'laptop_mac',
                 description: 'Desktop App',
-                downloadUrl: 'https://bijbelquiz.vercel.app/downloads/macos.dmg'
+                downloadUrl: 'https://bijbelquiz.vercel.app/downloads/macos.dmg',
+                currentVersion: '1.1.0'
             },
             'linux': {
                 name: 'Linux',
                 icon: 'linux',
                 description: 'Desktop App',
-                downloadUrl: 'https://bijbelquiz.vercel.app/downloads/linux.AppImage'
+                downloadUrl: 'https://bijbelquiz.vercel.app/downloads/linux.AppImage',
+                currentVersion: '1.1.0'
             },
             'web': {
                 name: 'Web',
                 icon: 'public',
                 description: 'Web App',
-                downloadUrl: 'https://bijbelquiz.vercel.app/downloads/web.zip'
+                downloadUrl: 'https://bijbelquiz.vercel.app/downloads/web.zip',
+                currentVersion: '1.1.0'
             }
         };
         
         // Initialize page based on context
         if (isUpdate) {
-            // Update flow - show update for specific platform
-            document.getElementById('pageIcon').textContent = 'system_update';
-            document.getElementById('pageTitle').textContent = 'Update Beschikbaar';
-            document.getElementById('pageDescription').textContent = 'Er is een nieuwe versie van BijbelQuiz beschikbaar!';
-            
-            // Fetch update information for the specific platform
-            fetchVersionInfo(platform);
+            // Check if user is already on the latest version
+            const platformInfo = platforms[platform];
+            const isLatestVersion = currentVersion === platformInfo.currentVersion;
+
+            if (isLatestVersion) {
+                // No update available - show current version message
+                document.getElementById('pageIcon').textContent = 'check_circle';
+                document.getElementById('pageTitle').textContent = 'Geen Update Beschikbaar';
+                document.getElementById('pageDescription').textContent = `Je hebt al de nieuwste versie van BijbelQuiz voor ${platformInfo.name} (v${platformInfo.currentVersion}).`;
+
+                // Hide the single download actions (no button needed)
+                document.getElementById('singleDownloadActions').style.display = 'none';
+            } else {
+                // Update available - show update for specific platform
+                document.getElementById('pageIcon').textContent = 'system_update';
+                document.getElementById('pageTitle').textContent = 'Update Beschikbaar';
+                document.getElementById('pageDescription').textContent = `Er is een nieuwe versie van BijbelQuiz beschikbaar voor ${platformInfo.name}!`;
+
+                // Show single download button for the specific platform
+                document.getElementById('singleDownloadActions').style.display = 'block';
+                document.getElementById('primaryBtn').innerHTML = `<i class="material-icons" style="vertical-align: middle; margin-right: 8px;">system_update</i> Download Update`;
+                document.getElementById('primaryBtn').href = platformInfo.downloadUrl;
+
+                // Add installation instructions link
+                const instructionsLink = document.createElement('a');
+                instructionsLink.href = `https://bijbelquiz.vercel.app/instructie/${platform}.html`;
+                instructionsLink.className = 'btn secondary';
+                instructionsLink.innerHTML = `<i class="material-icons" style="vertical-align: middle; margin-right: 8px;">help</i> Installatiehulp`;
+                instructionsLink.target = '_blank';
+                instructionsLink.rel = 'noopener';
+
+                // Add the instructions link to the actions
+                const actionsContainer = document.getElementById('singleDownloadActions');
+                actionsContainer.appendChild(instructionsLink);
+            }
         } else {
             // Initial download flow - show all platforms
             showAllPlatforms();
@@ -153,54 +175,6 @@
             platformGrid.style.display = 'grid';
             singleDownloadActions.style.display = 'none';
         }
-        
-        // Fetch version information for a specific platform (update flow)
-        async function fetchVersionInfo(platform) {
-            try {
-                // Show loading message
-                document.getElementById('pageContent').style.display = 'none';
-                document.getElementById('loadingMessage').style.display = 'block';
-                document.getElementById('errorMessage').style.display = 'none';
-                
-                // Instead of calling the API, we'll directly assume an update is available
-                // and link to the file as specified in the platforms configuration
-                
-                // Show update information
-                document.getElementById('pageTitle').textContent = 'Update Beschikbaar';
-                document.getElementById('pageDescription').textContent = `Er is een nieuwe versie van BijbelQuiz beschikbaar voor ${platforms[platform].name}!`;
-                document.getElementById('primaryBtn').innerHTML = `<i class="material-icons" style="vertical-align: middle; margin-right: 8px;">system_update</i> Download Update`;
-                // Use direct download URL from platforms configuration
-                document.getElementById('primaryBtn').href = platforms[platform].downloadUrl;
-                
-                // Hide loading, show content
-                document.getElementById('loadingMessage').style.display = 'none';
-                document.getElementById('pageContent').style.display = 'block';
-                
-            } catch (error) {
-                console.error('Error processing update info:', error);
-                // Show error message
-                document.getElementById('loadingMessage').style.display = 'none';
-                document.getElementById('errorMessage').style.display = 'block';
-            }
-        }
-        
-        // Event listeners
-        document.getElementById('retryBtn').addEventListener('click', function() {
-            fetchVersionInfo(platform);
-        });
-        
-        // Helper function to get file extension based on platform
-        function getFileExtension(platform) {
-            const extensions = {
-                'android': 'apk',
-                'ios': 'ipa',
-                'windows': 'exe',
-                'macos': 'dmg',
-                'linux': 'AppImage',
-                'web': 'zip'
-            };
-            return extensions[platform] || '';
-        }
     </script>
     
     <style>
@@ -223,20 +197,18 @@
             transform: scale(1.05) translateY(-2px);
         }
         
-        .error-message {
-            text-align: center;
-            color: var(--error);
-        }
-        
-        .error-message p {
-            margin-bottom: 1rem;
-        }
         
         .actions {
             display: flex;
             flex-direction: column;
             gap: 0.75rem;
             width: 100%;
+        }
+
+        /* Equal width buttons for update flow */
+        .actions .btn {
+            width: 100%;
+            min-width: 200px;
         }
         
         .platform-grid {

@@ -963,14 +963,42 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final localContext = context;
     try {
       final updateService = UpdateService();
-      // Directly open the download page without checking for updates first
-      final url = Uri.parse(updateService.downloadPageUrl);
-      
+
+      // Get current app version
+      final packageInfo = await PackageInfo.fromPlatform();
+      final currentVersion = packageInfo.version;
+
+      // Get platform
+      String platform;
+      if (kIsWeb) {
+        platform = 'web';
+      } else if (Platform.isAndroid) {
+        platform = 'android';
+      } else if (Platform.isIOS) {
+        platform = 'ios';
+      } else if (Platform.isWindows) {
+        platform = 'windows';
+      } else if (Platform.isMacOS) {
+        platform = 'macos';
+      } else if (Platform.isLinux) {
+        platform = 'linux';
+      } else {
+        platform = 'android'; // default fallback
+      }
+
+      // Construct URL with platform and version parameters
+      final downloadUrl = updateService.getDownloadPageUrl(
+        platform: platform,
+        currentVersion: currentVersion,
+      );
+
+      final url = Uri.parse(downloadUrl);
+
       if (!await launchUrl(url)) {
         if (localContext.mounted) {
           showTopSnackBar(
-            localContext, 
-            strings.AppStrings.couldNotOpenDownloadPage, 
+            localContext,
+            strings.AppStrings.couldNotOpenDownloadPage,
             style: TopSnackBarStyle.error
           );
         }
@@ -980,8 +1008,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (localContext.mounted) {
           showTopSnackBar(
-            localContext, 
-            strings.AppStrings.couldNotOpenDownloadPage, 
+            localContext,
+            strings.AppStrings.couldNotOpenDownloadPage,
             style: TopSnackBarStyle.error
           );
         }
