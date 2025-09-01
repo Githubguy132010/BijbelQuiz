@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../config/app_config.dart';
 
 // Helper function to get responsive text scaling
 double getResponsiveFontSize(BuildContext context, double baseSize) {
@@ -41,12 +42,12 @@ EdgeInsets getResponsivePadding(BuildContext context, EdgeInsets basePadding) {
 
 final ThemeData appLightTheme = ThemeData(
   colorScheme: ColorScheme.fromSeed(
-    seedColor: const Color(0xFF2563EB),
+    seedColor: Color(AppConfig.primaryColorValue),
     brightness: Brightness.light,
   ).copyWith(
-    primary: const Color(0xFF2563EB),
-    secondary: const Color(0xFF7C3AED),
-    tertiary: const Color(0xFFDC2626),
+    primary: Color(AppConfig.primaryColorValue),
+    secondary: Color(AppConfig.secondaryColorValue),
+    tertiary: Color(AppConfig.tertiaryColorValue),
     surface: const Color(0xFFFAFAFA),
     surfaceContainerHighest: const Color(0xFFF8FAFC),
     onSurface: const Color(0xFF0F172A),
@@ -122,7 +123,7 @@ final ThemeData appLightTheme = ThemeData(
         borderRadius: BorderRadius.circular(16),
       ),
       elevation: 0,
-      backgroundColor: const Color(0xFF2563EB),
+      backgroundColor: Color(AppConfig.primaryColorValue),
       foregroundColor: Colors.white,
       textStyle: const TextStyle(
         fontSize: 16,
@@ -165,12 +166,12 @@ final ThemeData appLightTheme = ThemeData(
 
 final ThemeData appDarkTheme = ThemeData(
   colorScheme: ColorScheme.fromSeed(
-    seedColor: const Color(0xFF3B82F6),
+    seedColor: Color(AppConfig.primaryColorValue),
     brightness: Brightness.dark,
   ).copyWith(
-    primary: const Color(0xFF3B82F6),
-    secondary: const Color(0xFF8B5CF6),
-    tertiary: const Color(0xFFEF4444),
+    primary: Color(AppConfig.primaryColorValue),
+    secondary: Color(AppConfig.secondaryColorValue),
+    tertiary: Color(AppConfig.tertiaryColorValue),
     surface: const Color(0xFF0F172A),
     surfaceContainerHighest: const Color(0xFF1E293B),
     onSurface: const Color(0xFFF8FAFC),
@@ -246,7 +247,7 @@ final ThemeData appDarkTheme = ThemeData(
         borderRadius: BorderRadius.circular(16),
       ),
       elevation: 0,
-      backgroundColor: const Color(0xFF3B82F6),
+      backgroundColor: Color(AppConfig.primaryColorValue),
       foregroundColor: Colors.white,
       textStyle: const TextStyle(
         fontSize: 16,

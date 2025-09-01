@@ -26,7 +26,7 @@ class EmergencyMessage {
 }
 
 class EmergencyService {
-  static const String _baseUrl = AppUrls.baseDomainAPI;
+  static final String _baseUrl = AppUrls.baseDomainAPI;
   static const String _endpoint = '/emergency';
   static const Duration _pollingInterval = Duration(minutes: 5);
   

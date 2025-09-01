@@ -116,7 +116,7 @@ class AppStrings {
   static const String trackProgressTitle = 'Volg Je Voortgang';
   static const String trackProgressDescription = 'Houd je scores bij en verbeter jezelf in de loop van de tijd.';
   static const String customizeExperienceTitle = 'Pas Je Ervaring Aan';
-  static const String customizeExperienceDescription = 'Pas je thema, speelsnelheid en de geluidseffecten aan in de instellingen. Heeft u nog vragen of suggesties? We horen graag van je via ${AppUrls.contactEmail}';
+  static final String customizeExperienceDescription = 'Pas je thema, speelsnelheid en de geluidseffecten aan in de instellingen. Heeft u nog vragen of suggesties? We horen graag van je via ${AppUrls.contactEmail}';
   static const String supportUsDescription = 'Vind je deze app nuttig? Overweeg dan een donatie om ons te helpen de app te onderhouden en te verbeteren. Elke bijdrage wordt gewaardeerd!';
   static const String donateNow = 'Doneer Nu';
   
@@ -226,10 +226,10 @@ class AppStrings {
   static const String followKwebler = 'Volg Kwebler';
   static const String followSignal = 'Volg Signal';
   static const String followDiscord = 'Volg Discord';
-  static const String mastodonUrl = AppUrls.mastodonUrl;
-  static const String kweblerUrl = AppUrls.kweblerUrl;
-  static const String signalUrl = AppUrls.signalUrl;
-  static const String discordUrl = AppUrls.discordUrl;
+  static final String mastodonUrl = AppUrls.mastodonUrl;
+  static final String kweblerUrl = AppUrls.kweblerUrl;
+  static final String signalUrl = AppUrls.signalUrl;
+  static final String discordUrl = AppUrls.discordUrl;
 
   // Quiz Screen
   static const String skip = 'Skip';

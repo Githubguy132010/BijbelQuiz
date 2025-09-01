@@ -1,27 +1,29 @@
 /// URL constants for the BijbelQuiz app
 /// Central location for all URLs to make updates easier
 
+import '../config/app_config.dart';
+
 class AppUrls {
   // Base domain
-  static const String baseDomain = 'https://bijbelquiz.app';
-  static const String baseDomainAPI = 'https://backend.bijbelquiz.app/api';
+  static String get baseDomain => AppConfig.baseDomain;
+  static String get baseDomainAPI => AppConfig.baseDomainAPI;
 
   // Homepage
-  static const String homepage = baseDomain;
+  static final String homepage = baseDomain;
 
   // API endpoints
-  static const String emergencyApi = baseDomainAPI + '/emergency.ts';
+  static final String emergencyApi = baseDomainAPI + '/emergency.ts';
 
   // App-specific URLs
-  static const String donateUrl = baseDomain + '/donate.html';
-  static const String updateUrl = baseDomain + '/download.html';
+  static final String donateUrl = baseDomain + '/donate.html';
+  static final String updateUrl = baseDomain + '/download.html';
 
   // Social media URLs
-  static const String mastodonUrl = 'https://mastodon.social/@bijbelquiz';
-  static const String kweblerUrl = 'https://kwebler.com/bijbelquiz';
-  static const String discordUrl = 'https://discord.gg/bijbelquiz';
-  static const String signalUrl = 'https://signal.group/bijbelquiz';
+  static String get mastodonUrl => AppConfig.mastodonUrl;
+  static String get kweblerUrl => AppConfig.kweblerUrl;
+  static String get discordUrl => AppConfig.discordUrl;
+  static String get signalUrl => AppConfig.signalUrl;
 
   // Contact
-  static const String contactEmail = 'thomasnowprod@proton.me';
+  static String get contactEmail => AppConfig.contactEmail;
 }
