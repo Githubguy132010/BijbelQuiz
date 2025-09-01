@@ -41,7 +41,7 @@ class AppStrings {
   // Donation
   static const String donate = 'Ondersteun ons';
   static const String donateButton = 'Doneer nu';
-  static const String donateExplanation = 'Steun de ontwikkeling van deze app met een donatie. 50% van alle donaties wordt gedoneerd aan het goede doel';
+  static const String donateExplanation = 'Steun de ontwikkeling van deze app met een donatie. Dit is nodig om de app verder te ontwikkelen/onderhouden.';
   
   // Guide
   static const String guide = 'Handleiding';
@@ -115,7 +115,7 @@ class AppStrings {
   static const String trackProgressDescription = 'Houd je scores bij en verbeter jezelf in de loop van de tijd.';
   static const String customizeExperienceTitle = 'Pas Je Ervaring Aan';
   static const String customizeExperienceDescription = 'Pas je thema, speelsnelheid en de geluidseffecten aan in de instellingen. Heeft u nog vragen of suggesties? We horen graag van je via thomasnowprod@proton.me';
-  static const String supportUsDescription = 'Vind je deze app nuttig? Overweeg dan een donatie om ons te helpen de app te onderhouden en te verbeteren. 50% van elke donatie gaat naar een goed doel. Elke bijdrage wordt gewaardeerd!';
+  static const String supportUsDescription = 'Vind je deze app nuttig? Overweeg dan een donatie om ons te helpen de app te onderhouden en te verbeteren. Elke bijdrage wordt gewaardeerd!';
   static const String donateNow = 'Doneer Nu';
   
   // Activation screen
