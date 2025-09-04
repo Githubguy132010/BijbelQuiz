@@ -9,7 +9,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'providers/settings_provider.dart';
 import 'providers/game_stats_provider.dart';
-import 'theme/app_theme.dart';
 import 'utils/theme_utils.dart';
 import 'services/logger.dart';
 import 'services/notification_service.dart';
@@ -121,58 +120,54 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
   }
 
 
-  @override
-  Widget build(BuildContext context) {
-    // Collect deferred providers
-    final List<SingleChildWidget> deferredProviders = [
+  /// Builds the MaterialApp with theme configuration
+  Widget _buildMaterialApp(SettingsProvider settings) {
+    return MaterialApp(
+      navigatorKey: EmergencyService.navigatorKey,
+      title: strings.AppStrings.appName,
+      debugShowCheckedModeBanner: false,
+      theme: ThemeUtils.getLightTheme(settings),
+      darkTheme: ThemeUtils.getDarkTheme(settings),
+      themeMode: ThemeUtils.getThemeMode(settings),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('nl', ''), // Dutch
+      ],
+      locale: const Locale('nl', ''), // Force Dutch locale
+      routes: {
+        '/store': (context) => const StoreScreen(),
+        '/settings': (context) => const SettingsScreen(),
+      },
+      home: const LessonSelectScreen(),
+    );
+  }
+
+  /// Gets deferred providers that are ready
+  List<SingleChildWidget> _getDeferredProviders() {
+    return [
       if (_performanceService != null) Provider.value(value: _performanceService!),
       if (_connectionService != null) Provider.value(value: _connectionService!),
       if (_questionCacheService != null) Provider.value(value: _questionCacheService!),
       if (_emergencyService != null) Provider.value(value: _emergencyService!),
     ];
-    
-    // Build the main app widget
-    final app = Consumer<SettingsProvider>(
-      builder: (context, settings, _) {
-        // Get themes based on settings
-        final lightTheme = ThemeUtils.getLightTheme(settings);
-        final darkTheme = ThemeUtils.getDarkTheme(settings);
+  }
 
-        return MaterialApp(
-          navigatorKey: EmergencyService.navigatorKey,
-          title: strings.AppStrings.appName,
-          debugShowCheckedModeBanner: false,
-          theme: lightTheme,
-          darkTheme: darkTheme,
-          themeMode: ThemeUtils.getThemeMode(settings),
-          localizationsDelegates: const [
-            // Remove StringsDelegate as it's not defined in strings_nl.dart
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: const [
-            Locale('nl', ''), // Dutch
-          ],
-          locale: const Locale('nl', ''), // Force Dutch locale
-          routes: {
-            '/store': (context) => const StoreScreen(),
-            '/settings': (context) => const SettingsScreen(),
-          },
-          home: const LessonSelectScreen(),
-        );
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<SettingsProvider>(
+      builder: (context, settings, _) {
+        final app = _buildMaterialApp(settings);
+        final deferredProviders = _getDeferredProviders();
+
+        return deferredProviders.isNotEmpty
+            ? MultiProvider(providers: deferredProviders, child: app)
+            : app;
       },
     );
-
-    // Wrap with providers if any
-    if (deferredProviders.isNotEmpty) {
-      return MultiProvider(
-        providers: deferredProviders,
-        child: app,
-      );
-    }
-    
-    return app;
   }
 
   @override

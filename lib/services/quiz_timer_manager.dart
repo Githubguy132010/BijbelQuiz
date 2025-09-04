@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../providers/settings_provider.dart';
 import '../providers/game_stats_provider.dart';
 import '../services/performance_service.dart';
-import '../l10n/strings_nl.dart' as strings;
 
 /// Callback for time tick updates
 typedef TimeTickCallback = void Function();
@@ -112,18 +111,17 @@ class QuizTimerManager {
       Duration(seconds: baseTimerDuration)
     );
 
+    _timer?.cancel();
     _timeAnimationController.duration = optimalTimerDuration;
 
-    _timer?.cancel();
+    // Calculate remaining time more efficiently
+    final remainingSeconds = currentTimeRemaining.clamp(0, baseTimerDuration);
+    final progress = 1.0 - (remainingSeconds / baseTimerDuration);
 
-    final currentProgress = _timeAnimationController.value;
-    final remainingDuration = Duration(
-      milliseconds: (optimalTimerDuration.inMilliseconds * (1.0 - currentProgress)).round()
-    );
-
+    _timeAnimationController.value = progress;
     _timeAnimationController.forward();
 
-    _timer = Timer(remainingDuration, () {
+    _timer = Timer(Duration(seconds: remainingSeconds), () {
       if (_timeAnimationController.status != AnimationStatus.completed) {
         _timeAnimationController.animateTo(1.0, duration: Duration.zero);
       }
@@ -138,10 +136,14 @@ class QuizTimerManager {
     );
 
     _timer?.cancel();
-
     _timeAnimationController.duration = optimalTimerDuration;
+
     if (reset) {
       _timeAnimationController.reset();
+    } else if (timeRemaining != null) {
+      // Set specific progress if timeRemaining is provided
+      final progress = 1.0 - (timeRemaining / baseTimerDuration);
+      _timeAnimationController.value = progress.clamp(0.0, 1.0);
     }
 
     _timeAnimationController.forward();

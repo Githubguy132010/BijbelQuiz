@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import '../services/performance_service.dart';
 
-/// Manages quiz-related animations for score, streak, and longest streak
+/// Manages quiz-related animations for score, streak, and longest streak using a single controller
 class QuizAnimationController {
-  // Animation controllers
-  late AnimationController _scoreAnimationController;
-  late AnimationController _streakAnimationController;
-  late AnimationController _longestStreakAnimationController;
+  // Single animation controller for all stats animations
+  late AnimationController _statsAnimationController;
 
-  // Animations
+  // Animations using the same controller with different intervals
   late Animation<double> _scoreAnimation;
   late Animation<double> _streakAnimation;
   late Animation<double> _longestStreakAnimation;
@@ -20,7 +18,7 @@ class QuizAnimationController {
     required PerformanceService performanceService,
     required TickerProvider vsync,
   }) : _performanceService = performanceService,
-       _vsync = vsync {
+        _vsync = vsync {
     _initializeAnimations();
   }
 
@@ -30,47 +28,35 @@ class QuizAnimationController {
       const Duration(milliseconds: 800)
     );
 
-    // Initialize animation controllers
-    _scoreAnimationController = AnimationController(
+    // Initialize single animation controller
+    _statsAnimationController = AnimationController(
       duration: optimalDuration,
       vsync: _vsync,
-      debugLabel: 'score_animation',
-    );
-
-    _streakAnimationController = AnimationController(
-      duration: optimalDuration,
-      vsync: _vsync,
-      debugLabel: 'streak_animation',
-    );
-
-    _longestStreakAnimationController = AnimationController(
-      duration: optimalDuration,
-      vsync: _vsync,
-      debugLabel: 'longest_streak_animation',
+      debugLabel: 'stats_animation',
     );
 
     // Use a responsive curve for better feel on high refresh rate displays
     const animationCurve = Curves.easeOutQuart;
 
-    // Initialize animations
+    // Initialize animations with staggered timing using Interval
     _scoreAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
-        parent: _scoreAnimationController,
-        curve: animationCurve,
+        parent: _statsAnimationController,
+        curve: Interval(0.0, 0.6, curve: animationCurve), // First 60% of animation
       ),
     );
 
     _streakAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
-        parent: _streakAnimationController,
-        curve: animationCurve,
+        parent: _statsAnimationController,
+        curve: Interval(0.2, 0.8, curve: animationCurve), // 20% offset, 60% duration
       ),
     );
 
     _longestStreakAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
-        parent: _longestStreakAnimationController,
-        curve: animationCurve,
+        parent: _statsAnimationController,
+        curve: Interval(0.4, 1.0, curve: animationCurve), // 40% offset, 60% duration
       ),
     );
   }
@@ -80,45 +66,31 @@ class QuizAnimationController {
   Animation<double> get streakAnimation => _streakAnimation;
   Animation<double> get longestStreakAnimation => _longestStreakAnimation;
 
-  // Getters for controllers
-  AnimationController get scoreAnimationController => _scoreAnimationController;
-  AnimationController get streakAnimationController => _streakAnimationController;
-  AnimationController get longestStreakAnimationController => _longestStreakAnimationController;
+  // Getter for the single controller
+  AnimationController get statsAnimationController => _statsAnimationController;
 
   // Methods to trigger animations
   void triggerScoreAnimation() {
-    _scoreAnimationController.forward(from: 0.0);
+    _statsAnimationController.forward(from: 0.0);
   }
 
   void triggerStreakAnimation() {
-    _streakAnimationController.forward(from: 0.0);
+    _statsAnimationController.forward(from: 0.0);
   }
 
   void triggerLongestStreakAnimation() {
-    _longestStreakAnimationController.forward(from: 0.0);
+    _statsAnimationController.forward(from: 0.0);
   }
 
   void triggerAllStatsAnimations() {
-    triggerScoreAnimation();
-    triggerStreakAnimation();
-    triggerLongestStreakAnimation();
+    _statsAnimationController.forward(from: 0.0);
   }
 
   void dispose() {
-    // Dispose animation controllers safely
-    if (_scoreAnimationController.isAnimating) {
-      _scoreAnimationController.stop();
+    // Dispose single animation controller safely
+    if (_statsAnimationController.isAnimating) {
+      _statsAnimationController.stop();
     }
-    _scoreAnimationController.dispose();
-
-    if (_streakAnimationController.isAnimating) {
-      _streakAnimationController.stop();
-    }
-    _streakAnimationController.dispose();
-
-    if (_longestStreakAnimationController.isAnimating) {
-      _longestStreakAnimationController.stop();
-    }
-    _longestStreakAnimationController.dispose();
+    _statsAnimationController.dispose();
   }
 }
