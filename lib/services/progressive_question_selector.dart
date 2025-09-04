@@ -5,6 +5,7 @@ import '../models/quiz_question.dart';
 import '../providers/game_stats_provider.dart';
 import '../providers/settings_provider.dart';
 import '../services/question_cache_service.dart';
+import '../services/logger.dart';
 
 /// Manages the Progressive Question Up-selection (PQU) algorithm
 /// for dynamic difficulty adjustment and question selection
@@ -20,9 +21,23 @@ class ProgressiveQuestionSelector {
   List<QuizQuestion> _allQuestions = [];
   bool _allQuestionsLoaded = false;
 
+  // State management for background loading
+  bool _mounted = true;
+  void Function(void Function())? _setState;
+
   ProgressiveQuestionSelector({
     required QuestionCacheService questionCacheService,
   }) : _questionCacheService = questionCacheService;
+
+  /// Set the state callback for background loading updates
+  void setStateCallback(void Function(void Function()) setStateCallback) {
+    _setState = setStateCallback;
+  }
+
+  /// Set mounted state for background operations
+  void setMounted(bool mounted) {
+    _mounted = mounted;
+  }
 
   // Getters and setters for state management
   List<QuizQuestion> get allQuestions => _allQuestions;
@@ -238,30 +253,106 @@ class ProgressiveQuestionSelector {
     return targetDifficulty.clamp(0.0, 2.0);
   }
 
-  /// Load more questions in the background when running low
+  /// Enhanced background loading with predictive loading and adaptive batching
   Future<void> _loadMoreQuestionsInBackground(BuildContext context) async {
     final settings = Provider.of<SettingsProvider>(context, listen: false);
     final language = settings.language;
 
     try {
-      // Load next batch of questions
+      // First, load predictive candidates if available
+      final predictiveCandidates = _questionCacheService.getPredictiveLoadCandidates();
+      if (predictiveCandidates.isNotEmpty) {
+        await _loadPredictiveCandidates(language, predictiveCandidates);
+      }
+
+      // Then load next sequential batch
       final nextBatchStartIndex = _allQuestions.length;
-      const int batchSize = 50; // Load 50 more questions
+      final adaptiveBatchSize = _calculateAdaptiveBatchSize();
 
       final newQuestions = await _questionCacheService.getQuestions(
         language,
         startIndex: nextBatchStartIndex,
-        count: batchSize
+        count: adaptiveBatchSize
       );
 
-      if (newQuestions.isNotEmpty) {
-        // Add new questions and shuffle the combined list
-        _allQuestions.addAll(newQuestions);
-        _allQuestions.shuffle(Random());
+      if (newQuestions.isNotEmpty && _setState != null) {
+        _setState!(() {
+          // Add new questions and shuffle the combined list
+          _allQuestions.addAll(newQuestions);
+          _allQuestions.shuffle(Random());
+          AppLogger.info('Loaded additional questions, total now: ${_allQuestions.length}');
+        });
+      }
+
+      // Continue loading in background if we still have room
+      if (_allQuestions.length < 200 && _mounted) { // Keep at least 200 questions loaded
+        Future.delayed(const Duration(seconds: 2), () {
+          if (_mounted) _loadMoreQuestionsInBackground(context);
+        });
       }
     } catch (e) {
-      // Handle error silently
+      AppLogger.error('Failed to load more questions in background', e);
     }
+  }
+
+  /// Load predictive candidates identified by the cache service
+  Future<void> _loadPredictiveCandidates(String language, List<String> candidates) async {
+    try {
+      final indicesToLoad = <int>[];
+
+      for (final candidate in candidates) {
+        // Parse cache key to get language and index
+        final parts = candidate.split('_');
+        if (parts.length == 2 && parts[0] == language) {
+          final index = int.tryParse(parts[1]);
+          if (index != null && !_isQuestionLoaded(index)) {
+            indicesToLoad.add(index);
+          }
+        }
+      }
+
+      if (indicesToLoad.isNotEmpty) {
+        final predictiveQuestions = await _questionCacheService.loadQuestionsByIndices(language, indicesToLoad);
+        if (predictiveQuestions.isNotEmpty && _setState != null) {
+          _setState!(() {
+            _allQuestions.addAll(predictiveQuestions);
+            AppLogger.info('Loaded ${predictiveQuestions.length} predictive questions');
+          });
+        }
+      }
+    } catch (e) {
+      AppLogger.error('Failed to load predictive candidates', e);
+    }
+  }
+
+  /// Calculate adaptive batch size based on current performance and memory usage
+  int _calculateAdaptiveBatchSize() {
+    const baseBatchSize = 30;
+
+    // Get memory usage info
+    final memoryInfo = _questionCacheService.getMemoryUsage();
+    final cacheUtilization = double.tryParse(memoryInfo['memoryCache']['cacheUtilizationPercent'] as String) ?? 0.0;
+
+    // Reduce batch size if memory usage is high
+    if (cacheUtilization > 80.0) {
+      return (baseBatchSize * 0.5).round(); // 50% reduction
+    } else if (cacheUtilization > 60.0) {
+      return (baseBatchSize * 0.75).round(); // 25% reduction
+    }
+
+    // Increase batch size if memory usage is low
+    if (cacheUtilization < 30.0) {
+      return (baseBatchSize * 1.5).round(); // 50% increase
+    }
+
+    return baseBatchSize;
+  }
+
+  /// Check if a question index is already loaded
+  bool _isQuestionLoaded(int index) {
+    // This is a simplified check - in practice we'd need to track loaded indices
+    // For now, we'll use a basic heuristic
+    return _allQuestions.length > index;
   }
 
   /// Reset question pool for new game or language change

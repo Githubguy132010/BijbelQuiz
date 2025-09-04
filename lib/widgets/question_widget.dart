@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/quiz_question.dart';
+import '../services/performance_service.dart';
 import 'question_card.dart';
 
 /// A widget that displays the question and handles answer selection
@@ -10,6 +11,7 @@ class QuestionWidget extends StatelessWidget {
   final bool isTransitioning;
   final Function(int) onAnswerSelected;
   final String language;
+  final PerformanceService? performanceService;
 
   const QuestionWidget({
     super.key,
@@ -19,6 +21,7 @@ class QuestionWidget extends StatelessWidget {
     required this.isTransitioning,
     required this.onAnswerSelected,
     required this.language,
+    this.performanceService,
   });
 
   @override
@@ -30,6 +33,7 @@ class QuestionWidget extends StatelessWidget {
       isTransitioning: isTransitioning,
       onAnswerSelected: onAnswerSelected,
       language: language,
+      performanceService: performanceService,
     );
   }
 }

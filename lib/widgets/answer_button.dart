@@ -11,6 +11,7 @@ class AnswerButton extends StatefulWidget {
   final String? letter;
   final bool isLarge;
   final bool isDisabled;
+  final Animation<double>? externalScaleAnimation; // Optional external animation controller
 
   const AnswerButton({
     super.key,
@@ -21,6 +22,7 @@ class AnswerButton extends StatefulWidget {
     this.letter,
     this.isLarge = false,
     this.isDisabled = false,
+    this.externalScaleAnimation,
   });
 
   @override
@@ -28,7 +30,7 @@ class AnswerButton extends StatefulWidget {
 }
 
 class _AnswerButtonState extends State<AnswerButton> with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
+  AnimationController? _animationController;
   late Animation<double> _scaleAnimation;
   late Color _backgroundColor;
   late Color _borderColor;
@@ -38,13 +40,20 @@ class _AnswerButtonState extends State<AnswerButton> with SingleTickerProviderSt
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 120), // Optimized for better responsiveness
-      vsync: this,
-    );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.98).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
-    );
+
+    // Use external animation if provided, otherwise create our own
+    if (widget.externalScaleAnimation != null) {
+      _scaleAnimation = widget.externalScaleAnimation!;
+    } else {
+      _animationController = AnimationController(
+        duration: const Duration(milliseconds: 120), // Optimized for better responsiveness
+        vsync: this,
+      );
+      _scaleAnimation = Tween<double>(begin: 1.0, end: 0.98).animate(
+        CurvedAnimation(parent: _animationController!, curve: Curves.easeInOut),
+      );
+    }
+
     _setColors();
   }
 
@@ -85,20 +94,29 @@ class _AnswerButtonState extends State<AnswerButton> with SingleTickerProviderSt
 
   @override
   void dispose() {
-    _animationController.dispose();
+    // Only dispose if we created our own controller
+    if (widget.externalScaleAnimation == null && _animationController != null) {
+      _animationController!.dispose();
+    }
     super.dispose();
   }
 
   void _onTapDown(TapDownDetails details) {
-    if (!widget.isDisabled) _animationController.forward();
+    if (!widget.isDisabled && widget.externalScaleAnimation == null && _animationController != null) {
+      _animationController!.forward();
+    }
   }
 
   void _onTapUp(TapUpDetails details) {
-    if (!widget.isDisabled) _animationController.reverse();
+    if (!widget.isDisabled && widget.externalScaleAnimation == null && _animationController != null) {
+      _animationController!.reverse();
+    }
   }
 
   void _onTapCancel() {
-    if (!widget.isDisabled) _animationController.reverse();
+    if (!widget.isDisabled && widget.externalScaleAnimation == null && _animationController != null) {
+      _animationController!.reverse();
+    }
   }
 
   @override
@@ -126,7 +144,7 @@ class _AnswerButtonState extends State<AnswerButton> with SingleTickerProviderSt
     }
 
     return AnimatedBuilder(
-      animation: _animationController,
+      animation: widget.externalScaleAnimation ?? _animationController!,
       builder: (context, child) {
         return Transform.scale(
           scale: _scaleAnimation.value,

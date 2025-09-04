@@ -11,9 +11,9 @@ import 'logger.dart';
 /// Configuration for question loading and caching
 class QuestionCacheConfig {
   static const int defaultBatchSize = 10;
-  static const int maxMemoryCacheSize = 50; // Reduced from 100 to 50 for low-end devices
+  static const int maxMemoryCacheSize = 25; // Reduced from 50 to 25 for very low-end devices
   static const Duration cacheExpiry = Duration(days: 7);
-  static const int maxPersistentCacheSize = 50; // Reduced from 100 to 50 for low-end devices
+  static const int maxPersistentCacheSize = 25; // Reduced from 50 to 25 for very low-end devices
 }
 
 /// A service for caching and lazy loading quiz questions with optimized memory usage
@@ -24,9 +24,12 @@ class QuestionCacheService {
   static const String _metadataCacheKey = 'cached_metadata';
   static const String _appVersionKey = 'app_version';
   
-  // LRU Cache implementation
+  // Enhanced LRU Cache implementation with predictive loading
   final Map<String, QuizQuestion> _memoryCache = {};
   final List<String> _lruList = [];
+  final Map<String, int> _accessFrequency = {}; // Track access frequency for smarter eviction
+  final Map<String, DateTime> _lastAccessTime = {}; // Track access time for temporal patterns
+  final Set<String> _predictiveLoadCandidates = {}; // Questions to load preemptively
   
   late SharedPreferences _prefs;
   bool _isInitialized = false;
@@ -255,31 +258,36 @@ class QuestionCacheService {
     }
   }
   
-  /// Add a question to the memory cache with LRU eviction if needed
+  /// Add a question to the memory cache with enhanced LRU eviction
   void _addToMemoryCache(String language, int index, QuizQuestion question) {
     final cacheKey = _getQuestionCacheKey(language, index);
-    
-    // Check if we need to evict
+
+    // Check if we need to evict using smart eviction strategy
     if (_memoryCache.length >= QuestionCacheConfig.maxMemoryCacheSize && _lruList.isNotEmpty) {
-      // Remove least recently used
-      final lruKey = _lruList.removeAt(0);
-      _memoryCache.remove(lruKey);
+      _performSmartEviction();
     }
-    
+
     // Add to cache
     _memoryCache[cacheKey] = question;
     _updateLru(language, index);
+
+    // Update predictive loading candidates based on access patterns
+    _updatePredictiveCandidates(language, index);
   }
   
-  /// Update the LRU list for a question
+  /// Update the LRU list and access tracking for a question
   void _updateLru(String language, int index) {
     final cacheKey = _getQuestionCacheKey(language, index);
-    
+
     // Remove existing entry if it exists
     _lruList.remove(cacheKey);
-    
+
     // Add to end (most recently used)
     _lruList.add(cacheKey);
+
+    // Update access frequency and time
+    _accessFrequency[cacheKey] = (_accessFrequency[cacheKey] ?? 0) + 1;
+    _lastAccessTime[cacheKey] = DateTime.now();
   }
   
   /// Check if a question is in memory
@@ -302,6 +310,75 @@ class QuestionCacheService {
   /// Generate a unique cache key for a question
   String _getQuestionCacheKey(String language, int index) {
     return '${language}_$index';
+  }
+
+  /// Perform smart eviction based on access patterns and temporal data
+  void _performSmartEviction() {
+    if (_lruList.isEmpty) return;
+
+    // Find the best candidate for eviction using multiple criteria
+    String bestCandidate = _lruList.first;
+    double lowestScore = double.infinity;
+
+    for (final candidate in _lruList) {
+      double score = _calculateEvictionScore(candidate);
+      if (score < lowestScore) {
+        lowestScore = score;
+        bestCandidate = candidate;
+      }
+    }
+
+    // Remove the best candidate
+    _lruList.remove(bestCandidate);
+    _memoryCache.remove(bestCandidate);
+    _accessFrequency.remove(bestCandidate);
+    _lastAccessTime.remove(bestCandidate);
+
+    AppLogger.info('Smart evicted question: $bestCandidate');
+  }
+
+  /// Calculate eviction score for a cache entry (lower is better to evict)
+  double _calculateEvictionScore(String cacheKey) {
+    final frequency = _accessFrequency[cacheKey] ?? 0;
+    final lastAccess = _lastAccessTime[cacheKey];
+    final timeSinceAccess = lastAccess != null
+        ? DateTime.now().difference(lastAccess).inMinutes
+        : double.infinity;
+
+    // Score combines recency, frequency, and temporal patterns
+    // Lower frequency + older access = better candidate for eviction
+    // Higher frequency + recent access = worse candidate for eviction
+    final recencyScore = timeSinceAccess / 60.0; // Normalize to hours
+    final frequencyScore = 1.0 / (frequency + 1.0); // Inverse frequency
+
+    return recencyScore + frequencyScore;
+  }
+
+  /// Update predictive loading candidates based on access patterns
+  void _updatePredictiveCandidates(String language, int index) {
+    // Add neighboring questions as candidates for predictive loading
+    final baseIndex = index ~/ 10 * 10; // Round to nearest 10
+    for (int i = -2; i <= 2; i++) {
+      final candidateIndex = baseIndex + i * 10;
+      if (candidateIndex >= 0 && candidateIndex != index) {
+        final candidateKey = _getQuestionCacheKey(language, candidateIndex);
+        if (!_memoryCache.containsKey(candidateKey)) {
+          _predictiveLoadCandidates.add(candidateKey);
+        }
+      }
+    }
+  }
+
+  /// Get predictive loading candidates for background loading
+  List<String> getPredictiveLoadCandidates() {
+    final candidates = _predictiveLoadCandidates.toList();
+    _predictiveLoadCandidates.clear(); // Clear after returning
+    return candidates;
+  }
+
+  /// Public method to load questions by indices (used by ProgressiveQuestionSelector)
+  Future<List<QuizQuestion>> loadQuestionsByIndices(String language, List<int> indices) async {
+    return _loadQuestionsByIndices(language, indices);
   }
   
   
@@ -366,18 +443,23 @@ class QuestionCacheService {
       _lruList.clear();
       _questionMetadata.clear();
       _loadedQuestionIndices.clear();
-      
+
+      // Clear enhanced LRU tracking
+      _accessFrequency.clear();
+      _lastAccessTime.clear();
+      _predictiveLoadCandidates.clear();
+
       // Clear persistent caches
-      final keys = _prefs.getKeys().where((key) => 
-        key.startsWith(_cacheKey) || 
+      final keys = _prefs.getKeys().where((key) =>
+        key.startsWith(_cacheKey) ||
         key.startsWith(_cacheTimestampKey) ||
         key.startsWith(_metadataCacheKey)
       );
-      
+
       for (final key in keys) {
         await _prefs.remove(key);
       }
-      
+
       AppLogger.info('Cache cleared successfully');
     } catch (e) {
       AppLogger.error('Failed to clear cache', e);
@@ -446,6 +528,11 @@ class QuestionCacheService {
       },
       'lruList': <String, dynamic>{
         'size': _lruList.length,
+      },
+      'enhancedTracking': <String, dynamic>{
+        'accessFrequencyEntries': _accessFrequency.length,
+        'lastAccessTimeEntries': _lastAccessTime.length,
+        'predictiveCandidates': _predictiveLoadCandidates.length,
       },
       'loadedIndices': {
         for (final k in _loadedQuestionIndices.keys)

@@ -4,7 +4,76 @@ import '../models/quiz_question.dart';
 import '../theme/app_theme.dart';
 import '../utils/responsive_utils.dart';
 import '../widgets/common_widgets.dart';
+import '../services/performance_service.dart';
 import 'answer_button.dart';
+
+/// Combined animation controller for question card transitions and answer button feedback
+class QuestionCardAnimationController {
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+  late Animation<double> _answerButtonScaleAnimation;
+
+  final TickerProvider _vsync;
+  final PerformanceService? _performanceService;
+
+  QuestionCardAnimationController({
+    required TickerProvider vsync,
+    PerformanceService? performanceService,
+  }) : _vsync = vsync,
+       _performanceService = performanceService {
+    _initializeAnimations();
+  }
+
+  void _initializeAnimations() {
+    // Use performance service to get optimal duration if available
+    final baseDuration = const Duration(milliseconds: 250);
+    final optimalDuration = _performanceService?.getOptimalAnimationDuration(baseDuration) ?? baseDuration;
+
+    _controller = AnimationController(
+      duration: optimalDuration,
+      vsync: _vsync,
+    );
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      ),
+    );
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0.5, 0.0),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeOutCubic,
+      ),
+    );
+
+    _answerButtonScaleAnimation = Tween<double>(begin: 1.0, end: 0.98).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      ),
+    );
+  }
+
+  // Getters for animations
+  Animation<double> get fadeAnimation => _fadeAnimation;
+  Animation<Offset> get slideAnimation => _slideAnimation;
+  Animation<double> get answerButtonScaleAnimation => _answerButtonScaleAnimation;
+
+  // Controller methods
+  void forward() => _controller.forward(from: 0.0);
+  void reset() => _controller.reset();
+  void dispose() => _controller.dispose();
+
+  // Answer button feedback methods
+  void playAnswerFeedback() => _controller.forward(from: 0.0);
+  void reverseAnswerFeedback() => _controller.reverse();
+}
 
 class QuestionCard extends StatefulWidget {
   final QuizQuestion question;
@@ -13,6 +82,7 @@ class QuestionCard extends StatefulWidget {
   final bool isTransitioning;
   final Function(int) onAnswerSelected;
   final String language;
+  final PerformanceService? performanceService;
 
   const QuestionCard({
     super.key,
@@ -22,6 +92,7 @@ class QuestionCard extends StatefulWidget {
     required this.isTransitioning,
     required this.onAnswerSelected,
     required this.language,
+    this.performanceService,
   });
 
   @override
@@ -29,66 +100,46 @@ class QuestionCard extends StatefulWidget {
 }
 
 class _QuestionCardState extends State<QuestionCard> with SingleTickerProviderStateMixin {
-  late AnimationController _fadeController;
-  late Animation<double> _fadeAnimation;
-  late Animation<Offset> _slideAnimation;
+  late QuestionCardAnimationController _animationController;
 
   @override
   void initState() {
     super.initState();
-    _fadeController = AnimationController(
+    _animationController = QuestionCardAnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 250), // Optimized for better responsiveness
+      performanceService: widget.performanceService,
     );
-    
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _fadeController,
-        curve: Curves.easeInOut,
-      ),
-    );
-    
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0.5, 0.0),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _fadeController,
-        curve: Curves.easeOutCubic,
-      ),
-    );
-    
-    _fadeController.forward();
+    _animationController.forward();
   }
 
   @override
   void didUpdateWidget(QuestionCard oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.question.question != oldWidget.question.question) {
-      _fadeController.reset();
-      _fadeController.forward();
+      _animationController.reset();
+      _animationController.forward();
     }
   }
 
   @override
   void dispose() {
-    _fadeController.dispose();
+    _animationController.dispose();
     super.dispose();
   }
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final isDesktop = context.isDesktop;
-    
+
     Widget content = _buildQuestionContent(context, colorScheme, isDesktop);
-    
+
     return AnimatedBuilder(
-      animation: _fadeController,
+      animation: _animationController.fadeAnimation,
       builder: (context, child) {
         return FadeTransition(
-          opacity: _fadeAnimation,
+          opacity: _animationController.fadeAnimation,
           child: SlideTransition(
-            position: _slideAnimation,
+            position: _animationController.slideAnimation,
             child: child,
           ),
         );
@@ -195,6 +246,7 @@ class _QuestionCardState extends State<QuestionCard> with SingleTickerProviderSt
                                     colorScheme: colorScheme,
                                     letter: String.fromCharCode(65 + index),
                                     isDisabled: widget.isAnswering || widget.selectedAnswerIndex != null,
+                                    externalScaleAnimation: _animationController.answerButtonScaleAnimation,
                                   ),
                                 );
                               },
@@ -289,6 +341,7 @@ class _QuestionCardState extends State<QuestionCard> with SingleTickerProviderSt
                                     colorScheme: colorScheme,
                                     letter: null,
                                     isDisabled: widget.isAnswering || widget.selectedAnswerIndex != null,
+                                    externalScaleAnimation: _animationController.answerButtonScaleAnimation,
                                   ),
                                 );
                               },
@@ -390,6 +443,7 @@ class _QuestionCardState extends State<QuestionCard> with SingleTickerProviderSt
                                     letter: null,
                                     isLarge: true,
                                     isDisabled: widget.isAnswering || widget.selectedAnswerIndex != null,
+                                    externalScaleAnimation: _animationController.answerButtonScaleAnimation,
                                   ),
                                 ),
                               );

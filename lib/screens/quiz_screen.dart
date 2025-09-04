@@ -172,6 +172,8 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
     _questionSelector = ProgressiveQuestionSelector(
       questionCacheService: _questionCacheService,
     );
+    _questionSelector.setStateCallback(setState);
+    _questionSelector.setMounted(mounted);
 
     _answerHandler = QuizAnswerHandler(
       soundService: _soundService,
@@ -201,6 +203,9 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
 
   @override
   void dispose() {
+    // Update question selector mounted state
+    _questionSelector.setMounted(false);
+
     // Dispose new managers
     _timerManager.dispose();
     _animationController.dispose();
@@ -774,6 +779,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
                         isTransitioning: _quizState.isTransitioning,
                         onAnswerSelected: _handleAnswer,
                         language: settings.language,
+                        performanceService: _performanceService,
                       ),
                       const SizedBox(height: 16),
                     ],
