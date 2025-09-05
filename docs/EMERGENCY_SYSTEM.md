@@ -13,6 +13,7 @@ The `EmergencyService` in the Flutter app polls the API endpoint `https://bijbel
 ## Message Types
 
 Emergency messages can be either:
+
 - **Dismissible**: Users can close the dialog and continue using the app
 - **Blocking**: Users cannot close the dialog (used for critical messages)
 
@@ -132,6 +133,7 @@ The `emergency_message_tool.py` provides a graphical interface for managing emer
 ## Testing
 
 To test the emergency message system:
+
 1. Run the `emergency_message_tool.py` script
 2. Enter a valid admin token
 3. Type a test message

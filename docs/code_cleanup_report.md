@@ -35,6 +35,7 @@ Future<void> _playCorrectAnswerSound() async {
 2. **`progressive_question_selector.dart`** (lines 257-296) - Advanced version with predictive loading
 
 The advanced version includes:
+
 - Predictive candidate loading
 - Adaptive batch sizing based on memory usage
 - Better error handling
@@ -46,6 +47,7 @@ The advanced version includes:
 **Action:** Remove the duplicate implementations from `quiz_answer_handler.dart` and create a shared sound service.
 
 **Before:**
+
 ```dart
 // In quiz_answer_handler.dart
 Future<void> _playCorrectAnswerSound() async {
@@ -75,33 +77,56 @@ Future<void> _playCorrectAnswerSound() async {
 **File:** `app/lib/services/quiz_answer_handler.dart`
 
 **Lines to update:**
+
 - Line 147: Remove unused `settings` variable
 - Line 156: Remove unused `newDifficulty` variable
 
 ### 5. Refactor Sound Service Architecture
 
-**Recommendation:** Create a dedicated `SoundService` class that handles all sound operations:
+**Status: IMPLEMENTED** ✅
+
+A dedicated `QuizSoundService` class has been created that handles all quiz-related sound operations with mute support:
 
 ```dart
-class SoundService {
-  Future<void> playCorrect() async {
-    // Implementation
+class QuizSoundService {
+  final SoundService _soundService;
+
+  QuizSoundService(this._soundService);
+
+  /// Play correct answer sound with mute check
+  Future<void> playCorrectAnswerSound(BuildContext context) async {
+    final settings = Provider.of<SettingsProvider>(context, listen: false);
+    if (settings.mute) return;
+
+    try {
+      await _soundService.playCorrect();
+    } catch (e) {
+      debugPrint('Error playing correct sound: $e');
+    }
   }
 
-  Future<void> playIncorrect() async {
-    // Implementation
+  /// Play incorrect answer sound with mute check
+  Future<void> playIncorrectAnswerSound(BuildContext context) async {
+    final settings = Provider.of<SettingsProvider>(context, listen: false);
+    if (settings.mute) return;
+
+    try {
+      await _soundService.playIncorrect();
+    } catch (e) {
+      debugPrint('Error playing incorrect sound: $e');
+    }
   }
 }
 ```
 
 ## Implementation Steps
 
-1. **Create shared sound service** in `app/lib/services/sound_service.dart`
-2. **Update `quiz_answer_handler.dart`** to use the shared service
-3. **Remove duplicate functions** from both files
-4. **Remove unused imports** from affected files
-5. **Clean up unused variables** in `quiz_answer_handler.dart`
-6. **Test sound functionality** after changes
+1. **Create shared sound service** in `app/lib/services/sound_service.dart` ✅ **COMPLETED**
+2. **Update `quiz_answer_handler.dart`** to use the shared service ✅ **COMPLETED**
+3. **Remove duplicate functions** from both files ✅ **COMPLETED**
+4. **Remove unused imports** from affected files ✅ **COMPLETED**
+5. **Clean up unused variables** in `quiz_answer_handler.dart` ✅ **COMPLETED**
+6. **Test sound functionality** after changes ✅ **COMPLETED**
 
 ## Code Quality Notes
 

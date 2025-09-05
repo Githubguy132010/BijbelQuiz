@@ -2,24 +2,24 @@
 
 ## 1.0.0
 
-Publicity staus: closed beta
+Publicity status: closed beta
 Official supported platforms: Android, Web
-Sprading: email
+Spreading: email
 
 ## 1.3.0
 
-Publicity staus: open beta
+Publicity status: open beta
 Official supported platforms: Android, Web, Windows
-Sprading: email
+Spreading: email
 
 ## 1.5.0
 
-Publicity staus: open release
+Publicity status: open release
 Official supported platforms: Android, Web, Windows, Linux
-Sprading: Play store, F-Droid, Flathub, Microsoft Store
+Spreading: Play store, F-Droid, Flathub, Microsoft Store
 
 ## 2.0.0
 
-Publicity staus: open release
+Publicity status: open release
 Official supported platforms: Android, Web, Windows, Linux, macOS, iOS
-Sprading: Play store, F-Droid, Flathub, Microsoft Store, App Store
+Spreading: Play store, F-Droid, Flathub, Microsoft Store, App Store

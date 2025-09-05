@@ -10,12 +10,14 @@ BijbelQuiz is a cross-platform Bible quiz app designed to test and improve your 
 ## ✨ Features
 
 ### Core Functionality
+
 - **Multiple Question Types**: Multiple choice, fill-in-the-blank, and true/false questions
 - **Adaptive Difficulty**: Progressive Question Up-selection (PQU) algorithm adjusts difficulty based on performance
 - **Comprehensive Scoring**: Tracks score, streaks, longest streaks, and incorrect answers
 - **Lesson Mode**: Structured learning with unlockable content and progress tracking
 
 ### User Experience
+
 - **Performance Optimized**: Special optimizations for low-end devices and poor connections
 - **Offline First**: Complete offline functionality with question caching
 - **Sound & Haptics**: Audio feedback and haptic responses (where supported)
@@ -23,6 +25,7 @@ BijbelQuiz is a cross-platform Bible quiz app designed to test and improve your 
 - **Responsive Design**: Optimized for phones, tablets, and desktop
 
 ### Advanced Features
+
 - **Power-ups**: Score multipliers and time bonuses
 - **Biblical References**: Unlockable scripture references for deeper study
 - **Local Notifications**: Daily motivation reminders
@@ -30,10 +33,13 @@ BijbelQuiz is a cross-platform Bible quiz app designed to test and improve your 
 - **Data Export/Import**: Backup and restore user progress and settings
 
 ### Technical Features
+
 - **Cross-Platform**: Android, iOS, Web, Linux, macOS, Windows
 - **Provider Architecture**: Clean state management with ChangeNotifier
 - **Service-Oriented Design**: Modular services for different app functions
 - **Performance Monitoring**: Real-time frame rate and memory usage tracking
+- **QuizSoundService**: Centralized sound management with mute support
+- **QuestionLoadingService**: Advanced background question loading with predictive caching
 
 ## 🚀 Getting Started
 
@@ -47,17 +53,20 @@ BijbelQuiz is a cross-platform Bible quiz app designed to test and improve your 
 ### Installation
 
 1. **Clone the repository**:
+
     ```bash
     git clone <repository-url>
     cd BijbelQuiz
     ```
 
 2. **Install dependencies**:
+
     ```bash
     flutter pub get
     ```
 
 3. **Set up development environment**:
+
     ```bash
     # For Android development
     flutter config --android-studio-dir /path/to/android/studio
@@ -67,6 +76,7 @@ BijbelQuiz is a cross-platform Bible quiz app designed to test and improve your 
     ```
 
 4. **Run the app**:
+
     ```bash
     # For Android
     flutter run
@@ -106,7 +116,7 @@ flutter build web --release
 
 ### Project Structure
 
-```
+```bash
 BijbelQuiz/
 ├── app/                       # Flutter application
 │   ├── lib/                   # Dart source code
@@ -195,19 +205,23 @@ BijbelQuiz/
 ### Key Components
 
 #### Progressive Question Up-selection (PQU)
+
 The app uses an intelligent difficulty adjustment algorithm that:
+
 - Analyzes user performance across multiple metrics
 - Adjusts question difficulty dynamically
 - Prevents getting stuck at the same difficulty level
 - Balances challenge with achievability
 
 #### Performance Optimization
+
 - **Frame Rate Monitoring**: Real-time performance tracking
 - **Memory Management**: Automatic cache optimization
 - **Adaptive Animations**: Duration adjustment based on device capabilities
 - **Lazy Loading**: Progressive question loading to reduce startup time
 
 #### Offline-First Design
+
 - **Question Caching**: Local storage of question data
 - **Background Sync**: Automatic data updates when online
 - **Graceful Degradation**: Full functionality without network
@@ -219,6 +233,7 @@ The app uses an intelligent difficulty adjustment algorithm that:
 If you're not receiving daily motivation notifications:
 
 **Android:**
+
 1. **App Settings**: Ensure notifications are enabled in app settings
 2. **System Permissions**: Check notification permissions in device settings
 3. **Android 12+**: Enable "Schedule exact alarms" permission
@@ -226,11 +241,13 @@ If you're not receiving daily motivation notifications:
 5. **Background Execution**: Allow background execution in battery settings
 
 **iOS:**
+
 1. **System Settings**: Enable notifications for the app
 2. **Focus Modes**: Check if notifications are blocked by Focus/DND modes
 3. **Background Refresh**: Ensure background app refresh is enabled
 
 **General:**
+
 1. **Restart App**: Force stop and restart the application
 2. **Check Time Zone**: Verify device time zone is correct
 3. **Network**: Ensure device has internet for initial setup
@@ -238,16 +255,19 @@ If you're not receiving daily motivation notifications:
 ### Performance Issues
 
 **Low Frame Rate:**
+
 - The app automatically detects low-end devices and adjusts animations
 - Try restarting the app to reset performance monitoring
 - Check for background apps consuming resources
 
 **Slow Loading:**
+
 - Clear app cache in device settings
 - Ensure stable internet connection for initial data load
 - Try restarting the app
 
 **Memory Issues:**
+
 - The app includes automatic memory optimization
 - Restart the app if memory usage seems high
 - Check available device storage
@@ -255,11 +275,13 @@ If you're not receiving daily motivation notifications:
 ### Audio Problems
 
 **No Sound Effects:**
+
 - Check if sound is muted in app settings
 - Verify device volume is not muted
 - For Linux: Install audio players (mpg123, ffplay)
 
 **Audio Playback Errors:**
+
 - Try restarting the app
 - Check system audio configuration
 - For Linux: Verify audio drivers are working
@@ -269,6 +291,7 @@ If you're not receiving daily motivation notifications:
 ### Core Classes
 
 #### QuizQuestion
+
 ```dart
 class QuizQuestion {
   final String question;
@@ -288,6 +311,7 @@ class QuizQuestion {
 ```
 
 #### GameStatsProvider
+
 ```dart
 class GameStatsProvider extends ChangeNotifier {
   int get score;
@@ -301,6 +325,7 @@ class GameStatsProvider extends ChangeNotifier {
 ```
 
 #### SettingsProvider
+
 ```dart
 class SettingsProvider extends ChangeNotifier {
   ThemeMode get themeMode;
@@ -318,9 +343,18 @@ class SettingsProvider extends ChangeNotifier {
 
 - **PerformanceService**: Monitors and optimizes app performance
 - **SoundService**: Handles audio playback across platforms
+- **QuizSoundService**: Centralized quiz sound management with mute support
+- **QuestionLoadingService**: Advanced background question loading with predictive caching
 - **ConnectionService**: Manages network connectivity
 - **QuestionCacheService**: Caches questions for offline use
 - **Logger**: Centralized logging with configurable levels
+
+## 📚 Additional Documentation
+
+- **[SERVICES.md](SERVICES.md)**: Detailed documentation of all application services
+- **[EMERGENCY_SYSTEM.md](EMERGENCY_SYSTEM.md)**: Emergency messaging system documentation
+- **[LOCAL_DEVELOPMENT.md](LOCAL_DEVELOPMENT.md)**: Local development setup guide
+- **[README-questions.md](README-questions.md)**: Question format documentation
 
 ## 🤝 Contributing
 
@@ -356,6 +390,7 @@ We welcome contributions! Here's how you can help:
 ### Issue Reporting
 
 When reporting bugs, please include:
+
 - Device/platform information
 - Steps to reproduce
 - Expected vs actual behavior
@@ -368,26 +403,37 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 To build for your platform:
 
 - **Web:**
+
   ```sh
   flutter build web
   ```
+
 - **Android:**
+
   ```sh
   flutter build apk --release
   ```
+
 - **iOS:**
+
   ```sh
   flutter build ios --release
   ```
+
 - **Linux:**
+
   ```sh
   flutter build linux --release
   ```
+
 - **macOS:**
+
   ```sh
   flutter build macos --release
   ```
+
 - **Windows:**
+
   ```sh
   flutter build windows --release
   ```
@@ -412,4 +458,4 @@ This project is licensed under the GNU General Public License v3.0 (GPL-3.0). Se
 
 ## Contact
 
-For questions, suggestions, or security issues, contact: thomasnowprod@proton.me
+For questions, suggestions, or security issues, contact: [thomasnowprod@proton.me](mailto:thomasnowprod@proton.me)
