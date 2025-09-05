@@ -545,27 +545,6 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
   }
 
 
-  Future<void> _playCorrectAnswerSound() async {
-    final settings = Provider.of<SettingsProvider>(context, listen: false);
-    if (settings.mute) return;
-
-    try {
-      await _soundService.playCorrect();
-    } catch (e) {
-      debugPrint('Error playing sound: $e');
-    }
-  }
-
-  Future<void> _playIncorrectAnswerSound() async {
-    final settings = Provider.of<SettingsProvider>(context, listen: false);
-    if (settings.mute) return;
-
-    try {
-      await _soundService.playIncorrect();
-    } catch (e) {
-      debugPrint('Error playing sound: $e');
-    }
-  }
 
   void _handleAnswer(int selectedIndex) {
     _answerHandler.handleAnswer(
@@ -577,6 +556,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
         });
       },
       handleNextQuestion: _handleNextQuestion,
+      context: context,
     );
   }
 
@@ -848,36 +828,6 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
   }
  
 
-  /// Load more questions in the background when running low
-  Future<void> _loadMoreQuestionsInBackground() async {
-    if (_lessonMode) return; // Don't load more in lesson mode
-
-    try {
-      final settings = Provider.of<SettingsProvider>(context, listen: false);
-      final language = settings.language;
-
-      // Load next batch of questions
-      final nextBatchStartIndex = _questionSelector.allQuestions.length;
-      const int batchSize = 50; // Load 50 more questions
-
-      final newQuestions = await _questionCacheService.getQuestions(
-        language,
-        startIndex: nextBatchStartIndex,
-        count: batchSize
-      );
-
-      if (newQuestions.isNotEmpty && mounted) {
-        setState(() {
-          // Add new questions and shuffle the combined list
-          _questionSelector.allQuestions.addAll(newQuestions);
-          _questionSelector.allQuestions.shuffle(Random());
-          AppLogger.info('Loaded additional questions, total now: ${_questionSelector.allQuestions.length}');
-        });
-      }
-    } catch (e) {
-      AppLogger.error('Failed to load more questions in background', e);
-    }
-  }
 
   Future<void> _completeLessonSession() async {
     // Stop any timers

@@ -8,6 +8,7 @@ import '../providers/settings_provider.dart';
 import '../services/sound_service.dart';
 import '../services/platform_feedback_service.dart';
 import '../services/logger.dart';
+import '../services/quiz_sound_service.dart';
 
 /// Callback for updating quiz state
 typedef UpdateQuizStateCallback = void Function(QuizState newState);
@@ -22,12 +23,14 @@ typedef HandleNextQuestionCallback = Future<void> Function(bool isCorrect, doubl
 class QuizAnswerHandler {
   final SoundService _soundService;
   final PlatformFeedbackService _platformFeedbackService;
+  final QuizSoundService _quizSoundService;
 
   QuizAnswerHandler({
     required SoundService soundService,
     required PlatformFeedbackService platformFeedbackService,
   }) : _soundService = soundService,
-       _platformFeedbackService = platformFeedbackService;
+        _platformFeedbackService = platformFeedbackService,
+        _quizSoundService = QuizSoundService(soundService);
 
   /// Handle user answer selection
   void handleAnswer({
@@ -35,6 +38,7 @@ class QuizAnswerHandler {
     required QuizState quizState,
     required UpdateQuizStateCallback updateQuizState,
     required HandleNextQuestionCallback handleNextQuestion,
+    required BuildContext context,
   }) {
     if (quizState.isAnswering) return;
 
@@ -54,6 +58,7 @@ class QuizAnswerHandler {
         quizState: quizState,
         updateQuizState: updateQuizState,
         handleNextQuestion: handleNextQuestion,
+        context: context,
       );
     } else if (quizState.question.type == QuestionType.tf) {
       // For true/false: index 0 = 'Goed', index 1 = 'Fout'
@@ -68,6 +73,7 @@ class QuizAnswerHandler {
         quizState: quizState,
         updateQuizState: updateQuizState,
         handleNextQuestion: handleNextQuestion,
+        context: context,
       );
     } else {
       // For other types, do nothing for now
@@ -79,17 +85,18 @@ class QuizAnswerHandler {
     required QuizState quizState,
     required UpdateQuizStateCallback updateQuizState,
     required HandleNextQuestionCallback handleNextQuestion,
+    required BuildContext context,
   }) async {
     AppLogger.info('Answer selected: ${isCorrect ? 'correct' : 'incorrect'} for question');
 
     // Start sound playing in background (don't await to prevent blocking)
     if (isCorrect) {
-      _playCorrectAnswerSound().catchError((e) {
+      _quizSoundService.playCorrectAnswerSound(context).catchError((e) {
         // Ignore sound errors to prevent affecting visual feedback timing
         AppLogger.warning('Sound playback error (correct): $e');
       });
     } else {
-      _playIncorrectAnswerSound().catchError((e) {
+      _quizSoundService.playIncorrectAnswerSound(context).catchError((e) {
         // Ignore sound errors to prevent affecting visual feedback timing
         AppLogger.warning('Sound playback error (incorrect): $e');
       });
@@ -119,21 +126,6 @@ class QuizAnswerHandler {
     await handleNextQuestion(isCorrect, quizState.currentDifficulty);
   }
 
-  Future<void> _playCorrectAnswerSound() async {
-    try {
-      await _soundService.playCorrect();
-    } catch (e) {
-      debugPrint('Error playing correct sound: $e');
-    }
-  }
-
-  Future<void> _playIncorrectAnswerSound() async {
-    try {
-      await _soundService.playIncorrect();
-    } catch (e) {
-      debugPrint('Error playing incorrect sound: $e');
-    }
-  }
 
   /// Process answer result and update stats
   Future<void> processAnswerResult({
