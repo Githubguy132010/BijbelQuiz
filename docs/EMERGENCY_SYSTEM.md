@@ -1,10 +1,32 @@
-# Emergency Popup System
+# Emergency Message System
 
-This document explains how to use the emergency popup system in the BijbelQuiz application, including both the API and the admin tool.
+The BijbelQuiz app includes an emergency message system that allows administrators to display important messages to all app users. This system consists of:
 
-## Overview
+1. A REST API hosted on Vercel
+2. A Flutter service that polls the API for messages
+3. A dialog that displays emergency messages to users
 
-The emergency popup system allows administrators to display important messages to all app users. Messages can be configured as either dismissible or blocking (app-blocking). The system includes both a REST API and a Python-based GUI tool for managing emergency messages.
+## How It Works
+
+The `EmergencyService` in the Flutter app polls the API endpoint `https://bijbelquiz.app/api/emergency` every 5 minutes. When an emergency message is detected, it displays a dialog to the user using the `EmergencyMessageDialog` widget.
+
+## Message Types
+
+Emergency messages can be either:
+- **Dismissible**: Users can close the dialog and continue using the app
+- **Blocking**: Users cannot close the dialog (used for critical messages)
+
+### Client-Side Implementation
+
+The Flutter app automatically polls the emergency endpoint every 5 minutes. When an emergency message is received, it's displayed immediately to the user.
+
+1. **Dismissible Message**:
+   - User can close the message
+   - Message will reappear if still active on next poll
+
+2. **Blocking Message**:
+   - User cannot dismiss the message
+   - App functionality is blocked until the message is cleared server-side
 
 ## API Endpoints
 
@@ -52,18 +74,9 @@ The emergency popup system allows administrators to display important messages t
   - `200 OK`: Message cleared successfully
   - `401 Unauthorized`: Invalid or missing admin token
 
-## Client-Side Implementation
+## Authentication
 
-The Flutter app automatically polls the emergency endpoint every 5 minutes. When an emergency message is received, it's displayed immediately to the user.
-
-### Message Types
-1. **Dismissible Message**:
-   - User can close the message
-   - Message will reappear if still active on next poll
-
-2. **Blocking Message**:
-   - User cannot dismiss the message
-   - App functionality is blocked until the message is cleared server-side
+The API requires a Bearer token for administrative operations. This token should be set in the `ADMIN_TOKEN` environment variable on the server.
 
 ## Admin Tool
 
@@ -115,6 +128,15 @@ The `emergency_message_tool.py` provides a graphical interface for managing emer
    - Use the `test_emergency_api.js` script to test the API
    - Or use the provided Python tool: `python3 emergency_message_tool.py`
    - Set your admin token in the tool's interface
+
+## Testing
+
+To test the emergency message system:
+1. Run the `emergency_message_tool.py` script
+2. Enter a valid admin token
+3. Type a test message
+4. Click "Send Message"
+5. The message should appear in the app within 5 minutes (or restart the app to see it immediately)
 
 ## Best Practices
 
