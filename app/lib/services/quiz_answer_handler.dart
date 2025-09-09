@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+
 import '../models/quiz_question.dart';
 import '../models/quiz_state.dart';
-import '../providers/game_stats_provider.dart';
-import '../providers/settings_provider.dart';
 import '../services/sound_service.dart';
 import '../services/platform_feedback_service.dart';
 import '../services/logger.dart';
@@ -21,15 +19,13 @@ typedef HandleNextQuestionCallback = Future<void> Function(bool isCorrect, doubl
 
 /// Handles quiz answer processing, sound feedback, and state transitions
 class QuizAnswerHandler {
-  final SoundService _soundService;
   final PlatformFeedbackService _platformFeedbackService;
   final QuizSoundService _quizSoundService;
 
   QuizAnswerHandler({
     required SoundService soundService,
     required PlatformFeedbackService platformFeedbackService,
-  }) : _soundService = soundService,
-        _platformFeedbackService = platformFeedbackService,
+  }) : _platformFeedbackService = platformFeedbackService,
         _quizSoundService = QuizSoundService(soundService);
 
   /// Handle user answer selection

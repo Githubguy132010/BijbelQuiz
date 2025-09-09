@@ -52,7 +52,7 @@ class PlatformFeedbackService {
   /// timing adjustments.
   /// Return the visual feedback duration adjusted for the current platform.
   /// This duration is *independent* of audio, slow-mode settings or other
-  /// animation speeds.  It can be configured via [setFeedbackDuration].
+  /// animation speeds.  It can be configured via [setFeedbackDurations].
   Duration getStandardizedFeedbackDuration({bool slowMode = false}) {
     final baseDuration = slowMode ? _slowDurationMs : _normalDurationMs;
     final adjustedDuration = (baseDuration * _platformMultiplier).round();
@@ -65,7 +65,7 @@ class PlatformFeedbackService {
   /// Allows changing the base visual feedback duration globally (e.g. for
   /// tests).  The supplied [duration] should be positive.
   /// Override the feedback durations at runtime, e.g. in tests.
-  /// If [slowDuration] is omitted, it defaults to double the [normalDuration].
+  /// If [slowDuration] is omitted, it defaults to double the normal duration.
   void setFeedbackDurations({required Duration normalDuration, Duration? slowDuration}) {
     assert(!normalDuration.isNegative && normalDuration.inMilliseconds > 0);
     _normalDurationMs = normalDuration.inMilliseconds;

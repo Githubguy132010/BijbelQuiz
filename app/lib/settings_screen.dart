@@ -1149,6 +1149,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       }
                     });
                   } catch (e) {
+                    if (!mounted) return;
                     showTopSnackBar(context, '${strings.AppStrings.failedToImportStats} $e', style: TopSnackBarStyle.error);
                   }
                 },

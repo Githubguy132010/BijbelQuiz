@@ -335,7 +335,8 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
               builder: (ctx) => TextButton(
                 onPressed: hasEnoughPoints ? () {
                   gameStats.spendPointsForRetry().then((success) {
-                    if (success && mounted) {
+                    if (!dialogContext.mounted) return;
+                    if (success) {
                       Navigator.of(dialogContext).pop();
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         if (mounted) {
@@ -509,6 +510,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
         Duration(seconds: settings.slowMode ? 35 : 20)
       );
 
+      if (!mounted) return;
       final firstQuestion = _questionSelector.pickNextQuestion(0.0, context);
       _quizState = QuizState(
         question: firstQuestion,
@@ -525,6 +527,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
       }
 
       // Start the timer (reset)
+      if (!mounted) return;
       _timerManager.startTimer(context: context, reset: true);
     } catch (e) {
       if (!mounted) return;

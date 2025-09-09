@@ -466,7 +466,7 @@ class _GuidePageViewState extends State<GuidePageView> {
                                     ),
                                     const SizedBox(height: 12),
                                     DropdownButtonFormField<String>(
-                                      value: settings.gameSpeed,
+                                      initialValue: settings.gameSpeed,
                                       items: [
                                         DropdownMenuItem(
                                           value: 'slow',

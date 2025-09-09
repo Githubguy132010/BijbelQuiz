@@ -4,7 +4,7 @@ import 'package:bijbelquiz/models/quiz_state.dart';
 
 void main() {
   // Helper function to create a test question
-  QuizQuestion _createTestQuestion() {
+  QuizQuestion createTestQuestion() {
     return QuizQuestion(
       question: 'Test question?',
       correctAnswer: 'Correct',
@@ -16,7 +16,7 @@ void main() {
 
   group('QuizState', () {
     test('should create QuizState with required parameters', () {
-      final question = _createTestQuestion();
+      final question = createTestQuestion();
       final state = QuizState(question: question);
 
       expect(state.question, question);
@@ -28,7 +28,7 @@ void main() {
     });
 
     test('should create QuizState with all parameters', () {
-      final question = _createTestQuestion();
+      final question = createTestQuestion();
       final state = QuizState(
         question: question,
         selectedAnswerIndex: 1,
@@ -47,7 +47,7 @@ void main() {
     });
 
     test('should copy QuizState with updated fields', () {
-      final question1 = _createTestQuestion();
+      final question1 = createTestQuestion();
       final question2 = QuizQuestion(
         question: 'Another question?',
         correctAnswer: 'Answer',
@@ -91,7 +91,7 @@ void main() {
     });
 
     test('should copy QuizState with null values (no changes)', () {
-      final question = _createTestQuestion();
+      final question = createTestQuestion();
       final original = QuizState(
         question: question,
         selectedAnswerIndex: 1,
@@ -112,7 +112,7 @@ void main() {
     });
 
     test('should copy QuizState with partial updates', () {
-      final question = _createTestQuestion();
+      final question = createTestQuestion();
       final original = QuizState(
         question: question,
         selectedAnswerIndex: null,
@@ -137,7 +137,7 @@ void main() {
     });
 
     test('should maintain immutability when copying', () {
-      final question = _createTestQuestion();
+      final question = createTestQuestion();
       final original = QuizState(
         question: question,
         selectedAnswerIndex: 0,
@@ -160,7 +160,7 @@ void main() {
     });
 
     test('should handle null selectedAnswerIndex', () {
-      final question = _createTestQuestion();
+      final question = createTestQuestion();
       final state = QuizState(
         question: question,
         selectedAnswerIndex: null,
@@ -176,7 +176,7 @@ void main() {
     });
 
     test('should handle boolean flag updates', () {
-      final question = _createTestQuestion();
+      final question = createTestQuestion();
       final state = QuizState(
         question: question,
         isAnswering: false,
@@ -197,7 +197,7 @@ void main() {
     });
 
     test('should handle time remaining updates', () {
-      final question = _createTestQuestion();
+      final question = createTestQuestion();
       final state = QuizState(
         question: question,
         timeRemaining: 20,
@@ -214,7 +214,7 @@ void main() {
     });
 
     test('should handle difficulty updates', () {
-      final question = _createTestQuestion();
+      final question = createTestQuestion();
       final state = QuizState(
         question: question,
         currentDifficulty: 0.0,
@@ -231,7 +231,7 @@ void main() {
     });
 
     test('should handle question replacement', () {
-      final question1 = _createTestQuestion();
+      final question1 = createTestQuestion();
       final question2 = QuizQuestion(
         question: 'Different question?',
         correctAnswer: 'Different',

@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import '../lib/widgets/biblical_reference_dialog.dart';
 
 void main() {
   group('BiblicalReferenceDialog', () {
@@ -41,7 +40,7 @@ void main() {
 // Helper function to test the sanitization logic
 String _sanitizeTextForTesting(String text) {
   // Decode Unicode escape sequences like \\u00ebl
-  String _decodeUnicodeEscapes(String text) {
+  String decodeUnicodeEscapes(String text) {
     // Raw string regex to match Unicode escape sequences
     final RegExp unicodeRegex = RegExp(r'\\u([0-9a-fA-F]{4})');
     return text.replaceAllMapped(unicodeRegex, (Match match) {
@@ -52,7 +51,7 @@ String _sanitizeTextForTesting(String text) {
   }
   
   // Simple text sanitization to prevent XSS
-  String decodedText = _decodeUnicodeEscapes(text);
+  String decodedText = decodeUnicodeEscapes(text);
   
   return decodedText
       .replaceAll('&', '&amp;')

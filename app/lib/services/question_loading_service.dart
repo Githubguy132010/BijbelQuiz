@@ -74,7 +74,7 @@ class QuestionLoadingService {
         count: adaptiveBatchSize
       );
 
-      if (newQuestions.isNotEmpty && setState != null) {
+      if (newQuestions.isNotEmpty) {
         setState(() {
           // Add new questions and shuffle the combined list
           questions.addAll(newQuestions);
@@ -86,12 +86,14 @@ class QuestionLoadingService {
       // Continue loading in background if we still have room
       if (questions.length < 200 && mounted) { // Keep at least 200 questions loaded
         Future.delayed(const Duration(seconds: 2), () {
-          if (mounted) loadMoreQuestionsAdvanced(
-            context: context,
-            questions: questions,
-            setState: setState,
-            mounted: mounted,
-          );
+          if (mounted) {
+            loadMoreQuestionsAdvanced(
+              context: context,
+              questions: questions,
+              setState: setState,
+              mounted: mounted,
+            );
+          }
         });
       }
     } catch (e) {
@@ -122,7 +124,7 @@ class QuestionLoadingService {
 
       if (indicesToLoad.isNotEmpty) {
         final predictiveQuestions = await _questionCacheService.loadQuestionsByIndices(language, indicesToLoad);
-        if (predictiveQuestions.isNotEmpty && setState != null) {
+        if (predictiveQuestions.isNotEmpty) {
           setState(() {
             questions.addAll(predictiveQuestions);
             AppLogger.info('Loaded ${predictiveQuestions.length} predictive questions');

@@ -9,11 +9,11 @@ class AppUrls {
   static final String homepage = baseDomain;
 
   // API endpoints
-  static final String emergencyApi = '${baseDomainAPI}/emergency.ts';
+  static final String emergencyApi = '$baseDomainAPI/emergency.ts';
 
   // App-specific URLs
-  static final String donateUrl = '${baseDomain}/donate.html';
-  static final String updateUrl = '${baseDomain}/download.html';
+  static final String donateUrl = '$baseDomain/donate.html';
+  static final String updateUrl = '$baseDomain/download.html';
 
   // Social media URLs
   static String get mastodonUrl => AppConfig.mastodonUrl;
