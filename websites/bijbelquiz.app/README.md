@@ -1,3 +1,0 @@
-# BijbelQuiz-website
-
-bijbelquiz.app
