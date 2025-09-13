@@ -12,17 +12,17 @@ class AppUrls {
   static final String emergencyApi = '$baseDomainAPI/emergency.ts';
 
   // App-specific URLs
-  static final String donateUrl = '$baseDomain/donate.html';
+  static final String donateUrl = '$baseDomain/donate';
   static final String updateUrl = '$baseDomain/download.html';
 
   // Social media URLs (redirect through our own domain)
-  static String get mastodonUrl => '$baseDomain/r/mastodon';
-  static String get kweblerUrl => '$baseDomain/r/kwebler';
-  static String get discordUrl => '$baseDomain/r/discord';
-  static String get signalUrl => '$baseDomain/r/signal-group';
-  static String get signalContactUrl => '$baseDomain/r/signal-contact';
+  static String get mastodonUrl => '$baseDomain/mastodon';
+  static String get kweblerUrl => '$baseDomain/kwebler';
+  static String get discordUrl => '$baseDomain/discord';
+  static String get signalUrl => '$baseDomain/signal-group';
+  static String get signalContactUrl => '$baseDomain/signal-contact';
 
   // Contact
   static String get contactEmail => AppConfig.contactEmail;
-  static String get contactEmailUrl => '$baseDomain/r/email.html';
+  static String get contactEmailUrl => '$baseDomain/email';
 }
