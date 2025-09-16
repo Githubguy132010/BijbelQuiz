@@ -34,7 +34,32 @@ class MetricItem extends StatefulWidget {
   State<MetricItem> createState() => _MetricItemState();
 }
 
-class _MetricItemState extends State<MetricItem> {
+class _MetricItemState extends State<MetricItem>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _pulseController;
+  late Animation<double> _pulseAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _pulseController = AnimationController(
+      duration: const Duration(milliseconds: 1000),
+      vsync: this,
+    );
+    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
+      CurvedAnimation(
+        parent: _pulseController,
+        curve: Curves.easeInOut,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final baseStyle = Theme.of(context).textTheme.labelMedium?.copyWith(
@@ -150,18 +175,28 @@ class _MetricItemState extends State<MetricItem> {
                               offset: Offset(0, 16 * widget.scale * (1 - animationValue)),
                               child: Opacity(
                                 opacity: animationValue.clamp(0.0, 1.0),
-                                child: Text(
-                                  currentValue.toString(),
-                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.w800,
-                                    color: (widget.label == 'Time' || widget.label == 'Tijd') && currentValue <= 5 
-                                        ? widget.timeColor 
-                                        : metricColor,
-                                    letterSpacing: -0.3,
-                                    fontSize: (widget.isSmallPhone ? 12 : 16) * widget.scale,
-                                  ),
-                                  overflow: TextOverflow.visible,
-                                  maxLines: 1,
+                                child: AnimatedBuilder(
+                                  animation: _pulseController,
+                                  builder: (context, child) {
+                                    return Transform.scale(
+                                      scale: animationValue > 0.8 && animationValue < 1.0 
+                                          ? _pulseAnimation.value 
+                                          : 1.0,
+                                      child: Text(
+                                        currentValue.toString(),
+                                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                          fontWeight: FontWeight.w800,
+                                          color: (widget.label == 'Time' || widget.label == 'Tijd') && currentValue <= 5 
+                                              ? widget.timeColor 
+                                              : metricColor,
+                                          letterSpacing: -0.3,
+                                          fontSize: (widget.isSmallPhone ? 12 : 16) * widget.scale,
+                                        ),
+                                        overflow: TextOverflow.visible,
+                                        maxLines: 1,
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
                             ),
@@ -271,16 +306,26 @@ class _MetricItemState extends State<MetricItem> {
                         offset: Offset(0, ((isDesktop ? 22 : 16) * widget.scale) * (1 - animationValue)),
                         child: Opacity(
                           opacity: animationValue.clamp(0.0, 1.0),
-                          child: Text(
-                            currentValue.toString(),
-                            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.w800,
-                              color: (widget.label == 'Time' || widget.label == 'Tijd') && currentValue <= 5 
-                                  ? widget.timeColor 
-                                  : metricColor,
-                              letterSpacing: -0.3,
-                              fontSize: (isDesktop ? 20 : 16) * widget.scale,
-                            ),
+                          child: AnimatedBuilder(
+                            animation: _pulseController,
+                            builder: (context, child) {
+                              return Transform.scale(
+                                scale: animationValue > 0.8 && animationValue < 1.0 
+                                    ? _pulseAnimation.value 
+                                    : 1.0,
+                                child: Text(
+                                  currentValue.toString(),
+                                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    fontWeight: FontWeight.w800,
+                                    color: (widget.label == 'Time' || widget.label == 'Tijd') && currentValue <= 5 
+                                        ? widget.timeColor 
+                                        : metricColor,
+                                    letterSpacing: -0.3,
+                                    fontSize: (isDesktop ? 20 : 16) * widget.scale,
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ),

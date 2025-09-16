@@ -91,7 +91,7 @@ final ThemeData appLightTheme = ThemeData(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
-      elevation: 0,
+      elevation: 2,
       backgroundColor: Color(AppConfig.primaryColorValue),
       foregroundColor: Colors.white,
       textStyle: const TextStyle(
@@ -102,7 +102,7 @@ final ThemeData appLightTheme = ThemeData(
     ),
   ),
   cardTheme: CardThemeData(
-    elevation: 0,
+    elevation: 2,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(20),
     ),
@@ -215,7 +215,7 @@ final ThemeData appDarkTheme = ThemeData(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
-      elevation: 0,
+      elevation: 2,
       backgroundColor: Color(AppConfig.primaryColorValue),
       foregroundColor: Colors.white,
       textStyle: const TextStyle(
@@ -226,7 +226,7 @@ final ThemeData appDarkTheme = ThemeData(
     ),
   ),
   cardTheme: CardThemeData(
-    elevation: 0,
+    elevation: 2,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(20),
     ),
@@ -337,7 +337,7 @@ final ThemeData oledTheme = ThemeData(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
-      elevation: 0,
+      elevation: 2,
       backgroundColor: Colors.white,
       foregroundColor: Colors.black,
       textStyle: const TextStyle(
@@ -348,7 +348,7 @@ final ThemeData oledTheme = ThemeData(
     ),
   ),
   cardTheme: CardThemeData(
-    elevation: 0,
+    elevation: 2,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(20),
     ),
@@ -448,7 +448,7 @@ final ThemeData greenTheme = ThemeData(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
-      elevation: 0,
+      elevation: 2,
       backgroundColor: Colors.green,
       foregroundColor: Colors.white,
       textStyle: const TextStyle(
@@ -459,7 +459,7 @@ final ThemeData greenTheme = ThemeData(
     ),
   ),
   cardTheme: CardThemeData(
-    elevation: 0,
+    elevation: 2,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(20),
     ),
@@ -560,7 +560,7 @@ final ThemeData orangeTheme = ThemeData(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
-      elevation: 0,
+      elevation: 2,
       backgroundColor: Colors.orange,
       foregroundColor: Colors.white,
       textStyle: const TextStyle(
@@ -571,7 +571,7 @@ final ThemeData orangeTheme = ThemeData(
     ),
   ),
   cardTheme: CardThemeData(
-    elevation: 0,
+    elevation: 2,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(20),
     ),

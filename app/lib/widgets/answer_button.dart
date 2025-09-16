@@ -29,9 +29,11 @@ class AnswerButton extends StatefulWidget {
   State<AnswerButton> createState() => _AnswerButtonState();
 }
 
-class _AnswerButtonState extends State<AnswerButton> with SingleTickerProviderStateMixin {
+class _AnswerButtonState extends State<AnswerButton>
+    with SingleTickerProviderStateMixin {
   AnimationController? _animationController;
   late Animation<double> _scaleAnimation;
+  late Animation<double> _elevationAnimation;
   late Color _backgroundColor;
   late Color _borderColor;
   late Color _textColor;
@@ -46,10 +48,13 @@ class _AnswerButtonState extends State<AnswerButton> with SingleTickerProviderSt
       _scaleAnimation = widget.externalScaleAnimation!;
     } else {
       _animationController = AnimationController(
-        duration: const Duration(milliseconds: 120), // Optimized for better responsiveness
+        duration: const Duration(milliseconds: 150),
         vsync: this,
       );
-      _scaleAnimation = Tween<double>(begin: 1.0, end: 0.98).animate(
+      _scaleAnimation = Tween<double>(begin: 1.0, end: 0.96).animate(
+        CurvedAnimation(parent: _animationController!, curve: Curves.easeInOut),
+      );
+      _elevationAnimation = Tween<double>(begin: 1.0, end: 4.0).animate(
         CurvedAnimation(parent: _animationController!, curve: Curves.easeInOut),
       );
     }
@@ -102,19 +107,25 @@ class _AnswerButtonState extends State<AnswerButton> with SingleTickerProviderSt
   }
 
   void _onTapDown(TapDownDetails details) {
-    if (!widget.isDisabled && widget.externalScaleAnimation == null && _animationController != null) {
+    if (!widget.isDisabled &&
+        widget.externalScaleAnimation == null &&
+        _animationController != null) {
       _animationController!.forward();
     }
   }
 
   void _onTapUp(TapUpDetails details) {
-    if (!widget.isDisabled && widget.externalScaleAnimation == null && _animationController != null) {
+    if (!widget.isDisabled &&
+        widget.externalScaleAnimation == null &&
+        _animationController != null) {
       _animationController!.reverse();
     }
   }
 
   void _onTapCancel() {
-    if (!widget.isDisabled && widget.externalScaleAnimation == null && _animationController != null) {
+    if (!widget.isDisabled &&
+        widget.externalScaleAnimation == null &&
+        _animationController != null) {
       _animationController!.reverse();
     }
   }
@@ -123,10 +134,16 @@ class _AnswerButtonState extends State<AnswerButton> with SingleTickerProviderSt
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final isDesktop = size.width > 800;
-    final double verticalPadding = widget.isLarge ? (isDesktop ? 36 : 28) : (isDesktop ? 18 : 16);
-    final double fontSize = widget.isLarge ? (isDesktop ? 32 : 24) : getResponsiveFontSize(context, 16);
-    final double iconSize = widget.isLarge ? (isDesktop ? 48 : 36) : getResponsiveFontSize(context, 16);
-    final double indicatorSize = widget.isLarge ? (isDesktop ? 56 : 48) : (isDesktop ? 40 : 36);
+    final double verticalPadding =
+        widget.isLarge ? (isDesktop ? 36 : 28) : (isDesktop ? 18 : 16);
+    final double fontSize = widget.isLarge
+        ? (isDesktop ? 32 : 24)
+        : getResponsiveFontSize(context, 16);
+    final double iconSize = widget.isLarge
+        ? (isDesktop ? 48 : 36)
+        : getResponsiveFontSize(context, 16);
+    final double indicatorSize =
+        widget.isLarge ? (isDesktop ? 56 : 48) : (isDesktop ? 40 : 36);
 
     // Build semantic label based on feedback state
     String semanticLabel = widget.label;
@@ -149,23 +166,24 @@ class _AnswerButtonState extends State<AnswerButton> with SingleTickerProviderSt
         return Transform.scale(
           scale: _scaleAnimation.value,
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200), // Optimized for better responsiveness
+            duration: const Duration(milliseconds: 200),
             curve: Curves.easeInOut,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
-                if (widget.feedback == AnswerFeedback.correct || widget.feedback == AnswerFeedback.incorrect)
+                if (widget.feedback == AnswerFeedback.correct ||
+                    widget.feedback == AnswerFeedback.incorrect)
                   BoxShadow(
                     color: _backgroundColor.withAlpha((0.3 * 255).round()),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
+                    blurRadius: 16,
+                    offset: const Offset(0, 6),
                     spreadRadius: 0,
                   )
                 else
                   BoxShadow(
-                    color: widget.colorScheme.shadow.withValues(alpha: 0.06),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
+                    color: widget.colorScheme.shadow.withValues(alpha: 0.08),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
                     spreadRadius: 0,
                   ),
               ],
@@ -179,7 +197,8 @@ class _AnswerButtonState extends State<AnswerButton> with SingleTickerProviderSt
                       : null,
               button: true,
               enabled: !widget.isDisabled,
-              selected: widget.feedback == AnswerFeedback.correct || widget.feedback == AnswerFeedback.revealedCorrect,
+              selected: widget.feedback == AnswerFeedback.correct ||
+                  widget.feedback == AnswerFeedback.revealedCorrect,
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
@@ -188,7 +207,8 @@ class _AnswerButtonState extends State<AnswerButton> with SingleTickerProviderSt
                   onTapUp: widget.isDisabled ? null : _onTapUp,
                   onTapCancel: widget.isDisabled ? null : _onTapCancel,
                   borderRadius: BorderRadius.circular(16),
-                  focusColor: widget.colorScheme.primary.withAlpha((0.1 * 255).round()),
+                  focusColor:
+                      widget.colorScheme.primary.withAlpha((0.1 * 255).round()),
                   child: Container(
                     width: double.infinity,
                     padding: EdgeInsets.symmetric(
@@ -211,12 +231,14 @@ class _AnswerButtonState extends State<AnswerButton> with SingleTickerProviderSt
                             height: indicatorSize,
                             decoration: BoxDecoration(
                               color: widget.feedback == AnswerFeedback.none
-                                  ? widget.colorScheme.primary.withAlpha((0.1 * 255).round())
+                                  ? widget.colorScheme.primary
+                                      .withAlpha((0.1 * 255).round())
                                   : Colors.white.withAlpha((0.2 * 255).round()),
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
                                 color: widget.feedback == AnswerFeedback.none
-                                    ? widget.colorScheme.primary.withAlpha((0.2 * 255).round())
+                                    ? widget.colorScheme.primary
+                                        .withAlpha((0.2 * 255).round())
                                     : Colors.white.withAlpha((0.3 * 255).round()),
                                 width: 1,
                               ),
@@ -224,11 +246,15 @@ class _AnswerButtonState extends State<AnswerButton> with SingleTickerProviderSt
                             child: Center(
                               child: Text(
                                 widget.letter!,
-                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  color: _iconColor,
-                                  fontSize: getResponsiveFontSize(context, 16),
-                                ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.w700,
+                                      color: _iconColor,
+                                      fontSize:
+                                          getResponsiveFontSize(context, 16),
+                                    ),
                               ),
                             ),
                           ),
@@ -237,33 +263,42 @@ class _AnswerButtonState extends State<AnswerButton> with SingleTickerProviderSt
                         Expanded(
                           child: Text(
                             widget.label,
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w500,
-                              color: _textColor,
-                              height: 1.4,
-                              letterSpacing: 0.1,
-                              fontSize: fontSize,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  color: _textColor,
+                                  height: 1.4,
+                                  letterSpacing: 0.1,
+                                  fontSize: fontSize,
+                                ),
                           ),
                         ),
-                        if (widget.feedback == AnswerFeedback.correct || widget.feedback == AnswerFeedback.revealedCorrect)
+                        if (widget.feedback == AnswerFeedback.correct ||
+                            widget.feedback == AnswerFeedback.revealedCorrect)
                           Container(
                             padding: const EdgeInsets.all(4),
                             decoration: BoxDecoration(
                               color: widget.feedback == AnswerFeedback.correct
                                   ? Colors.white.withAlpha((0.2 * 255).round())
-                                  : widget.colorScheme.primary.withAlpha((0.1 * 255).round()),
+                                  : widget.colorScheme.primary
+                                      .withAlpha((0.1 * 255).round()),
                               borderRadius: BorderRadius.circular(8),
-                              border: widget.feedback == AnswerFeedback.revealedCorrect
+                              border: widget.feedback ==
+                                      AnswerFeedback.revealedCorrect
                                   ? Border.all(
-                                      color: widget.colorScheme.primary.withAlpha((0.3 * 255).round()),
+                                      color: widget.colorScheme.primary
+                                          .withAlpha((0.3 * 255).round()),
                                       width: 1,
                                     )
                                   : null,
                             ),
                             child: Icon(
                               Icons.check_rounded,
-                              color: widget.feedback == AnswerFeedback.correct ? Colors.white : widget.colorScheme.primary,
+                              color: widget.feedback == AnswerFeedback.correct
+                                  ? Colors.white
+                                  : widget.colorScheme.primary,
                               size: iconSize,
                               semanticLabel: 'Correct answer',
                             ),
