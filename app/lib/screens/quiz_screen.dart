@@ -262,6 +262,11 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
         _previousTime = _quizState.timeRemaining;
         _quizState = _quizState.copyWith(timeRemaining: remainingSeconds);
       });
+      
+      // Trigger animation when time reaches critical threshold (5 seconds)
+      if (remainingSeconds == 5) {
+        _animationController.triggerTimeAnimation();
+      }
     }
   }
 
@@ -354,6 +359,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
                           });
                           if (mounted) {
                             _timerManager.startTimer(context: context, reset: true);
+                            _animationController.triggerTimeAnimation();
                           }
                         }
                       });
@@ -535,6 +541,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
       // Start the timer (reset)
       if (!mounted) return;
       _timerManager.startTimer(context: context, reset: true);
+      _animationController.triggerTimeAnimation();
     } catch (e) {
       if (!mounted) return;
       setState(() {
@@ -630,6 +637,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
         currentDifficulty: calculatedNewDifficulty,
       );
       _timerManager.startTimer(context: context, reset: true);
+      _animationController.triggerTimeAnimation();
     });
   }
 
@@ -751,7 +759,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
                         scoreAnimation: _animationController.scoreAnimation,
                         streakAnimation: _animationController.streakAnimation,
                         longestStreakAnimation: _animationController.longestStreakAnimation,
-                        timeAnimation: _timerManager.timeAnimation,
+                        timeAnimation: _animationController.timeAnimation,
                         timeColorAnimation: _timerManager.timeColorAnimation,
                         previousScore: _previousScore,
                         previousStreak: _previousStreak,
@@ -915,6 +923,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
           currentDifficulty: newDifficulty,
         );
         _timerManager.startTimer(context: context, reset: true);
+        _animationController.triggerTimeAnimation();
       });
     } else {
       if (mounted) {

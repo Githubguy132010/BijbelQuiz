@@ -10,6 +10,7 @@ class QuizAnimationController {
   late Animation<double> _scoreAnimation;
   late Animation<double> _streakAnimation;
   late Animation<double> _longestStreakAnimation;
+  late Animation<double> _timeAnimation;
 
   final PerformanceService _performanceService;
   final TickerProvider _vsync;
@@ -59,12 +60,21 @@ class QuizAnimationController {
         curve: Interval(0.4, 1.0, curve: animationCurve), // 40% offset, 60% duration
       ),
     );
+
+    // Timer animation (same timing as score for consistency)
+    _timeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _statsAnimationController,
+        curve: Interval(0.0, 0.6, curve: animationCurve), // Same as score
+      ),
+    );
   }
 
   // Getters for animations
   Animation<double> get scoreAnimation => _scoreAnimation;
   Animation<double> get streakAnimation => _streakAnimation;
   Animation<double> get longestStreakAnimation => _longestStreakAnimation;
+  Animation<double> get timeAnimation => _timeAnimation;
 
   // Getter for the single controller
   AnimationController get statsAnimationController => _statsAnimationController;
@@ -79,6 +89,10 @@ class QuizAnimationController {
   }
 
   void triggerLongestStreakAnimation() {
+    _statsAnimationController.forward(from: 0.0);
+  }
+
+  void triggerTimeAnimation() {
     _statsAnimationController.forward(from: 0.0);
   }
 
