@@ -7,11 +7,20 @@
     <title>Doorverwijzen - BijbelQuiz</title>
     
     <!-- Social media meta tags will be dynamically set by JavaScript -->
+    <meta name="description" content="Bezig met doorverwijzen...">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="BijbelQuiz">
     
+    <!-- Open Graph meta tags (will be dynamically set by JavaScript) -->
+    <meta property="og:title" content="BijbelQuiz Redirect">
+    <meta property="og:description" content="Bezig met doorverwijzen...">
+    <meta property="og:url" content="https://bijbelquiz.app">
+    
     <!-- Twitter meta tags -->
     <meta name="twitter:card" content="summary">
+    <!-- Twitter meta tags (will be dynamically set by JavaScript) -->
+    <meta name="twitter:title" content="BijbelQuiz Redirect">
+    <meta name="twitter:description" content="Bezig met doorverwijzen...">
     
     <style>
         body {
@@ -110,8 +119,13 @@
                 title: 'Doneren aan BijbelQuiz',
                 description: 'Steun BijbelQuiz door te doneren via Tikkie. Elke donatie helpt bij het onderhouden en verbeteren van de app.'
             },
+            'donate.html': {
+                url: 'https://tikkie.me/pay/q0lsb26m93ll6m6htk3r',
+                title: 'Doneren aan BijbelQuiz',
+                description: 'Steun BijbelQuiz door te doneren via Tikkie. Elke donatie helpt bij het onderhouden en verbeteren van de app.'
+            },
             'email': {
-                url: 'mailto:info@bijbelquiz.app',
+                url: 'mailto:thomasnowprod@proton.me',
                 title: 'Contact - BijbelQuiz',
                 description: 'Neem contact op met het BijbelQuiz team via e-mail.'
             },
@@ -121,7 +135,7 @@
                 description: 'Terug naar de hoofdpagina van BijbelQuiz.'
             },
             'kwebler': {
-                url: 'https://kwebler.nl',
+                url: 'https://kwebler.com/profiel/BijbelQuiz',
                 title: 'Kwebler',
                 description: 'Bezoek de website van Kwebler.'
             },
@@ -131,20 +145,40 @@
                 description: 'Volg BijbelQuiz op Mastodon.'
             },
             'signal-contact': {
-                url: 'https://signal.me/#p/+31683726261',
+                url: 'https://signal.me/#eu/Rpr6fijw3iLLP8smdhgesdKIFuFc4H0D8svTZLPbKTBVaTwB3AJEWKcivAERvuzj',
+                title: 'Signal Contact - BijbelQuiz',
+                description: 'Neem contact op via Signal.'
+            },
+            'signal.html': {
+                url: 'https://signal.me/#eu/Rpr6fijw3iLLP8smdhgesdKIFuFc4H0D8svTZLPbKTBVaTwB3AJEWKcivAERvuzj',
                 title: 'Signal Contact - BijbelQuiz',
                 description: 'Neem contact op via Signal.'
             },
             'signal-group': {
-                url: 'https://signal.me/#np/+31683726261',
+                url: 'https://signal.group/#CjQKILlX0njMt_UqlaFrlk_ePLdUkNel9p4w_CHvgkKbAoHYEhCZIoaUq_8G36p1w-Xpq1xq',
                 title: 'Signal Groep - BijbelQuiz',
                 description: 'Word lid van onze Signal groep.'
+            },
+            'tevredenheidsrapport': {
+                url: 'https://app.formbricks.com/s/cmfkd5nqm1o14y501fqgufvpv',
+                title: 'Tevredenheidsrapport - BijbelQuiz',
+                description: 'Geef feedback via ons tevredenheidsrapport.'
             }
         };
         
-        // Get the redirect key from URL parameter
+        // Get the redirect key from URL parameter or path
         const urlParams = new URLSearchParams(window.location.search);
-        const redirectKey = urlParams.get('to') || 'index';
+        let redirectKey = urlParams.get('to') || 'index';
+        
+        // If no 'to' parameter, try to extract from the path
+        if (redirectKey === 'index' && window.location.pathname !== '/') {
+            // Extract the path without leading slash
+            const path = window.location.pathname.substring(1);
+            // Check if we have a redirect for this path
+            if (redirects[path]) {
+                redirectKey = path;
+            }
+        }
         
         // Get redirect info or default to index
         const redirectInfo = redirects[redirectKey] || redirects['index'];
@@ -164,7 +198,7 @@
         // Update Open Graph tags
         document.querySelector('meta[property="og:title"]').content = redirectInfo.title;
         document.querySelector('meta[property="og:description"]').content = redirectInfo.description;
-        document.querySelector('meta[property="og:url"]').content = window.location.href;
+        document.querySelector('meta[property="og:url"]').content = window.location.origin + '/' + redirectKey;
         
         // Update Twitter tags
         document.querySelector('meta[name="twitter:title"]').content = redirectInfo.title;
@@ -176,7 +210,7 @@
         
         // Set appropriate link text based on link type
         if (redirectInfo.url.startsWith('mailto:')) {
-            document.getElementById('redirect-link').textContent = 'E-mail versturen naar info@bijbelquiz.app';
+            document.getElementById('redirect-link').textContent = `E-mail versturen naar ${redirectInfo.url.substring(7)}`;
         } else {
             document.getElementById('redirect-link').textContent = `Ga naar ${redirectInfo.title}`;
         }
@@ -198,7 +232,8 @@
                 const newWindow = window.open(redirectInfo.url, '_blank');
                 // If popup blocking prevented opening, update the message to inform the user
                 if (!newWindow) {
-                    document.getElementById('redirect-message').innerHTML = 'Klik op de link hieronder om je e-mailclient te openen:<br>Als je niets ziet gebeuren, controleer dan of pop-ups niet geblokkeerd worden.';
+                    const email = redirectInfo.url.substring(7); // Remove 'mailto:' prefix
+                    document.getElementById('redirect-message').innerHTML = `Klik op de link hieronder om je e-mailclient te openen:<br>Als je niets ziet gebeuren, controleer dan of pop-ups niet geblokkeerd worden.<br>E-mailadres: ${email}`;
                 }
             } else {
                 window.location.href = redirectInfo.url;
