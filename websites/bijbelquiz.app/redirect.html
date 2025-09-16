@@ -180,8 +180,16 @@
             }
         }
         
-        // Get redirect info or default to index
-        const redirectInfo = redirects[redirectKey] || redirects['index'];
+        // Check if we're dealing with an invalid redirect
+        if (redirectKey !== 'index' && !redirects[redirectKey]) {
+            // For invalid redirects, redirect to the proper 404 page
+            window.location.href = '/404.html';
+            // Stop further execution
+            return;
+        }
+        
+        // Get redirect info for valid redirects
+        const redirectInfo = redirects[redirectKey];
         
         // Update page title and meta tags
         document.title = redirectInfo.title;
