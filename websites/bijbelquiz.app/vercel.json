@@ -9,6 +9,10 @@
       "destination": "https://tikkie.me/pay/q0lsb26m93ll6m6htk3r"
     },
     {
+      "source": "/donate.html",
+      "destination": "https://tikkie.me/pay/q0lsb26m93ll6m6htk3r"
+    },
+    {
       "source": "/email",
       "destination": "mailto:thomasnowprod@proton.me"
     },
@@ -22,6 +26,10 @@
     },
     {
       "source": "/signal-contact",
+      "destination": "https://signal.me/#eu/Rpr6fijw3iLLP8smdhgesdKIFuFc4H0D8svTZLPbKTBVaTwB3AJEWKcivAERvuzj"
+    },
+    {
+      "source": "/signal.html",
       "destination": "https://signal.me/#eu/Rpr6fijw3iLLP8smdhgesdKIFuFc4H0D8svTZLPbKTBVaTwB3AJEWKcivAERvuzj"
     },
     {
