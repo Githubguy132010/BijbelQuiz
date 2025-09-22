@@ -310,7 +310,23 @@ const server = http.createServer((req, res) => {
 
   // Serve static files for question-editor
   if (pathname.startsWith('/question-editor/')) {
-    const filePath = path.join(__dirname, pathname);
+    // Normalize the path to prevent directory traversal
+    let normalizedPath = pathname;
+    if (normalizedPath === '/question-editor/' || normalizedPath === '/question-editor') {
+      normalizedPath = '/question-editor/index.html';
+    }
+    
+    // Remove leading slash and join with __dirname
+    const filePath = path.join(__dirname, normalizedPath);
+    
+    // Ensure the resolved path is within the question-editor directory
+    const questionEditorDir = path.join(__dirname, 'question-editor');
+    if (!filePath.startsWith(questionEditorDir)) {
+      res.writeHead(403);
+      res.end('Forbidden');
+      return;
+    }
+    
     const extname = path.extname(filePath);
     let contentType = 'text/html';
     
@@ -338,6 +354,7 @@ const server = http.createServer((req, res) => {
           res.writeHead(404);
           res.end('File not found');
         } else {
+          console.error('Server Error:', error);
           res.writeHead(500);
           res.end('Server Error');
         }
