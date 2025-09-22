@@ -20,7 +20,7 @@
     },
     {
       "src": "/question-editor/(.*)",
-      "dest": "question-editor/$1"
+      "dest": "server.js"
     },
     {
       "src": "/(.*)",
