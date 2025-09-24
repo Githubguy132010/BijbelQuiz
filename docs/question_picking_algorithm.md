@@ -4,9 +4,9 @@
 
 The Progressive Question Up-selection (PQU) algorithm works by:
 1. **Adapting difficulty** based on user performance (correct/incorrect answers, streaks, time taken)
-2. **Selecting questions** within ±1 difficulty level of the target difficulty
+2. **Selecting questions** from level 1 up to the target difficulty level (cumulative selection)
 3. **Avoiding repetition** by tracking recently used questions (last 50 questions)
-4. **Mapping internal difficulty** [0..2] to JSON levels [1..5] (0.0→1, 1.0→3, 2.0→5)
+4. **Mapping internal difficulty** [0..2] to JSON levels [1..5] (0.0→1, 0.5→2, 1.0→3, 1.5→4, 2.0→5)
 5. **Applying dampening** for long sessions to prevent extreme difficulty swings
 6. **Randomly selecting** from eligible questions to ensure variety
 
@@ -29,10 +29,12 @@ Located in `app/lib/services/progressive_question_selector.dart`, this service m
 The algorithm uses a normalized internal difficulty scale of [0..2] which maps to the JSON difficulty levels [1..5]:
 
 - Internal difficulty 0.0 → JSON level 1 (easiest)
+- Internal difficulty 0.5 → JSON level 2 (easy)
 - Internal difficulty 1.0 → JSON level 3 (medium)
+- Internal difficulty 1.5 → JSON level 4 (hard)
 - Internal difficulty 2.0 → JSON level 5 (hardest)
 
-The mapping formula is: `level = 1 + (normalized_difficulty * 2)`
+The mapping formula is: `level = 1 + (normalized_difficulty * 2).round()`
 
 ### 2. Question Selection Process
 
@@ -58,8 +60,10 @@ The `pickNextQuestion()` method follows these phases:
 
 #### Phase 5: Filter Available Questions
 - Selects questions not yet used in current session
-- Prioritizes questions within ±1 difficulty level of target
-- Falls back to exact difficulty matches
+- Filters questions from level 1 up to the target difficulty level (cumulative selection)
+- For example: if user is at level 3, they get questions from levels 1, 2, and 3
+- This ensures that users always see easier questions as they progress
+- Falls back to questions above target level if no questions available at or below
 - Final fallback to any available question
 
 #### Phase 6: Apply Anti-Repetition Filter
@@ -125,9 +129,10 @@ The `QuizScreen` uses the Progressive Question Selector in these ways:
 
 1. **Adaptive Learning**: Adjusts difficulty to match user ability
 2. **Engagement**: Maintains optimal challenge level to prevent boredom/frustration
-3. **Variety**: Ensures diverse questions and prevents repetition
-4. **Performance**: Optimized to run efficiently even on low-end devices
-5. **Scalability**: Works with large question pools and continuous gameplay
+3. **Progressive Reinforcement**: Users continue to see easier levels as they progress, reinforcing knowledge
+4. **Variety**: Ensures diverse questions across all difficulty levels and prevents repetition
+5. **Performance**: Optimimized to run efficiently even on low-end devices
+6. **Scalability**: Works with large question pools and continuous gameplay
 
 ## Performance Optimizations
 

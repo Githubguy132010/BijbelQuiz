@@ -8,6 +8,10 @@ import '../services/question_loading_service.dart';
 
 /// Manages the Progressive Question Up-selection (PQU) algorithm
 /// for dynamic difficulty adjustment and question selection
+/// 
+/// The algorithm supports all difficulty levels (1-5 including 2 and 4)
+/// using cumulative selection where users get questions from level 1 
+/// up to their current target level.
 class ProgressiveQuestionSelector {
   final QuestionLoadingService _questionLoadingService;
 
@@ -96,8 +100,8 @@ class ProgressiveQuestionSelector {
     targetDifficulty = targetDifficulty.clamp(0.0, 2.0);
 
     // PHASE 4: Map internal difficulty to JSON difficulty levels
-    // Formula: level = 1 + (normalized_difficulty * 2)
-    // Examples: 0.0 -> 1, 0.5 -> 2, 1.0 -> 3, 1.5 -> 4, 2.0 -> 5
+    // Formula: level = 1 + (normalized_difficulty * 2).round()
+    // Examples: 0.0 -> 1 (easiest), 0.5 -> 2 (easy), 1.0 -> 3 (medium), 1.5 -> 4 (hard), 2.0 -> 5 (hardest)
     final int targetLevel = (1 + (targetDifficulty * 2).round()).clamp(1, 5);
 
     // PHASE 5: Select available questions (not used in current session)
@@ -128,10 +132,14 @@ class ProgressiveQuestionSelector {
     // PHASE 7: Filter questions by difficulty (cumulative level selection)
     // Users get questions from level 1 up to their current target level (inclusive)
     // For example: if user is at level 3, they get questions from levels 1, 2, and 3
+    // For example: if user is at level 4, they get questions from levels 1, 2, 3, and 4
     // This ensures that users always see easier questions as they progress
     List<QuizQuestion> eligibleQuestions = availableQuestions.where((q) {
+      // Parse question difficulty as integer (levels 1-5)
       final int qLevel = int.tryParse(q.difficulty.toString()) ?? 3;
-      return qLevel <= targetLevel;
+      // Ensure level is within valid range [1-5]
+      final int clampedLevel = qLevel.clamp(1, 5);
+      return clampedLevel <= targetLevel;
     }).toList();
 
     // Fallback: if no questions available at or below target level, 
