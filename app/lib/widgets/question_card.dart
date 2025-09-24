@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import '../models/quiz_question.dart';
 import '../theme/app_theme.dart';
 import '../utils/responsive_utils.dart';
 import '../services/performance_service.dart';
 import 'answer_button.dart';
+import '../providers/game_stats_provider.dart';
 
 /// Combined animation controller for question card transitions and answer button feedback
 class QuestionCardAnimationController {
@@ -129,8 +131,9 @@ class _QuestionCardState extends State<QuestionCard> with SingleTickerProviderSt
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final isDesktop = context.isDesktop;
+    final bool isPowerActive = context.watch<GameStatsProvider>().isPowerupActive;
 
-    Widget content = _buildQuestionContent(context, colorScheme, isDesktop);
+    Widget content = _buildQuestionContent(context, colorScheme, isDesktop, isPowerActive);
 
     return AnimatedBuilder(
       animation: _animationController.fadeAnimation,
@@ -147,7 +150,7 @@ class _QuestionCardState extends State<QuestionCard> with SingleTickerProviderSt
     );
   }
   
-  Widget _buildQuestionContent(BuildContext context, ColorScheme colorScheme, bool isDesktop) {
+  Widget _buildQuestionContent(BuildContext context, ColorScheme colorScheme, bool isDesktop, bool isPowerActive) {
 
     Widget content;
     switch (widget.question.type) {
@@ -183,6 +186,13 @@ class _QuestionCardState extends State<QuestionCard> with SingleTickerProviderSt
                         offset: const Offset(0, 16),
                         spreadRadius: 0,
                       ),
+                      if (isPowerActive)
+                        BoxShadow(
+                          color: Colors.orange.withAlpha((0.35 * 255).round()),
+                          blurRadius: 36,
+                          spreadRadius: 6,
+                          offset: const Offset(0, 0),
+                        ),
                     ],
                   ),
                   child: Padding(
@@ -292,6 +302,13 @@ class _QuestionCardState extends State<QuestionCard> with SingleTickerProviderSt
                         offset: const Offset(0, 16),
                         spreadRadius: 0,
                       ),
+                      if (isPowerActive)
+                        BoxShadow(
+                          color: Colors.orange.withAlpha((0.35 * 255).round()),
+                          blurRadius: 36,
+                          spreadRadius: 6,
+                          offset: const Offset(0, 0),
+                        ),
                     ],
                   ),
                   child: Padding(
@@ -392,6 +409,13 @@ class _QuestionCardState extends State<QuestionCard> with SingleTickerProviderSt
                         offset: const Offset(0, 16),
                         spreadRadius: 0,
                       ),
+                      if (isPowerActive)
+                        BoxShadow(
+                          color: Colors.orange.withAlpha((0.35 * 255).round()),
+                          blurRadius: 36,
+                          spreadRadius: 6,
+                          offset: const Offset(0, 0),
+                        ),
                     ],
                   ),
                   child: Padding(
