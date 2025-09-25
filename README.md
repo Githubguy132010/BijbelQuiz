@@ -33,7 +33,7 @@ The core Flutter application with the following structure:
   - `widgets/`: Reusable UI widgets
 - `assets/`: Static assets
   - `categories.json`: Quiz categories
-  - `questions-nl-sv.json`: Questions in Dutch and Swedish
+  - `questions-nl-sv.json`: Questions in Dutch
   - `fonts/`: Custom fonts (Quicksand)
   - `icon/`: App icons
   - `sounds/`: Audio files for feedback
@@ -68,7 +68,6 @@ Web applications:
 ## Features
 
 - Interactive Bible quizzes
-- Multiple languages (Dutch, Swedish)
 - Progress tracking
 - Sound effects
 - Offline support
@@ -76,8 +75,8 @@ Web applications:
 
 ## Git repositories
 
-- [Codeberg](https://codeberg.org/ThomasNowProductions/BijbelQuiz) (primary)
-- [GitHub](https://github.com/ThomasNowProductions/BijbelQuiz) (secondary)
+- [Codeberg](https://codeberg.org/ThomasNowProductions/BijbelQuiz) (secondary)
+- [GitHub](https://github.com/ThomasNowProductions/BijbelQuiz) (primary)
 - [GitLab](https://gitlab.com/ThomasNow/bijbelquiz) (tertiary)
 
-Please open as much as possible issues and pull requests on Codeberg.
+Please open as much as possible issues and pull requests on GitHub.
