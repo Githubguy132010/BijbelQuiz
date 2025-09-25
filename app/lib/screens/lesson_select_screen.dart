@@ -58,23 +58,31 @@ class _LessonSelectScreenState extends State<LessonSelectScreen> {
 
     final settings = Provider.of<SettingsProvider>(context, listen: false);
 
-    // Mark that we've completed the guide check to prevent multiple calls
+    // If settings are still loading, retry shortly after load completes
+    if (settings.isLoading) {
+      Future.delayed(const Duration(milliseconds: 150), () {
+        if (mounted) _checkAndShowGuide();
+      });
+      return;
+    }
+
+    // Only show the guide if the user hasn't seen it yet
+    if (!settings.hasSeenGuide) {
+      // Prevent multiple navigations
+      _guideCheckCompleted = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const GuideScreen(),
+          ),
+        );
+      });
+      return;
+    }
+
+    // No need to show the guide; mark check as completed
     _guideCheckCompleted = true;
-
-    // Add a small delay to ensure everything is properly initialized
-    Future.delayed(const Duration(milliseconds: 100), () {
-      if (!mounted) return;
-
-      if (!settings.isLoading && !settings.hasSeenGuide) {
-        if (mounted) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const GuideScreen(),
-            ),
-          );
-        }
-      }
-    });
   }
 
   @override
