@@ -165,8 +165,8 @@
                     return;
                 }
                 
-                // Check if platform is available (Android is available, others are coming soon)
-                const isAvailable = platformKey === 'android';
+                // Check if platform is available (Android and Linux are available, others are coming soon)
+                const isAvailable = platformKey === 'android' || platformKey === 'linux';
                 const buttonClass = isAvailable ? 'btn primary' : 'btn secondary disabled';
                 const buttonText = isAvailable ? 'Download' : 'Komt later';
                 const icon = isAvailable ? 'download' : 'hourglass_empty';
