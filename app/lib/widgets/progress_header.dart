@@ -114,7 +114,7 @@ class _ProgressHeaderState extends State<ProgressHeader>
             if (widget.dayWindow.isNotEmpty) ...[
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: cs.surface,
                   borderRadius: BorderRadius.circular(16),
@@ -123,18 +123,104 @@ class _ProgressHeaderState extends State<ProgressHeader>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Je gebruikt BijbelQuiz al ${widget.streakDays} dagen op rij.',
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w700),
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: cs.primaryContainer,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Icon(
+                            Icons.fireplace,
+                            color: cs.onPrimaryContainer,
+                            size: 24,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Dagelijkse streak',
+                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                      fontWeight: FontWeight.w700,
+                                      color: cs.primary,
+                                    ),
+                              ),
+                              Text(
+                                'Je gebruikt BijbelQuiz al ${widget.streakDays} dagen op rij',
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      color: cs.onSurfaceVariant,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         for (int i = 0; i < widget.dayWindow.length; i++)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                            child: _buildDayCircle(context, widget.dayWindow[i], isCenter: i == 2),
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                            child: Column(
+                              children: [
+                                Text(
+                                  _getDayAbbreviation(widget.dayWindow[i].date),
+                                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                        color: _getDayTextColor(context, widget.dayWindow[i]),
+                                        fontWeight: i == 2 ? FontWeight.w700 : FontWeight.w500,
+                                      ),
+                                ),
+                                const SizedBox(height: 6),
+                                Container(
+                                  width: 32,
+                                  height: 32,
+                                  decoration: BoxDecoration(
+                                    color: _getDayBackgroundColor(context, widget.dayWindow[i]),
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: _getDayBorderColor(context, widget.dayWindow[i]),
+                                      width: i == 2 ? 2.5 : 1.8,
+                                    ),
+                                    boxShadow: i == 2 && widget.dayWindow[i].state == DayState.success
+                                        ? [
+                                            BoxShadow(
+                                              color: _getDayBorderColor(context, widget.dayWindow[i]).withValues(alpha: 0.35),
+                                              blurRadius: 8,
+                                              spreadRadius: 0,
+                                              offset: const Offset(0, 2),
+                                            ),
+                                          ]
+                                        : null,
+                                  ),
+                                  child: widget.dayWindow[i].state == DayState.freeze
+                                      ? Icon(
+                                          Icons.local_cafe,
+                                          size: 16,
+                                          color: cs.onSurfaceVariant,
+                                        )
+                                      : widget.dayWindow[i].state == DayState.success
+                                          ? Icon(
+                                              Icons.check,
+                                              size: 18,
+                                              color: cs.onPrimary,
+                                            )
+                                          : widget.dayWindow[i].state == DayState.fail
+                                              ? Icon(
+                                                  Icons.close,
+                                                  size: 18,
+                                                  color: cs.onErrorContainer,
+                                                )
+                                              : null,
+                                ),
+                              ],
+                            ),
                           ),
                       ],
                     ),
@@ -215,43 +301,65 @@ class _ProgressHeaderState extends State<ProgressHeader>
   }
 }
 
-Widget _buildDayCircle(BuildContext context, DayIndicator indicator, {bool isCenter = false}) {
+String _getDayAbbreviation(DateTime date) {
+  // Get the day of the week as an abbreviation
+  switch (date.weekday) {
+    case DateTime.monday:
+      return 'Ma';
+    case DateTime.tuesday:
+      return 'Di';
+    case DateTime.wednesday:
+      return 'Wo';
+    case DateTime.thursday:
+      return 'Do';
+    case DateTime.friday:
+      return 'Vr';
+    case DateTime.saturday:
+      return 'Za';
+    case DateTime.sunday:
+      return 'Zo';
+    default:
+      return '';
+  }
+}
+
+Color _getDayTextColor(BuildContext context, DayIndicator indicator) {
   final cs = Theme.of(context).colorScheme;
-  Color fill;
-  Color border = cs.outlineVariant;
+  if (indicator.state == DayState.future) {
+    return cs.onSurfaceVariant;
+  } else if (indicator.state == DayState.fail) {
+    return cs.error;
+  } else {
+    return cs.primary;
+  }
+}
+
+Color _getDayBackgroundColor(BuildContext context, DayIndicator indicator) {
+  final cs = Theme.of(context).colorScheme;
   switch (indicator.state) {
     case DayState.success:
-      fill = cs.primary;
-      border = cs.primary;
-      break;
+      return cs.primary;
     case DayState.fail:
-      fill = cs.errorContainer;
-      border = cs.errorContainer;
-      break;
+      return cs.errorContainer;
     case DayState.freeze:
-      fill = cs.surfaceContainerHighest;
-      border = cs.outline;
-      break;
+      return cs.surfaceContainerHighest;
     case DayState.future:
-      fill = Colors.transparent;
-      border = cs.outlineVariant;
-      break;
+      return cs.surface;
   }
+}
 
-  return Container(
-    width: 22,
-    height: 22,
-    decoration: BoxDecoration(
-      color: fill,
-      shape: BoxShape.circle,
-      border: Border.all(color: border, width: isCenter ? 3.0 : 1.8),
-      boxShadow: isCenter && indicator.state == DayState.success
-          ? [
-              BoxShadow(color: border.withValues(alpha: 0.35), blurRadius: 8, spreadRadius: 0, offset: const Offset(0, 2)),
-            ]
-          : null,
-    ),
-  );
+Color _getDayBorderColor(BuildContext context, DayIndicator indicator) {
+  final cs = Theme.of(context).colorScheme;
+  switch (indicator.state) {
+    case DayState.success:
+      return cs.primary;
+    case DayState.fail:
+      return cs.errorContainer;
+    case DayState.freeze:
+      return cs.outline;
+    case DayState.future:
+      return cs.outlineVariant;
+  }
 }
 
 class _AnimatedButton extends StatefulWidget {
