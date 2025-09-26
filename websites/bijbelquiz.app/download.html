@@ -135,8 +135,8 @@
             const singleDownloadActions = document.getElementById('singleDownloadActions');
             
             // Create platform cards for main platforms
-            // Order: Android, Web, Windows, iOS, macOS, Linux
-            const mainPlatforms = ['android', 'web', 'windows', 'ios', 'macos', 'linux'];
+            // Order: Android, Web, Linux, Windows, iOS, macOS
+            const mainPlatforms = ['android', 'web', 'linux', 'windows', 'ios', 'macos'];
             mainPlatforms.forEach(platformKey => {
                 const platformInfo = platforms[platformKey];
                 const platformCard = document.createElement('div');
