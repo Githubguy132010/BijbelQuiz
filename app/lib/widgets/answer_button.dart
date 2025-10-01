@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../services/logger.dart';
+import '../services/logger.dart';
 
 enum AnswerFeedback { none, correct, incorrect, revealedCorrect }
 
@@ -110,6 +112,7 @@ class _AnswerButtonState extends State<AnswerButton>
     if (!widget.isDisabled &&
         widget.externalScaleAnimation == null &&
         _animationController != null) {
+      AppLogger.info('Answer button tapped down: ${widget.label}');
       _animationController!.forward();
     }
   }
@@ -118,6 +121,7 @@ class _AnswerButtonState extends State<AnswerButton>
     if (!widget.isDisabled &&
         widget.externalScaleAnimation == null &&
         _animationController != null) {
+      AppLogger.info('Answer button tapped up: ${widget.label}');
       _animationController!.reverse();
     }
   }
@@ -126,6 +130,7 @@ class _AnswerButtonState extends State<AnswerButton>
     if (!widget.isDisabled &&
         widget.externalScaleAnimation == null &&
         _animationController != null) {
+      AppLogger.info('Answer button tap cancelled: ${widget.label}');
       _animationController!.reverse();
     }
   }

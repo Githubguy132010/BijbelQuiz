@@ -7,6 +7,7 @@ import '../utils/responsive_utils.dart';
 import '../services/performance_service.dart';
 import 'answer_button.dart';
 import '../providers/game_stats_provider.dart';
+import '../services/logger.dart';
 
 /// Combined animation controller for question card transitions and answer button feedback
 class QuestionCardAnimationController {
@@ -106,6 +107,7 @@ class _QuestionCardState extends State<QuestionCard> with SingleTickerProviderSt
   @override
   void initState() {
     super.initState();
+    AppLogger.info('QuestionCard initialized for question type: ${widget.question.type}, category: ${widget.question.category}');
     _animationController = QuestionCardAnimationController(
       vsync: this,
       performanceService: widget.performanceService,
@@ -495,15 +497,19 @@ class _QuestionCardState extends State<QuestionCard> with SingleTickerProviderSt
             if (event is KeyDownEvent && !widget.isAnswering && !widget.isTransitioning) {
               String key = event.logicalKey.keyLabel.toLowerCase();
               if (key == 'a' && options.isNotEmpty) {
+                AppLogger.info('Keyboard answer selected: A (index 0)');
                 widget.onAnswerSelected(0);
                 return KeyEventResult.handled;
               } else if (key == 'b' && options.length > 1) {
+                AppLogger.info('Keyboard answer selected: B (index 1)');
                 widget.onAnswerSelected(1);
                 return KeyEventResult.handled;
               } else if (key == 'c' && options.length > 2) {
+                AppLogger.info('Keyboard answer selected: C (index 2)');
                 widget.onAnswerSelected(2);
                 return KeyEventResult.handled;
               } else if (key == 'd' && options.length > 3) {
+                AppLogger.info('Keyboard answer selected: D (index 3)');
                 widget.onAnswerSelected(3);
                 return KeyEventResult.handled;
               }

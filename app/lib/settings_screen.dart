@@ -19,6 +19,7 @@ import 'constants/urls.dart';
 import 'l10n/strings_nl.dart' as strings;
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
+import 'services/logger.dart';
 
 /// The settings screen that allows users to customize app preferences
 class SettingsScreen extends StatefulWidget {
@@ -33,9 +34,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
     super.initState();
+    AppLogger.info('SettingsScreen initialized');
     Provider.of<AnalyticsService>(context, listen: false).screen(context, 'SettingsScreen');
     // Attach error handler for notification service
     NotificationService.onError = (message) {
+      AppLogger.error('Notification service error: $message');
       if (mounted) {
         showTopSnackBar(context, message, style: TopSnackBarStyle.error);
       }
@@ -978,26 +981,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             TextButton(
               onPressed: () async {
+                AppLogger.info('User initiated reset and logout');
                 Provider.of<AnalyticsService>(context, listen: false).capture(context, 'reset_and_logout');
                 final nav = Navigator.of(context);
                 final settings = Provider.of<SettingsProvider>(context, listen: false);
                 try {
+                  AppLogger.info('Starting app reset process...');
                   // Reset in-memory providers first
                   await gameStats.resetStats();
+                  AppLogger.info('Game stats reset successfully');
                   if (context.mounted) {
                     await Provider.of<LessonProgressProvider>(context, listen: false).resetAll();
+                    AppLogger.info('Lesson progress reset successfully');
                   }
 
                   // Clear caches and notifications
+                  AppLogger.info('Clearing question cache...');
                   await QuestionCacheService().clearCache();
+                  AppLogger.info('Question cache cleared');
                   await NotificationService().cancelAllNotifications();
+                  AppLogger.info('Notifications cancelled');
 
                   // Clear all persisted data
+                  AppLogger.info('Clearing all persisted data...');
                   final prefs = await SharedPreferences.getInstance();
                   await prefs.clear();
+                  AppLogger.info('All persisted data cleared');
 
                   // Reset the settings provider to initial state
                   await settings.reloadSettings();
+                  AppLogger.info('Settings reloaded after reset');
                   
                   // Explicitly set hasSeenGuide to false
                   await settings.resetGuideStatus();

@@ -24,11 +24,11 @@ import '../widgets/app_bar_widget.dart';
 import '../utils/responsive_utils.dart';
 import '../widgets/common_widgets.dart';
 import 'dart:async';
-import '../services/logger.dart';
 import 'dart:math';
 import '../widgets/quiz_skeleton.dart';
 import '../widgets/top_snackbar.dart';
 import '../l10n/strings_nl.dart' as strings;
+import '../services/logger.dart';
 
 // New extracted services
 import '../services/quiz_timer_manager.dart';
@@ -95,9 +95,19 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
   @override
   void initState() {
     super.initState();
+    final initStartTime = DateTime.now();
     Provider.of<AnalyticsService>(context, listen: false).screen(context, 'QuizScreen');
     WidgetsBinding.instance.addObserver(this);
     AppLogger.info('QuizScreen loaded');
+
+    // Log performance metrics periodically
+    Future.delayed(const Duration(seconds: 30), () {
+      if (mounted) {
+        final performanceService = Provider.of<PerformanceService>(context, listen: false);
+        final metrics = performanceService.getPerformanceMetrics();
+        AppLogger.info('QuizScreen performance metrics: $metrics');
+      }
+    });
     
     // Initialize services
     _questionCacheService = QuestionCacheService();

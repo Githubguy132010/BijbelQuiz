@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../services/logger.dart';
 
 /// Manages the app's settings including language and theme preferences
 class SettingsProvider extends ChangeNotifier {
@@ -50,6 +51,7 @@ class SettingsProvider extends ChangeNotifier {
 
 
   SettingsProvider() {
+    AppLogger.info('SettingsProvider initializing...');
     _loadSettings();
   }
 
@@ -131,11 +133,13 @@ class SettingsProvider extends ChangeNotifier {
   /// Loads settings from persistent storage
   Future<void> _loadSettings() async {
     try {
+      AppLogger.info('Loading settings from persistent storage...');
       _isLoading = true;
       _error = null;
       notifyListeners();
 
       _prefs = await SharedPreferences.getInstance();
+      AppLogger.info('SharedPreferences instance obtained');
       // Altijd Nederlands forceren
       _language = 'nl';
       final themeModeIndex = _prefs?.getInt(_themeModeKey) ?? 0;
@@ -194,6 +198,7 @@ class SettingsProvider extends ChangeNotifier {
       _selectedCustomThemeKey = (loadedCustomTheme == null || loadedCustomTheme.isEmpty) ? null : loadedCustomTheme;
     } finally {
       _isLoading = false;
+      AppLogger.info('Settings loaded successfully - Theme: $_themeMode, GameSpeed: $_gameSpeed, Mute: $_mute, Analytics: $_analyticsEnabled');
       notifyListeners();
     }
   }
@@ -209,10 +214,12 @@ class SettingsProvider extends ChangeNotifier {
 
   /// Updates the theme mode setting
   Future<void> setThemeMode(ThemeMode mode) async {
+    AppLogger.info('Changing theme mode from $_themeMode to $mode');
     await _saveSetting(
       action: () async {
         _themeMode = mode;
         await _prefs?.setInt(_themeModeKey, mode.index);
+        AppLogger.info('Theme mode saved successfully: $mode');
       },
       errorMessage: 'Failed to save theme setting',
     );
@@ -232,13 +239,16 @@ class SettingsProvider extends ChangeNotifier {
   /// Updates the game speed setting
   Future<void> setGameSpeed(String speed) async {
     if (speed != 'slow' && speed != 'medium' && speed != 'fast') {
+      AppLogger.warning('Invalid game speed setting attempted: $speed');
       throw ArgumentError('Game speed must be "slow", "medium", or "fast"');
     }
 
+    AppLogger.info('Changing game speed from $_gameSpeed to $speed');
     await _saveSetting(
       action: () async {
         _gameSpeed = speed;
         await _prefs?.setString(_slowModeKey, speed);
+        AppLogger.info('Game speed saved successfully: $speed');
       },
       errorMessage: 'Failed to save game speed setting',
     );
@@ -246,10 +256,12 @@ class SettingsProvider extends ChangeNotifier {
 
   /// Updates the mute setting
   Future<void> setMute(bool enabled) async {
+    AppLogger.info('Changing mute setting from $_mute to $enabled');
     await _saveSetting(
       action: () async {
         _mute = enabled;
         await _prefs?.setBool(_muteKey, enabled);
+        AppLogger.info('Mute setting saved successfully: $enabled');
       },
       errorMessage: 'Failed to save mute setting',
     );

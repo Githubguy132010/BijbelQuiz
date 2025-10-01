@@ -12,7 +12,7 @@ class AppLogger {
   /// Initializes the logger with the given [level].
   ///
   /// Listens to log records and prints them to the console.
-  static void init({Level level = Level.INFO}) {
+  static void init({Level level = Level.ALL}) {
     Logger.root.level = level;
     _subscription?.cancel();
     _subscription = Logger.root.onRecord.listen((record) {
@@ -23,6 +23,7 @@ class AppLogger {
       buffer.write(record.message);
       if (record.error != null) buffer.write('\n  Error: ${record.error}');
       if (record.stackTrace != null) buffer.write('\n  StackTrace: ${record.stackTrace}');
+      print(buffer.toString()); // Add this line to actually output the logs
     });
     _logger.info('Logger initialized at level: ${level.name}');
   }

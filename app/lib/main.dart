@@ -7,6 +7,7 @@ import 'dart:async';
 import 'dart:io' show Platform;
 import 'package:provider/single_child_widget.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:logging/logging.dart' show Level;
 
 import 'providers/settings_provider.dart';
 import 'providers/game_stats_provider.dart';
@@ -30,10 +31,16 @@ final analyticsService = AnalyticsService();
 void main() async {
   // Ensure that the Flutter binding is initialized before running the app.
   WidgetsFlutterBinding.ensureInitialized();
+  AppLogger.info('BijbelQuiz app starting up...');
+
   // Initialize logging
-  AppLogger.init();
+  AppLogger.init(level: Level.ALL);
+  AppLogger.info('Logger initialized successfully');
+
   // Initialize analytics
+  AppLogger.info('Initializing analytics service...');
   await analyticsService.init();
+  AppLogger.info('Analytics service initialized successfully');
   
   // Set preferred screen orientations. On web, this helps maintain a consistent layout.
   if (kIsWeb) {
@@ -44,7 +51,10 @@ void main() async {
   }
   
   final gameStatsProvider = GameStatsProvider();
+  AppLogger.info('Game stats provider initialized');
 
+  AppLogger.info('Starting Flutter app with providers...');
+  final appStartTime = DateTime.now();
   runApp(
     MultiProvider(
       providers: [
@@ -56,6 +66,8 @@ void main() async {
       child: BijbelQuizApp(),
     ),
   );
+  final appStartDuration = DateTime.now().difference(appStartTime);
+  AppLogger.info('Flutter app started successfully in ${appStartDuration.inMilliseconds}ms');
 }
 
 class BijbelQuizApp extends StatefulWidget {
@@ -79,14 +91,18 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
   @override
   void initState() {
     super.initState();
+    AppLogger.info('BijbelQuizApp state initializing...');
+
     // Defer service initialization; don't block first render
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      AppLogger.info('Starting deferred service initialization...');
       final performanceService = PerformanceService();
       final connectionService = ConnectionService();
       final questionCacheService = QuestionCacheService();
       final emergencyService = EmergencyService();
 
       // Kick off initialization in background
+      AppLogger.info('Starting parallel service initialization...');
       final initFuture = Future.wait([
         performanceService.initialize(),
         connectionService.initialize(),
@@ -94,6 +110,7 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
       ]);
 
       // Expose services immediately so UI can build without waiting
+      AppLogger.info('Exposing services to providers...');
       setState(() {
         _performanceService = performanceService;
         _connectionService = connectionService;
@@ -102,20 +119,30 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
       });
 
       // Continue with any post-init work when ready
+      AppLogger.info('Waiting for service initialization to complete...');
       await initFuture;
+      AppLogger.info('All services initialized successfully');
 
       // Start polling for emergency messages
+      AppLogger.info('Starting emergency service polling...');
       emergencyService.startPolling();
 
+      AppLogger.info('Initializing notification service for platform: ${Platform.operatingSystem}');
       if (!kIsWeb && !Platform.isLinux) {
         WidgetsBinding.instance.addPostFrameCallback((_) async {
+          AppLogger.info('Initializing notifications for mobile platform...');
           await NotificationService().init();
+          AppLogger.info('Notification service initialized for mobile');
         });
       } else if (!kIsWeb && Platform.isLinux) {
         WidgetsBinding.instance.addPostFrameCallback((_) async {
+          AppLogger.info('Initializing notifications for Linux platform...');
           await NotificationService().init();
           await NotificationService().cancelAllNotifications();
+          AppLogger.info('Notification service initialized for Linux');
         });
+      } else {
+        AppLogger.info('Skipping notification service initialization for Web platform');
       }
     });
   }
@@ -180,9 +207,11 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
 
   @override
   void dispose() {
+    AppLogger.info('BijbelQuizApp disposing...');
     _mounted = false;
     _questionCacheService?.dispose();
     _connectionService?.dispose();
+    AppLogger.info('BijbelQuizApp disposed successfully');
     super.dispose();
   }
 }

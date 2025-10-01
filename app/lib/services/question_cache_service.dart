@@ -54,12 +54,18 @@ class QuestionCacheService {
   /// Initialize the cache service
   Future<void> initialize() async {
     if (_isInitialized) return;
-    
+
+    final initStartTime = DateTime.now();
     try {
       _prefs = await SharedPreferences.getInstance();
       _isInitialized = true;
       await _clearCacheOnAppUpdate();
-      AppLogger.info('QuestionCacheService initialized');
+      final initDuration = DateTime.now().difference(initStartTime);
+      AppLogger.info('QuestionCacheService initialized in ${initDuration.inMilliseconds}ms');
+
+      // Log memory usage after initialization
+      final memoryUsage = getMemoryUsage();
+      AppLogger.info('QuestionCacheService memory usage after init: $memoryUsage');
       
       // Start periodic check for remote updates when on WiFi
       _startRemoteUpdateCheck();

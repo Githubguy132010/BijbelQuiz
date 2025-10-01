@@ -8,6 +8,7 @@ import '../theme/app_theme.dart';
 import '../widgets/top_snackbar.dart';
 import '../l10n/strings_nl.dart' as strings;
 import '../screens/quiz_screen.dart';
+import '../services/logger.dart';
 
 class StoreScreen extends StatefulWidget {
   const StoreScreen({super.key});
@@ -20,6 +21,7 @@ class _StoreScreenState extends State<StoreScreen> {
   @override
   void initState() {
     super.initState();
+    AppLogger.info('StoreScreen initialized');
     Provider.of<AnalyticsService>(context, listen: false).screen(context, 'StoreScreen');
   }
 
@@ -355,11 +357,13 @@ class _StoreScreenState extends State<StoreScreen> {
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
           onTap: () async {
+            AppLogger.info('Power-up purchase attempted: $title, cost: $cost');
             Provider.of<AnalyticsService>(context, listen: false).capture(context, 'purchase_powerup', properties: {'title': title, 'cost': cost});
             final localContext = context;
             final localGameStats = gameStats;
             final canAfford = isDev || localGameStats.score >= cost;
             if (canAfford) {
+              AppLogger.info('Sufficient stars available for power-up: $title');
               final success = isDev ? true : await localGameStats.spendStars(cost);
               if (success) {
                 final message = onPurchase();
@@ -534,13 +538,18 @@ class _StoreScreenState extends State<StoreScreen> {
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
           onTap: () async {
+            AppLogger.info('Theme purchase attempted: $title, theme: $themeKey, cost: $cost');
             Provider.of<AnalyticsService>(context, listen: false).capture(context, 'purchase_theme', properties: {'theme': themeKey, 'cost': cost});
             final localContext = context;
             final localGameStats = gameStats;
             final localSettings = settings;
             final canAfford = isDev || localGameStats.score >= cost;
-            if (isUnlocked) return;
+            if (isUnlocked) {
+              AppLogger.info('Theme already unlocked: $themeKey');
+              return;
+            }
             if (canAfford) {
+              AppLogger.info('Sufficient stars available for theme: $themeKey');
               final success = isDev ? true : await localGameStats.spendStars(cost);
               if (success) {
                 await localSettings.unlockTheme(themeKey);
