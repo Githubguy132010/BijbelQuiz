@@ -203,6 +203,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ThemeMode.system.name,
                   ThemeMode.dark.name,
                   ...settings.unlockedThemes.where((t) => t == 'oled' || t == 'green' || t == 'orange'),
+                  ...settings.getAIThemeIds(), // Add AI theme IDs
                 ];
                 String value = _getThemeDropdownValue(settings);
                 // Always default to the first available value if not present
@@ -239,6 +240,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         value: 'orange',
                         child: Text(strings.AppStrings.orangeTheme),
                       ),
+                    // Add AI themes
+                    ...settings.getAIThemeIds().map((themeId) {
+                      final aiTheme = settings.getAITheme(themeId);
+                      return DropdownMenuItem(
+                        value: themeId,
+                        child: Text(aiTheme?.name ?? 'AI Theme'),
+                      );
+                    }),
                   ],
                   onChanged: (String? value) {
                     if (value != null) {
@@ -253,8 +262,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         settings.setCustomTheme(null);
                         settings.setThemeMode(ThemeMode.system);
                       } else {
-                        settings.setCustomTheme(value);
-                        settings.setThemeMode(ThemeMode.light);
+                        // Check if it's an AI theme
+                        if (settings.hasAITheme(value)) {
+                          settings.setCustomTheme(value);
+                          settings.setThemeMode(ThemeMode.light);
+                        } else {
+                          // Handle other custom themes (oled, green, orange)
+                          settings.setCustomTheme(value);
+                          settings.setThemeMode(ThemeMode.light);
+                        }
                       }
                     }
                   },
@@ -1397,6 +1413,10 @@ String _getThemeDropdownValue(SettingsProvider settings) {
   if (custom != null && settings.unlockedThemes.contains(custom)) {
     return custom;
   }
+  // Check if it's an AI theme
+  if (custom != null && settings.hasAITheme(custom)) {
+    return custom;
+  }
   // fallback to themeMode
   final mode = settings.themeMode;
   if (mode == ThemeMode.light || mode == ThemeMode.dark || mode == ThemeMode.system) {
@@ -1404,4 +1424,4 @@ String _getThemeDropdownValue(SettingsProvider settings) {
   }
   // fallback to light if something is wrong
   return ThemeMode.light.name;
-} 
+}

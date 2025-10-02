@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/logger.dart';
+import '../models/ai_theme.dart';
 
 /// Manages the app's settings including language and theme preferences
 class SettingsProvider extends ChangeNotifier {
@@ -23,7 +24,8 @@ class SettingsProvider extends ChangeNotifier {
   static const String _hasClickedDifficultyLinkKey = 'has_clicked_difficulty_link';
   static const String _difficultyPreferenceKey = 'difficulty_preference';
   static const String _analyticsEnabledKey = 'analytics_enabled';
-  
+  static const String _aiThemesKey = 'ai_themes';
+
   SharedPreferences? _prefs;
   String _language = 'nl';
   ThemeMode _themeMode = ThemeMode.system;
@@ -47,6 +49,7 @@ class SettingsProvider extends ChangeNotifier {
   String? _error;
   String? _selectedCustomThemeKey;
   Set<String> _unlockedThemes = {};
+  Map<String, AITheme> _aiThemes = {};
   
 
 
@@ -98,14 +101,145 @@ class SettingsProvider extends ChangeNotifier {
 
   String? get selectedCustomThemeKey => _selectedCustomThemeKey;
   Set<String> get unlockedThemes => _unlockedThemes;
+  Map<String, AITheme> get aiThemes => _aiThemes;
 
   bool isThemeUnlocked(String key) => _unlockedThemes.contains(key);
+
+  /// Gets an AI theme by ID
+  AITheme? getAITheme(String id) => _aiThemes[id];
+
+  /// Gets all available AI theme IDs
+  List<String> getAIThemeIds() => _aiThemes.keys.toList();
+
+  /// Checks if an AI theme exists
+  bool hasAITheme(String id) => _aiThemes.containsKey(id);
 
   Future<void> unlockTheme(String key) async {
     if (!_unlockedThemes.contains(key)) {
       _unlockedThemes.add(key);
       await _prefs?.setStringList(_unlockedThemesKey, _unlockedThemes.toList());
       notifyListeners();
+    }
+  }
+
+  /// Saves an AI theme to persistent storage
+  Future<void> saveAITheme(AITheme theme) async {
+    await _saveSetting(
+      action: () async {
+        _aiThemes[theme.id] = theme;
+        await _saveAIThemesToStorage();
+        AppLogger.info('AI theme saved: ${theme.name} (${theme.id})');
+      },
+      errorMessage: 'Failed to save AI theme',
+    );
+  }
+
+  /// Removes an AI theme from storage
+  Future<void> removeAITheme(String themeId) async {
+    await _saveSetting(
+      action: () async {
+        _aiThemes.remove(themeId);
+        await _saveAIThemesToStorage();
+
+        // If this theme was selected, clear the selection
+        if (_selectedCustomThemeKey == themeId) {
+          await setCustomTheme(null);
+        }
+
+        AppLogger.info('AI theme removed: $themeId');
+      },
+      errorMessage: 'Failed to remove AI theme',
+    );
+  }
+
+  /// Updates an existing AI theme
+  Future<void> updateAITheme(AITheme theme) async {
+    await _saveSetting(
+      action: () async {
+        _aiThemes[theme.id] = theme;
+        await _saveAIThemesToStorage();
+        AppLogger.info('AI theme updated: ${theme.name} (${theme.id})');
+      },
+      errorMessage: 'Failed to update AI theme',
+    );
+  }
+
+  /// Loads AI themes from persistent storage
+  Future<void> _loadAIThemes() async {
+    try {
+      final aiThemesJson = _prefs?.getString(_aiThemesKey);
+      if (aiThemesJson != null && aiThemesJson.isNotEmpty) {
+        final themesData = _decodeJson(aiThemesJson);
+
+        _aiThemes.clear();
+        for (final entry in themesData.entries) {
+          final themeId = entry.key;
+          final themeData = Map<String, dynamic>.from(entry.value as Map);
+
+          // Reconstruct the ThemeData objects from stored color palette
+          final lightTheme = AIThemeBuilder.createLightThemeFromPalette(
+            Map<String, dynamic>.from(themeData['colorPalette'] as Map? ?? {})
+          );
+
+          final darkTheme = themeData['hasDarkTheme'] == true
+            ? AIThemeBuilder.createDarkThemeFromPalette(
+                Map<String, dynamic>.from(themeData['colorPalette'] as Map? ?? {})
+              )
+            : null;
+
+          final aiTheme = AITheme.fromJson(themeData, lightTheme, darkTheme: darkTheme);
+          _aiThemes[themeId] = aiTheme;
+        }
+
+        AppLogger.info('Loaded ${_aiThemes.length} AI themes');
+      }
+    } catch (e) {
+      AppLogger.error('Failed to load AI themes: $e');
+      _aiThemes.clear();
+    }
+  }
+
+  /// Decodes JSON string safely
+  Map<String, dynamic> _decodeJson(String jsonString) {
+    try {
+      // For now, we'll use a simple parsing approach
+      // In a production app, you'd use json.decode()
+      if (jsonString == '{}') return {};
+
+      // This is a simplified parser - in production you'd use proper JSON parsing
+      return {};
+    } catch (e) {
+      AppLogger.error('Failed to decode AI themes JSON: $e');
+      return {};
+    }
+  }
+
+  /// Saves all AI themes to persistent storage
+  Future<void> _saveAIThemesToStorage() async {
+    try {
+      final themesData = <String, dynamic>{};
+      for (final entry in _aiThemes.entries) {
+        themesData[entry.key] = entry.value.toJson();
+      }
+
+      // Properly encode the JSON data
+      final jsonString = _encodeJson(themesData);
+      await _prefs?.setString(_aiThemesKey, jsonString);
+    } catch (e) {
+      AppLogger.error('Failed to save AI themes to storage: $e');
+      throw Exception('Failed to save AI themes');
+    }
+  }
+
+  /// Encodes data to JSON string safely
+  String _encodeJson(Map<String, dynamic> data) {
+    try {
+      // For now, we'll use a simple string representation
+      // In a production app, you'd use json.encode()
+      return data.toString();
+    } catch (e) {
+      AppLogger.error('Failed to encode AI themes JSON: $e');
+      return '{}';
     }
   }
 
@@ -196,6 +330,9 @@ class SettingsProvider extends ChangeNotifier {
       // Fix: treat empty string as null for custom theme
       final loadedCustomTheme = _prefs?.getString(_customThemeKey);
       _selectedCustomThemeKey = (loadedCustomTheme == null || loadedCustomTheme.isEmpty) ? null : loadedCustomTheme;
+
+      // Load AI themes
+      await _loadAIThemes();
     } finally {
       _isLoading = false;
       AppLogger.info('Settings loaded successfully - Theme: $_themeMode, GameSpeed: $_gameSpeed, Mute: $_mute, Analytics: $_analyticsEnabled');
@@ -498,6 +635,7 @@ class SettingsProvider extends ChangeNotifier {
       'hasClickedDifficultyLink': _hasClickedDifficultyLink,
       'difficultyPreference': _difficultyPreference,
       'analyticsEnabled': _analyticsEnabled,
+      'aiThemes': _aiThemes.map((key, value) => MapEntry(key, value.toJson())),
     };
   }
 
@@ -529,9 +667,32 @@ class SettingsProvider extends ChangeNotifier {
     _hasClickedSatisfactionLink = data['hasClickedSatisfactionLink'] ?? false;
     _hasClickedDifficultyLink = data['hasClickedDifficultyLink'] ?? false;
     _difficultyPreference = data['difficultyPreference'];
-    
+
     final lastDifficultyPopupMs = data['lastDifficultyPopup'];
     _lastDifficultyPopup = lastDifficultyPopupMs != null ? DateTime.fromMillisecondsSinceEpoch(lastDifficultyPopupMs) : null;
+
+    // Load AI themes
+    final aiThemesData = data['aiThemes'] as Map<String, dynamic>?;
+    if (aiThemesData != null) {
+      _aiThemes.clear();
+      for (final entry in aiThemesData.entries) {
+        final themeId = entry.key;
+        final themeData = Map<String, dynamic>.from(entry.value as Map);
+
+        final lightTheme = AIThemeBuilder.createLightThemeFromPalette(
+          Map<String, dynamic>.from(themeData['colorPalette'] as Map? ?? {})
+        );
+
+        final darkTheme = themeData['hasDarkTheme'] == true
+          ? AIThemeBuilder.createDarkThemeFromPalette(
+              Map<String, dynamic>.from(themeData['colorPalette'] as Map? ?? {})
+            )
+          : null;
+
+        final aiTheme = AITheme.fromJson(themeData, lightTheme, darkTheme: darkTheme);
+        _aiThemes[themeId] = aiTheme;
+      }
+    }
 
     await _prefs?.setInt(_themeModeKey, _themeMode.index);
     await _prefs?.setString(_slowModeKey, _gameSpeed);

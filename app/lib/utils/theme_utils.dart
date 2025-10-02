@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import '../providers/settings_provider.dart';
 import '../theme/app_theme.dart';
+import '../models/ai_theme.dart';
 
 /// Utility class for theme management and switching logic
 class ThemeUtils {
   /// Gets the appropriate light theme based on settings
   static ThemeData getLightTheme(SettingsProvider settings) {
     if (settings.selectedCustomThemeKey != null) {
-      return _getCustomTheme(settings.selectedCustomThemeKey!);
+      return _getCustomTheme(settings.selectedCustomThemeKey!, settings);
     }
     return appLightTheme;
   }
@@ -15,7 +16,7 @@ class ThemeUtils {
   /// Gets the appropriate dark theme based on settings
   static ThemeData getDarkTheme(SettingsProvider settings) {
     if (settings.selectedCustomThemeKey != null) {
-      return _getCustomTheme(settings.selectedCustomThemeKey!);
+      return _getCustomTheme(settings.selectedCustomThemeKey!, settings);
     }
     return appDarkTheme;
   }
@@ -31,7 +32,14 @@ class ThemeUtils {
   }
 
   /// Gets a custom theme by key
-  static ThemeData _getCustomTheme(String themeKey) {
+  static ThemeData _getCustomTheme(String themeKey, SettingsProvider settings) {
+    // Check if it's an AI theme first
+    final aiTheme = settings.getAITheme(themeKey);
+    if (aiTheme != null) {
+      return aiTheme.lightTheme;
+    }
+
+    // Handle static themes
     switch (themeKey) {
       case 'oled':
         return oledTheme;
@@ -45,25 +53,43 @@ class ThemeUtils {
   }
 
   /// Gets all available themes as a map
-  static Map<String, ThemeData> getAllThemes() {
-    return {
+  static Map<String, ThemeData> getAllThemes({SettingsProvider? settings}) {
+    final themes = {
       'light': appLightTheme,
       'dark': appDarkTheme,
       'oled': oledTheme,
       'green': greenTheme,
       'orange': orangeTheme,
     };
+
+    // Add AI themes if settings provider is available
+    if (settings != null) {
+      for (final aiTheme in settings.aiThemes.values) {
+        themes[aiTheme.id] = aiTheme.lightTheme;
+      }
+    }
+
+    return themes;
   }
 
   /// Gets theme display names
-  static Map<String, String> getThemeDisplayNames() {
-    return {
+  static Map<String, String> getThemeDisplayNames({SettingsProvider? settings}) {
+    final displayNames = {
       'light': 'Licht',
       'dark': 'Donker',
       'oled': 'OLED',
       'green': 'Groen',
       'orange': 'Oranje',
     };
+
+    // Add AI theme display names if settings provider is available
+    if (settings != null) {
+      for (final aiTheme in settings.aiThemes.values) {
+        displayNames[aiTheme.id] = aiTheme.name;
+      }
+    }
+
+    return displayNames;
   }
 
   /// Checks if a theme is unlocked for the user
@@ -72,7 +98,11 @@ class ThemeUtils {
     if (themeKey == 'light' || themeKey == 'dark') {
       return true;
     }
-    // Custom themes require unlocking
+    // AI themes are always unlocked (they're user-created)
+    if (settings.hasAITheme(themeKey)) {
+      return true;
+    }
+    // Static custom themes require unlocking
     return settings.isThemeUnlocked(themeKey);
   }
 
