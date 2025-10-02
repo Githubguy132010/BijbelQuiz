@@ -3,6 +3,7 @@ import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:provider/provider.dart';
 import '../providers/settings_provider.dart';
 import 'logger.dart';
+import 'feature_flags_service.dart';
 
 /// A service that provides an interface to the PostHog analytics service.
 ///
@@ -35,9 +36,18 @@ class AnalyticsService {
   /// The [screenName] is the name of the screen.
   Future<void> screen(BuildContext context, String screenName) async {
     final settings = Provider.of<SettingsProvider>(context, listen: false);
-    // Skip tracking if analytics are disabled
+
+    // Check if analytics are enabled via feature flag
+    final featureFlags = FeatureFlagsService();
+    final analyticsEnabled = await featureFlags.areAnalyticsEnabled();
+    if (!analyticsEnabled) {
+      AppLogger.info('Analytics disabled via feature flag, skipping screen tracking for: $screenName');
+      return;
+    }
+
+    // Skip tracking if analytics are disabled in settings
     if (!settings.analyticsEnabled) {
-      AppLogger.info('Analytics disabled, skipping screen tracking for: $screenName');
+      AppLogger.info('Analytics disabled in settings, skipping screen tracking for: $screenName');
       return;
     }
     AppLogger.info('Tracking screen view: $screenName');
@@ -55,9 +65,18 @@ class AnalyticsService {
   /// The [properties] are any additional data to send with the event.
   Future<void> capture(BuildContext context, String eventName, {Map<String, Object>? properties}) async {
     final settings = Provider.of<SettingsProvider>(context, listen: false);
-    // Skip tracking if analytics are disabled
+
+    // Check if analytics are enabled via feature flag
+    final featureFlags = FeatureFlagsService();
+    final analyticsEnabled = await featureFlags.areAnalyticsEnabled();
+    if (!analyticsEnabled) {
+      AppLogger.info('Analytics disabled via feature flag, skipping event tracking for: $eventName');
+      return;
+    }
+
+    // Skip tracking if analytics are disabled in settings
     if (!settings.analyticsEnabled) {
-      AppLogger.info('Analytics disabled, skipping event tracking for: $eventName');
+      AppLogger.info('Analytics disabled in settings, skipping event tracking for: $eventName');
       return;
     }
     AppLogger.info('Tracking event: $eventName${properties != null ? ' with properties: $properties' : ''}');
