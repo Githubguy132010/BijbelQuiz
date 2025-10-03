@@ -7,15 +7,10 @@ import 'providers/bible_chat_provider.dart';
 import 'screens/bible_chat_screen.dart';
 
 void main() async {
-  // Load environment variables using absolute path
+  // Load environment variables from assets (works on all platforms including Android)
   try {
-    // Get the current working directory and construct absolute path to .env
-    final currentDir = Directory.current.path;
-    final envPath = '$currentDir/.env';
-
-    print('Looking for .env file at: $envPath');
-    await dotenv.load(fileName: envPath);
-    print('Successfully loaded .env from: $envPath');
+    await dotenv.load(fileName: ".env");
+    print('Successfully loaded .env from assets');
 
     // Verify the API key was loaded
     final apiKey = dotenv.env['AI_API_KEY'];
@@ -26,7 +21,7 @@ void main() async {
     }
   } catch (e) {
     print('Could not load .env file: $e');
-    print('Please ensure .env file exists in the current directory with AI_API_KEY');
+    print('Please ensure .env file is added to pubspec.yaml assets and contains AI_API_KEY');
   }
 
   runApp(const BijbelBotApp());
