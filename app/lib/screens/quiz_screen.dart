@@ -96,16 +96,32 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
   void initState() {
     super.initState();
     final initStartTime = DateTime.now();
-    Provider.of<AnalyticsService>(context, listen: false).screen(context, 'QuizScreen');
+    final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
+
+    // Track screen view and quiz session start
+    analyticsService.screen(context, 'QuizScreen');
+    analyticsService.trackQuizEvent(context, 'quiz_session_started', additionalProperties: {
+      'lesson_id': widget.lesson?.id ?? 'none',
+      'session_limit': widget.sessionLimit ?? 0,
+      'lesson_mode': _lessonMode,
+    });
+
     WidgetsBinding.instance.addObserver(this);
     AppLogger.info('QuizScreen loaded');
 
-    // Log performance metrics periodically
+    // Log performance metrics periodically and track performance
     Future.delayed(const Duration(seconds: 30), () {
       if (mounted) {
         final performanceService = Provider.of<PerformanceService>(context, listen: false);
         final metrics = performanceService.getPerformanceMetrics();
         AppLogger.info('QuizScreen performance metrics: $metrics');
+
+        // Track performance metrics
+        analyticsService.trackPerformance(context, 'quiz_session_performance', const Duration(seconds: 30), additionalProperties: {
+          'average_frame_rate': metrics['averageFrameRate'] ?? 0,
+          'memory_usage_mb': metrics['memoryUsageMB'] ?? 0,
+          'questions_answered': _sessionAnswered,
+        });
       }
     });
     
@@ -491,6 +507,9 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
 
   /// Initialize animations with performance optimizations
   Future<void> _initializeQuiz() async {
+    final initStartTime = DateTime.now();
+    final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
+
     try {
       setState(() {
         _isLoading = true;
@@ -499,6 +518,12 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
 
       final settings = Provider.of<SettingsProvider>(context, listen: false);
       final language = settings.language;
+
+      // Track quiz initialization start
+      analyticsService.trackQuizEvent(context, 'quiz_initialization_started', additionalProperties: {
+        'language': language,
+        'lesson_mode': _lessonMode,
+      });
 
       // Load questions - if in lesson mode with a specific category, load category questions
       // Otherwise load questions in batches for better performance
@@ -557,11 +582,34 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
       if (!mounted) return;
       _timerManager.startTimer(context: context, reset: true);
       _animationController.triggerTimeAnimation();
+
+      // Track successful quiz initialization
+      final initDuration = DateTime.now().difference(initStartTime);
+      analyticsService.trackPerformance(context, 'quiz_initialization', initDuration, additionalProperties: {
+        'questions_loaded': _questionSelector.allQuestions.length,
+        'lesson_mode': _lessonMode,
+        'first_question_type': firstQuestion.type,
+        'first_question_difficulty': _quizState.currentDifficulty,
+      });
+
+      analyticsService.trackQuizEvent(context, 'quiz_ready', additionalProperties: {
+        'questions_available': _questionSelector.allQuestions.length,
+        'first_question_category': firstQuestion.category,
+        'first_question_type': firstQuestion.type.toString(),
+        'first_question_difficulty': firstQuestion.difficulty,
+      });
+
     } catch (e) {
       if (!mounted) return;
       setState(() {
         _error = '${strings.AppStrings.errorLoadQuestions}: ${e.toString()}';
       });
+
+      // Track quiz initialization error
+      analyticsService.trackError(context, 'quiz_initialization_failed', e.toString(), additionalProperties: {
+        'error_location': 'question_loading',
+      });
+
       AppLogger.error('Failed to load questions in QuizScreen', e);
     } finally {
       if (mounted) {
@@ -575,6 +623,19 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
 
 
   void _handleAnswer(int selectedIndex) {
+    final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
+    final question = _quizState.question;
+
+    // Track answer selection
+    analyticsService.trackQuestionInteraction(context, 'answer_selected', question.type.toString(), additionalProperties: {
+      'question_category': question.category,
+      'question_difficulty': question.difficulty,
+      'selected_answer_index': selectedIndex,
+      'correct_answer_index': question.correctAnswerIndex,
+      'time_remaining': _quizState.timeRemaining,
+      'is_correct': selectedIndex == question.correctAnswerIndex,
+    });
+
     _answerHandler.handleAnswer(
       selectedIndex: selectedIndex,
       quizState: _quizState,
@@ -589,8 +650,20 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
   }
 
   Future<void> _handleNextQuestion(bool isCorrect, double newDifficulty) async {
+    final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
     final gameStats = Provider.of<GameStatsProvider>(context, listen: false);
     final settings = Provider.of<SettingsProvider>(context, listen: false);
+    final question = _quizState.question;
+
+    // Track question completion
+    analyticsService.trackQuestionInteraction(context, 'question_completed', question.type.toString(), additionalProperties: {
+      'is_correct': isCorrect,
+      'question_category': question.category,
+      'question_difficulty': question.difficulty,
+      'time_remaining': _quizState.timeRemaining,
+      'new_difficulty': newDifficulty,
+      'current_streak': gameStats.currentStreak,
+    });
 
     // Update game stats first
     await gameStats.updateStats(isCorrect: isCorrect);
@@ -868,11 +941,22 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
 
 
   Future<void> _completeLessonSession() async {
-    Provider.of<AnalyticsService>(context, listen: false).capture(context, 'lesson_completed', properties: {
-      if (widget.lesson?.id != null) 'lesson_id': widget.lesson!.id,
+    final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
+
+    // Track lesson completion with comprehensive data
+    analyticsService.trackQuizEvent(context, 'lesson_completed', additionalProperties: {
+      'lesson_id': widget.lesson?.id ?? 'none',
       'session_answered': _sessionAnswered,
       'session_correct': _sessionCorrect,
       'session_best_streak': _sessionBestStreak,
+      'accuracy_rate': _sessionAnswered > 0 ? (_sessionCorrect / _sessionAnswered * 100).round() : 0,
+    });
+
+    // Track business metrics for lesson completion
+    analyticsService.trackBusinessMetric(context, 'lesson_completion_rate', _sessionAnswered > 0 ? (_sessionCorrect / _sessionAnswered) : 0, additionalProperties: {
+      'lesson_id': widget.lesson?.id ?? 'none',
+      'total_questions': _sessionAnswered,
+      'correct_answers': _sessionCorrect,
     });
     // Stop any timers
     _timerManager.timeAnimationController.stop();
@@ -915,6 +999,17 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
 
   // Callback methods for bottom bar buttons
   Future<void> _handleSkip() async {
+    final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
+    final question = _quizState.question;
+
+    // Track skip action
+    analyticsService.trackQuestionInteraction(context, 'question_skipped', question.type.toString(), additionalProperties: {
+      'question_category': question.category,
+      'question_difficulty': question.difficulty,
+      'time_remaining': _quizState.timeRemaining,
+      'current_streak': Provider.of<GameStatsProvider>(context, listen: false).currentStreak,
+    });
+
     Provider.of<AnalyticsService>(context, listen: false).capture(context, 'skip_question');
     final gameStats = Provider.of<GameStatsProvider>(context, listen: false);
     final settings = Provider.of<SettingsProvider>(context, listen: false);
@@ -955,6 +1050,16 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
   }
 
   Future<void> _handleUnlockBiblicalReference() async {
+    final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
+    final question = _quizState.question;
+
+    // Track biblical reference unlock attempt
+    analyticsService.trackFeatureUsage(context, 'biblical_reference', 'unlock_attempted', additionalProperties: {
+      'question_category': question.category,
+      'question_difficulty': question.difficulty,
+      'biblical_reference': question.biblicalReference ?? 'none',
+    });
+
     Provider.of<AnalyticsService>(context, listen: false).capture(context, 'unlock_biblical_reference');
     final localContext = context;
     final gameStats = Provider.of<GameStatsProvider>(localContext, listen: false);

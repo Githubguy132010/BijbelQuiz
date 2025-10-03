@@ -162,7 +162,7 @@ class DownloadTask {
 
   /// Get formatted progress text
   String get progressText {
-    return '${downloadedItems}/$totalItems (${progress.toStringAsFixed(1)}%)';
+    return '$downloadedItems/$totalItems (${progress.toStringAsFixed(1)}%)';
   }
 
   /// Check if task can be retried

@@ -69,6 +69,20 @@ void main() async {
   );
   final appStartDuration = DateTime.now().difference(appStartTime);
   AppLogger.info('Flutter app started successfully in ${appStartDuration.inMilliseconds}ms');
+
+  // Track app launch performance
+  WidgetsBinding.instance.addPostFrameCallback((_) async {
+    try {
+      final context = EmergencyService.navigatorKey.currentContext;
+      if (context != null) {
+        await analyticsService.trackPerformance(context, 'app_startup', appStartDuration);
+        await analyticsService.trackAppLaunch(context);
+        await analyticsService.trackSessionEvent(context, 'app_started');
+      }
+    } catch (e) {
+      AppLogger.error('Failed to track app launch analytics', e);
+    }
+  });
 }
 
 class BijbelQuizApp extends StatefulWidget {
@@ -96,6 +110,9 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
     super.initState();
     AppLogger.info('BijbelQuizApp state initializing...');
 
+    // Track app lifecycle for session management
+    _trackAppLifecycle();
+
     // Defer service initialization; don't block first render
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       AppLogger.info('Starting deferred service initialization...');
@@ -120,6 +137,21 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
         AppLogger.warning('Feature flags service initialization failed: $e');
         // Don't fail the entire app if feature flags fail
         return null;
+      });
+
+      // Set up connection status tracking
+      connectionService.setConnectionStatusCallback((isConnected, connectionType) {
+        // Track connection status changes
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (EmergencyService.navigatorKey.currentContext != null) {
+            final context = EmergencyService.navigatorKey.currentContext!;
+            final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
+            analyticsService.trackTechnicalEvent(context, 'connection_status_changed', isConnected ? 'connected' : 'disconnected', additionalProperties: {
+              'connection_type': connectionType.toString(),
+              'platform': Platform.operatingSystem.toLowerCase(),
+            });
+          }
+        });
       });
 
       // Kick off initialization in background
@@ -232,6 +264,11 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
     );
   }
 
+  /// Track app lifecycle events for session management
+  void _trackAppLifecycle() {
+    AppLifecycleObserver(analyticsService).observe();
+  }
+
   @override
   void dispose() {
     AppLogger.info('BijbelQuizApp disposing...');
@@ -240,5 +277,52 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
     _connectionService?.dispose();
     AppLogger.info('BijbelQuizApp disposed successfully');
     super.dispose();
+  }
+}
+
+/// Observer class to track app lifecycle events
+class AppLifecycleObserver {
+  final AnalyticsService _analyticsService;
+  DateTime? _lastPausedTime;
+
+  AppLifecycleObserver(this._analyticsService);
+
+  void observe() {
+    WidgetsBinding.instance.addObserver(_AppLifecycleObserver(this));
+  }
+}
+
+class _AppLifecycleObserver extends WidgetsBindingObserver {
+  final AppLifecycleObserver _parent;
+
+  _AppLifecycleObserver(this._parent);
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final context = EmergencyService.navigatorKey.currentContext;
+    if (context == null) return;
+
+    switch (state) {
+      case AppLifecycleState.resumed:
+        _parent._analyticsService.trackSessionEvent(context, 'app_resumed');
+        if (_parent._lastPausedTime != null) {
+          final backgroundDuration = DateTime.now().difference(_parent._lastPausedTime!);
+          _parent._analyticsService.trackPerformance(context, 'app_background_duration', backgroundDuration);
+        }
+        break;
+      case AppLifecycleState.paused:
+        _parent._lastPausedTime = DateTime.now();
+        _parent._analyticsService.trackSessionEvent(context, 'app_paused');
+        break;
+      case AppLifecycleState.inactive:
+        _parent._analyticsService.trackSessionEvent(context, 'app_inactive');
+        break;
+      case AppLifecycleState.detached:
+        _parent._analyticsService.trackSessionEvent(context, 'app_detached');
+        break;
+      case AppLifecycleState.hidden:
+        _parent._analyticsService.trackSessionEvent(context, 'app_hidden');
+        break;
+    }
   }
 }

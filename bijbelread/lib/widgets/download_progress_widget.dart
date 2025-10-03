@@ -13,12 +13,12 @@ class DownloadProgressWidget extends StatelessWidget {
   final VoidCallback? onCancel;
 
   const DownloadProgressWidget({
-    Key? key,
+    super.key,
     required this.task,
     this.onPause,
     this.onResume,
     this.onCancel,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -238,10 +238,10 @@ class CompactDownloadProgressWidget extends StatelessWidget {
   final VoidCallback? onCancel;
 
   const CompactDownloadProgressWidget({
-    Key? key,
+    super.key,
     required this.task,
     this.onCancel,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

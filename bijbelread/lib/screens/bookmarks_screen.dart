@@ -97,7 +97,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
                 borderSide: BorderSide.none,
               ),
               filled: true,
-              fillColor: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+              fillColor: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.3),
             ),
             onChanged: (value) => setState(() => _searchQuery = value),
           ),

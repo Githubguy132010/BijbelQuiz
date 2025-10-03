@@ -8,14 +8,12 @@ class FeatureFlagsService {
   static const String socialFeaturesEnabled = 'social-features-enabled';
   static const String geminiColorGenerationEnabled = 'gemini-color-generation-enabled';
   static const String biblicalReferenceUnlockEnabled = 'biblical-reference-unlock-enabled';
-  static const String analyticsEnabled = 'analytics-enabled';
 
   /// Default feature flag values (fallback when PostHog is not available)
   static const Map<String, bool> _defaultValues = {
     socialFeaturesEnabled: false, // Currently "coming soon"
     geminiColorGenerationEnabled: true,
     biblicalReferenceUnlockEnabled: true,
-    analyticsEnabled: true,
   };
 
   /// Cache for feature flag values to avoid repeated async calls
@@ -105,11 +103,6 @@ class FeatureFlagsService {
   /// Check if biblical reference unlock is enabled
   Future<bool> isBiblicalReferenceUnlockEnabled() async {
     return await isFeatureEnabled(biblicalReferenceUnlockEnabled);
-  }
-
-  /// Check if analytics are enabled
-  Future<bool> areAnalyticsEnabled() async {
-    return await isFeatureEnabled(analyticsEnabled);
   }
 
   /// Get all current feature flag values (for debugging)

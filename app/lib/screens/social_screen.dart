@@ -17,7 +17,13 @@ class _SocialScreenState extends State<SocialScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<AnalyticsService>(context, listen: false).screen(context, 'SocialScreen');
+    final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
+
+    analyticsService.screen(context, 'SocialScreen');
+
+    // Track social screen access and feature availability
+    analyticsService.trackFeatureUsage(context, 'social_features', 'screen_accessed');
+
     _checkSocialFeaturesEnabled();
   }
 
@@ -33,6 +39,10 @@ class _SocialScreenState extends State<SocialScreen> {
     setState(() {
       _socialFeaturesEnabled = enabled;
     });
+
+    // Track social features availability
+    final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
+    analyticsService.trackFeatureUsage(context, 'social_features', enabled ? 'available' : 'unavailable');
   }
 
   @override

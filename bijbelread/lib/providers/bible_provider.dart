@@ -24,7 +24,6 @@ class _BibleLocation {
   const _BibleLocation({
     required this.bookId,
     required this.chapter,
-    this.verse,
   });
 
   @override
@@ -67,7 +66,7 @@ class BibleProvider extends ChangeNotifier {
   BibleChapter? _selectedChapter;
 
   // Navigation history for back button functionality
-  List<_BibleLocation> _navigationHistory = [];
+  final List<_BibleLocation> _navigationHistory = [];
 
   // Search and filter state
   String _currentSearchQuery = '';

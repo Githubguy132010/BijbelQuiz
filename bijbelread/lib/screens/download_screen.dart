@@ -16,7 +16,7 @@ import '../l10n/strings_nl.dart';
 
 /// Screen for managing offline Bible content and downloads
 class DownloadScreen extends StatefulWidget {
-  const DownloadScreen({Key? key}) : super(key: key);
+  const DownloadScreen({super.key});
 
   @override
   State<DownloadScreen> createState() => _DownloadScreenState();
@@ -244,8 +244,8 @@ class _DownloadScreenState extends State<DownloadScreen>
           ? null
           : FloatingActionButton(
               onPressed: _showBookSelectionDialog,
-              child: const Icon(Icons.download),
               tooltip: 'Nieuwe download',
+              child: const Icon(Icons.download),
             ),
     );
   }
@@ -777,10 +777,10 @@ class BookSelectionDialog extends StatefulWidget {
   final List<OfflineContent> offlineContent;
 
   const BookSelectionDialog({
-    Key? key,
+    super.key,
     required this.books,
     required this.offlineContent,
-  }) : super(key: key);
+  });
 
   @override
   State<BookSelectionDialog> createState() => _BookSelectionDialogState();
@@ -851,10 +851,10 @@ class StorageManagementDialog extends StatelessWidget {
   final VoidCallback onClearData;
 
   const StorageManagementDialog({
-    Key? key,
+    super.key,
     required this.stats,
     required this.onClearData,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

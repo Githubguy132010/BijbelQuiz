@@ -1,15 +1,11 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 
 import 'logger.dart';
 import 'bible_service.dart';
 import 'offline_bible_service.dart';
 import 'connection_service.dart';
-import '../models/bible_book.dart';
-import '../models/bible_chapter.dart';
 import '../models/bible_verse.dart';
 import '../models/offline_content.dart';
-import '../models/database_verse.dart';
 
 /// Service for synchronizing offline content with online sources
 class SyncService {

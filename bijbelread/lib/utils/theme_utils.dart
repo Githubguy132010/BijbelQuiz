@@ -18,7 +18,6 @@ class ThemeUtils {
         secondary: Color(0xFF7C3AED), // Purple
         tertiary: Color(0xFFDC2626), // Red
         surface: Color(0xFFFAFAFA),
-        background: Color(0xFFFAFAFA),
         surfaceContainerHighest: Color(0xFFF8FAFC),
         onSurface: Color(0xFF0F172A),
         outline: Color(0xFFE2E8F0),
@@ -226,7 +225,6 @@ class ThemeUtils {
         secondary: Color(0xFF7C3AED), // Purple
         tertiary: Color(0xFFDC2626), // Red
         surface: Color(0xFF0F172A),
-        background: Color(0xFF0F172A),
         surfaceContainerHighest: Color(0xFF1E293B),
         onSurface: Color(0xFFF8FAFC),
         outline: Color(0xFF334155),

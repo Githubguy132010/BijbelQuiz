@@ -3,10 +3,8 @@ import 'package:provider/provider.dart';
 import '../providers/bible_provider.dart';
 import '../models/bible_book.dart';
 import '../models/bible_chapter.dart';
-import '../models/bible_verse.dart';
 import '../widgets/bible_text_widget.dart';
 import 'book_selection_screen.dart';
-import '../l10n/strings_nl.dart' as strings;
 
 /// Screen for reading Bible text
 class BibleReaderScreen extends StatefulWidget {

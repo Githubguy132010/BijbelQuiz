@@ -1,4 +1,5 @@
 /// Model representing a bookmark for a Bible verse
+library;
 import 'bible_verse.dart';
 
 class Bookmark {

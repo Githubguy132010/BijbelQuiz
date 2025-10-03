@@ -227,5 +227,5 @@ class DatabaseStats {
 
   @override
   String toString() =>
-      'DatabaseStats(verses: $totalVerses, books: $totalBooks, size: ${formattedSize})';
+      'DatabaseStats(verses: $totalVerses, books: $totalBooks, size: $formattedSize)';
 }

@@ -42,6 +42,17 @@ class _StoreScreenState extends State<StoreScreen> {
     final settings = Provider.of<SettingsProvider>(context);
     final unlocked = settings.unlockedThemes;
     final isDev = kDebugMode;
+
+    // Track store visit and business metrics (only once per build)
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (ModalRoute.of(context)?.isCurrent == true) {
+        final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
+        analyticsService.trackBusinessMetric(context, 'store_visit', 1, additionalProperties: {
+          'user_stars': gameStats.score,
+          'unlocked_themes_count': unlocked.length,
+        });
+      }
+    });
     
     // Responsive design
     final size = MediaQuery.of(context).size;
@@ -381,7 +392,18 @@ class _StoreScreenState extends State<StoreScreen> {
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
           onTap: () async {
+            final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
+
             AppLogger.info('Power-up purchase attempted: $title, cost: $cost');
+
+            // Track business metrics for purchase attempt
+            analyticsService.trackBusinessMetric(context, 'powerup_purchase_attempt', 1, additionalProperties: {
+              'powerup_title': title,
+              'cost': cost,
+              'user_stars': gameStats.score,
+              'can_afford': isDev || gameStats.score >= cost,
+            });
+
             Provider.of<AnalyticsService>(context, listen: false).capture(context, 'purchase_powerup', properties: {'title': title, 'cost': cost});
             final localContext = context;
             final localGameStats = gameStats;
@@ -390,6 +412,13 @@ class _StoreScreenState extends State<StoreScreen> {
               AppLogger.info('Sufficient stars available for power-up: $title');
               final success = isDev ? true : await localGameStats.spendStars(cost);
               if (success) {
+                // Track successful purchase
+                analyticsService.trackBusinessMetric(localContext, 'powerup_purchase_success', 1, additionalProperties: {
+                  'powerup_title': title,
+                  'cost': cost,
+                  'user_stars_remaining': localGameStats.score,
+                });
+
                 final message = onPurchase();
                 if (!localContext.mounted) return;
                 

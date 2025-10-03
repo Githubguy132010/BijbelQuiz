@@ -8,8 +8,6 @@ import '../services/logger.dart';
 import '../widgets/chat_message_bubble.dart';
 import '../widgets/chat_input_field.dart';
 import '../providers/bible_chat_provider.dart';
-import '../services/gemini_service.dart';
-import '../services/bible_bot_service.dart';
 
 /// Main chat interface screen for Bible bot functionality.
 ///

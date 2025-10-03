@@ -15,14 +15,14 @@ class OfflineIndicator extends StatefulWidget {
   final EdgeInsetsGeometry? padding;
 
   const OfflineIndicator({
-    Key? key,
+    super.key,
     this.showText = true,
     this.showQuality = false,
     this.size = 16,
     this.onlineColor,
     this.offlineColor,
     this.padding,
-  }) : super(key: key);
+  });
 
   @override
   State<OfflineIndicator> createState() => _OfflineIndicatorState();
@@ -271,10 +271,10 @@ class CompactOfflineIndicator extends StatelessWidget {
   final Color? offlineColor;
 
   const CompactOfflineIndicator({
-    Key? key,
+    super.key,
     this.onlineColor,
     this.offlineColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -302,9 +302,9 @@ class FloatingOfflineIndicator extends StatefulWidget {
   final Duration showDuration;
 
   const FloatingOfflineIndicator({
-    Key? key,
+    super.key,
     this.showDuration = const Duration(seconds: 3),
-  }) : super(key: key);
+  });
 
   @override
   State<FloatingOfflineIndicator> createState() => _FloatingOfflineIndicatorState();
@@ -406,10 +406,10 @@ class ConnectionStatusBadge extends StatelessWidget {
   final bool showWhenOnline;
 
   const ConnectionStatusBadge({
-    Key? key,
+    super.key,
     this.alignment = Alignment.topRight,
     this.showWhenOnline = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

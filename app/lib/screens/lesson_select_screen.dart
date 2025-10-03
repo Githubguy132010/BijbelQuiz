@@ -47,7 +47,17 @@ class _LessonSelectScreenState extends State<LessonSelectScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<AnalyticsService>(context, listen: false).screen(context, 'LessonSelectScreen');
+    final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
+
+    // Track screen view and user engagement
+    analyticsService.screen(context, 'LessonSelectScreen');
+
+    // Track daily active user and retention metrics
+    analyticsService.trackBusinessMetric(context, 'daily_active_user', 1, additionalProperties: {
+      'day_streak': _streakDays,
+      'screen': 'lesson_select',
+    });
+
     _loadLessons();
     _loadAndMarkStreak();
 
@@ -538,6 +548,16 @@ class _LessonSelectScreenState extends State<LessonSelectScreen> {
                                               showTopSnackBar(context, 'Je kunt alleen de meest recente ontgrendelde les spelen', style: TopSnackBarStyle.info);
                                               return;
                                             }
+
+                                            // Track lesson selection and business conversion metrics
+                                            final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
+                                            analyticsService.trackBusinessMetric(context, 'lesson_selection_conversion', 1, additionalProperties: {
+                                              'lesson_id': lesson.id,
+                                              'lesson_unlocked': unlocked,
+                                              'lesson_stars': stars,
+                                              'user_streak': _streakDays,
+                                            });
+
                                             Provider.of<AnalyticsService>(context, listen: false).capture(context, 'tap_lesson', properties: {'lesson_id': lesson.id});
                                             await Navigator.of(context).push(
                                               MaterialPageRoute(

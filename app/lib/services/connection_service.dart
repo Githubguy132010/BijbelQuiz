@@ -2,7 +2,10 @@ import 'dart:async';
 import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'logger.dart';
+import 'analytics_service.dart';
 
 /// A service for monitoring network connectivity and optimizing for poor connections
 class ConnectionService {
@@ -16,6 +19,7 @@ class ConnectionService {
   Timer? _connectionCheckTimer;
   final List<ConnectionStatus> _connectionHistory = [];
   static bool disableTimersForTest = false;
+  Function(bool isConnected, ConnectionType connectionType)? _onConnectionStatusChanged;
   
   /// Whether the device is currently connected to the internet
   bool get isConnected => _isConnected;
@@ -51,10 +55,13 @@ class ConnectionService {
 
   /// Check current connection status
   Future<void> _checkConnection() async {
+    final previousConnectionState = _isConnected;
+    final previousConnectionType = _connectionType;
+
     try {
       // Use connectivity_plus to check connection type
       final connectivityResults = await (Connectivity().checkConnectivity());
-      
+
       // Get the first result or none if empty
       final connectivityResult = connectivityResults.isNotEmpty ? connectivityResults.first : ConnectivityResult.none;
       
@@ -89,8 +96,15 @@ class ConnectionService {
       _connectionType = ConnectionType.none;
       AppLogger.error('Error checking connection', e);
     }
-    
+
     _recordConnectionStatus();
+
+    // Track connection status changes if state changed
+    if (previousConnectionState != _isConnected || previousConnectionType != _connectionType) {
+      // Note: This would need to be called from a widget that has access to BuildContext
+      // For now, we'll add a callback mechanism
+      _onConnectionStatusChanged?.call(_isConnected, _connectionType);
+    }
   }
 
   /// Determine connection type and speed
@@ -138,13 +152,29 @@ class ConnectionService {
       connectionType: _connectionType,
       isSlow: _isSlowConnection,
     );
-    
+
     _connectionHistory.add(status);
-    
+
     // Keep only last 10 status records
     if (_connectionHistory.length > 10) {
       _connectionHistory.removeAt(0);
     }
+  }
+
+  /// Set callback for connection status changes
+  void setConnectionStatusCallback(Function(bool isConnected, ConnectionType connectionType)? callback) {
+    _onConnectionStatusChanged = callback;
+  }
+
+  /// Track connection status change with analytics service
+  void trackConnectionStatus(BuildContext context) {
+    final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
+
+    analyticsService.trackTechnicalEvent(context, 'connection_status_changed', _isConnected ? 'connected' : 'disconnected', additionalProperties: {
+      'connection_type': _connectionType.toString(),
+      'is_slow_connection': _isSlowConnection,
+      'platform': kIsWeb ? 'web' : Platform.operatingSystem.toLowerCase(),
+    });
   }
 
   /// Execute a network request with connection-aware retry logic

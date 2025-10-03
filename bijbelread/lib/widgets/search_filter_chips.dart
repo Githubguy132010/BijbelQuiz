@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../models/search_result.dart';
-import '../models/bible_book.dart';
 
 /// Widget for displaying and managing search filters
 class SearchFilterChips extends StatefulWidget {

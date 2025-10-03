@@ -8,7 +8,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:path/path.dart' as path;
 import 'logger.dart';
 import '../utils/color_parser.dart';
-import 'feature_flags_service.dart';
 
 /// Configuration for Gemini API service
 class GeminiConfig {

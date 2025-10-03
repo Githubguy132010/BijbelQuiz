@@ -19,7 +19,7 @@ class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
   bool _showFilters = false;
-  bool _showHistory = true;
+  final bool _showHistory = true;
 
   @override
   void initState() {
@@ -97,7 +97,7 @@ class _SearchScreenState extends State<SearchScreen> {
             borderSide: BorderSide.none,
           ),
           filled: true,
-          fillColor: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+          fillColor: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.3),
         ),
         onChanged: (value) {
           if (value.length >= 2) {
@@ -281,7 +281,7 @@ class _SearchScreenState extends State<SearchScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+        color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.3),
         border: Border(
           bottom: BorderSide(color: Theme.of(context).dividerColor),
         ),

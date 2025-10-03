@@ -1,4 +1,5 @@
 /// Model representing a search result with enhanced information
+library;
 import 'bible_verse.dart';
 
 class SearchResult {

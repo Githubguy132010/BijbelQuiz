@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../models/bible_reference.dart';
 import '../services/logger.dart';
-import '../theme/app_theme.dart';
 
 /// Display widget for formatted Bible references.
 ///

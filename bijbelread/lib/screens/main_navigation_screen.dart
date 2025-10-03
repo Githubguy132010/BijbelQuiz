@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/bible_provider.dart';
 import '../models/bible_book.dart';
-import '../models/bible_chapter.dart';
-import 'book_selection_screen.dart';
 import 'chapter_selection_screen.dart';
 import 'search_screen.dart';
 import 'bookmarks_screen.dart';

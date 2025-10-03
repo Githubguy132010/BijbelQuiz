@@ -221,7 +221,9 @@ class DownloadService {
   Future<void> _downloadVerses(DownloadTask task) async {
     if (task.chapter == null ||
         task.startVerse == null ||
-        task.endVerse == null) return;
+        task.endVerse == null) {
+      return;
+    }
 
     try {
       final verses = await _bibleService.getVerses(task.bookId, task.chapter!);

@@ -48,7 +48,14 @@ class _GuideScreenState extends State<GuideScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<AnalyticsService>(context, listen: false).screen(context, 'GuideScreen');
+    final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
+
+    analyticsService.screen(context, 'GuideScreen');
+
+    // Track guide screen access and user flow
+    analyticsService.trackUserFlow(context, 'onboarding', 'guide_started');
+    analyticsService.trackFeatureUsage(context, 'onboarding', 'guide_opened');
+
     AppLogger.info('GuideScreen loaded');
   }
 
@@ -149,6 +156,13 @@ class _GuideScreenState extends State<GuideScreen> {
   }
 
   Future<void> _handleGuideCompletion(BuildContext context) async {
+    final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
+
+    // Track guide completion with comprehensive data
+    analyticsService.trackUserFlow(context, 'onboarding', 'guide_completed');
+    analyticsService.trackFeatureUsage(context, 'onboarding', 'guide_finished');
+    analyticsService.trackConversionFunnel(context, 'user_onboarding', 'guide_completed', true);
+
     Provider.of<AnalyticsService>(context, listen: false).capture(context, 'guide_completed');
     final localContext = context;
     final settings = Provider.of<SettingsProvider>(localContext, listen: false);
