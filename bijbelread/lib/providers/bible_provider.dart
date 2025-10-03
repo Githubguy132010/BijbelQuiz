@@ -24,6 +24,7 @@ class _BibleLocation {
   const _BibleLocation({
     required this.bookId,
     required this.chapter,
+    this.verse,
   });
 
   @override
@@ -157,7 +158,7 @@ class BibleProvider extends ChangeNotifier {
   }
 
   /// Load verses for a specific chapter with offline fallback
-  Future<void> loadVerses(String bookId, int chapter) async {
+  Future<void> loadVerses(String bookId, int chapter, {int? startVerse, int? endVerse}) async {
     _setLoading(true);
     _clearError();
 
@@ -185,12 +186,22 @@ class BibleProvider extends ChangeNotifier {
       }
 
       // Load from online service
-      _verses = await _bibleService.getVerses(bookId, chapter);
+      _verses = await _bibleService.getVerses(bookId, chapter, startVerse: startVerse, endVerse: endVerse);
 
-      // Update selected chapter
-      _selectedChapter = _chapters.firstWhere(
-        (chap) => chap.bookId == bookId && chap.chapter == chapter,
-      );
+      // Update selected chapter - handle case where chapters might not be loaded
+      try {
+        _selectedChapter = _chapters.firstWhere(
+          (chap) => chap.bookId == bookId && chap.chapter == chapter,
+        );
+      } catch (e) {
+        // If chapter not found in list, create a temporary one for navigation
+        AppLogger.info('Chapter $chapter not found in chapters list for book $bookId, creating temporary for navigation');
+        _selectedChapter = BibleChapter(
+          bookId: bookId,
+          chapter: chapter,
+          verseCount: _verses.length, // Use actual loaded verses count
+        );
+      }
 
       // Clear offline message if successfully loaded online
       if (_connectionService.isOnline) {

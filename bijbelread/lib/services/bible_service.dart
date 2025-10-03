@@ -88,51 +88,41 @@ class BibleService {
     }
 
     try {
-      AppLogger.info('Fetching chapters for book: $bookId');
+      AppLogger.info('Generating chapters for book: $bookId');
 
-      final connectivityResult = await Connectivity().checkConnectivity();
-      if (connectivityResult.contains(ConnectivityResult.none)) {
-        throw Exception('Geen internetverbinding beschikbaar');
+      // Get chapter count for this book
+      final chapterCount = _getChapterCountForBook(bookId);
+      if (chapterCount <= 0) {
+        throw Exception('Ongeldig aantal hoofdstukken voor boek: $bookId');
       }
 
-      // Convert abbreviated book ID to numeric ID for API
-      final numericBookId = BibleBookMapper.getNumericBookId(bookId);
+      // Generate chapters list based on chapter count
+      final chapters = List<BibleChapter>.generate(
+        chapterCount,
+        (index) => BibleChapter(
+          bookId: bookId,
+          chapter: index + 1,
+          verseCount: 0, // Will be determined when verses are loaded
+          isAvailableOffline: false,
+          downloadedVerses: 0,
+        ),
+      );
 
-      final response = await _client.get(
-        Uri.parse('$_baseUrl?book=$numericBookId'),
-        headers: {'Content-Type': 'application/json'},
-      ).timeout(_timeout);
+      // Cache the results
+      _chaptersCache[cacheKey] = chapters;
+      _cacheTimestamps[cacheKey] = DateTime.now();
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data is List) {
-          final chapters =
-              data.map((chapter) => BibleChapter.fromJson(chapter)).toList();
-
-          // Cache the results
-          _chaptersCache[cacheKey] = chapters;
-          _cacheTimestamps[cacheKey] = DateTime.now();
-
-          AppLogger.info(
-              'Successfully fetched and cached ${chapters.length} chapters');
-          return chapters;
-        } else {
-          throw Exception('Ongeldig antwoord van server');
-        }
-      } else {
-        throw Exception('Server fout: ${response.statusCode}');
-      }
+      AppLogger.info(
+          'Successfully generated and cached ${chapters.length} chapters for book: $bookId');
+      return chapters;
     } catch (e) {
-      AppLogger.error('Error fetching chapters: $e');
-      if (e is Exception && e.toString().contains('Timeout')) {
-        throw Exception('Time-out bij het laden van hoofdstukken');
-      }
+      AppLogger.error('Error generating chapters: $e');
       rethrow;
     }
   }
 
   /// Get verses for a specific chapter with offline fallback
-  Future<List<BibleVerse>> getVerses(String bookId, int chapter) async {
+  Future<List<BibleVerse>> getVerses(String bookId, int chapter, {int? startVerse, int? endVerse}) async {
     // Check cache first
     final cacheKey = _getVersesCacheKey(bookId, chapter);
     if (_versesCache.containsKey(cacheKey) && _isCacheValid(cacheKey)) {
@@ -151,29 +141,58 @@ class BibleService {
       // Convert abbreviated book ID to numeric ID for API
       final numericBookId = BibleBookMapper.getNumericBookId(bookId);
 
+      // Build URL with verse parameter (API works better with specific verses)
+      String url = '$_baseUrl?b=$numericBookId&h=$chapter';
+
+      // For full chapters, request a reasonable verse range (first 50 verses)
+      // The API seems to work better with specific verse requests
+      if (startVerse != null) {
+        if (endVerse != null && endVerse != startVerse) {
+          url += '&v=$startVerse-$endVerse';
+        } else {
+          url += '&v=$startVerse';
+        }
+      } else {
+        // For full chapter, request verses 1-50 (most chapters won't have more than this)
+        url += '&v=1-50';
+      }
+
+      AppLogger.info('Making API request to: $url');
       final response = await _client.get(
-        Uri.parse('$_baseUrl?book=$numericBookId&chapter=$chapter'),
+        Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
       ).timeout(_timeout);
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data is List) {
-          final verses =
-              data.map((verse) => BibleVerse.fromJson(verse)).toList();
+        AppLogger.info('Response body length: ${response.body.length}');
+        AppLogger.info('Response body (first 200 chars): ${response.body.substring(0, response.body.length > 200 ? 200 : response.body.length)}');
 
-          // Cache the results
-          _versesCache[cacheKey] = verses;
-          _cacheTimestamps[cacheKey] = DateTime.now();
-
-          AppLogger.info(
-              'Successfully fetched and cached ${verses.length} verses');
-          return verses;
-        } else {
-          throw Exception('Ongeldig antwoord van server');
+        if (response.body.isEmpty) {
+          AppLogger.error('Server returned empty response for $bookId chapter $chapter');
+          throw Exception('Server geeft lege response terug voor ${BibleBookMapper.getBookName(bookId)} hoofdstuk $chapter. De bijbel API lijkt niet te werken.');
         }
+
+        // Parse XML response (API returns XML, not JSON)
+        final xmlVerses = _parseVersesFromXml(response.body);
+
+        // Set bookId and chapter for each verse
+        final verses = xmlVerses.map((verse) => BibleVerse(
+          bookId: bookId,
+          chapter: chapter,
+          verse: verse.verse,
+          text: verse.text,
+        )).toList();
+
+        // Cache the results
+        _versesCache[cacheKey] = verses;
+        _cacheTimestamps[cacheKey] = DateTime.now();
+
+        AppLogger.info('Successfully fetched and cached ${verses.length} verses');
+        return verses;
       } else {
-        throw Exception('Server fout: ${response.statusCode}');
+        AppLogger.error('Server returned status ${response.statusCode}');
+        AppLogger.error('Response body: ${response.body}');
+        throw Exception('Server fout: ${response.statusCode} - ${response.body}');
       }
     } catch (e) {
       AppLogger.error('Error fetching verses: $e');
@@ -210,6 +229,7 @@ class BibleService {
       if (e is Exception && e.toString().contains('Timeout')) {
         throw Exception('Time-out bij het laden van verzen');
       }
+
       rethrow;
     }
   }
@@ -291,6 +311,55 @@ class BibleService {
 
   /// Get cache key for books
   String _getBooksCacheKey() => 'books';
+
+  /// Parse XML response to extract Bible verses
+  List<BibleVerse> _parseVersesFromXml(String xmlResponse) {
+    try {
+      // Clean the response body first (remove BOM or other artifacts)
+      String cleanBody = xmlResponse.trim();
+      if (cleanBody.startsWith('\uFEFF')) {
+        cleanBody = cleanBody.substring(1);
+      }
+
+      AppLogger.info('Parsing XML response for verses, length: ${cleanBody.length}');
+      AppLogger.info('XML content (first 300 chars): ${cleanBody.substring(0, cleanBody.length > 300 ? 300 : cleanBody.length)}');
+
+      final document = xml.XmlDocument.parse(cleanBody);
+      final verses = <BibleVerse>[];
+
+      // Find all vers elements in the XML structure
+      final verseElements = document.findAllElements('vers');
+
+      for (final verseElement in verseElements) {
+        final verseNumber = verseElement.getAttribute('name'); // Changed from 'vers' to 'name'
+        final verseText = verseElement.innerText.trim();
+
+        if (verseNumber != null && verseText.isNotEmpty) {
+          final verseNum = int.tryParse(verseNumber);
+          if (verseNum != null) {
+            verses.add(BibleVerse(
+              bookId: '', // Will be set by caller
+              chapter: 0, // Will be set by caller
+              verse: verseNum,
+              text: verseText,
+            ));
+          }
+        }
+      }
+
+      if (verses.isEmpty) {
+        AppLogger.warning('No verses found in XML response');
+      } else {
+        AppLogger.info('Successfully parsed ${verses.length} verses from XML');
+      }
+
+      return verses;
+    } catch (e) {
+      AppLogger.error('Error parsing verses XML: $e');
+      AppLogger.error('XML content that failed to parse: ${xmlResponse.substring(0, xmlResponse.length > 500 ? 500 : xmlResponse.length)}');
+      throw Exception('XML parsing mislukt voor verzen: $e');
+    }
+  }
 
   /// Parse XML response to extract Bible books
   List<BibleBook> _parseBooksFromXml(String xmlResponse) {
@@ -553,6 +622,7 @@ class BibleService {
     _cacheTimestamps.clear();
     AppLogger.info('Bible service cache cleared');
   }
+
 
   /// Dispose of the service
   void dispose() {
