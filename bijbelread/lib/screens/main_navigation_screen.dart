@@ -373,7 +373,7 @@ class _BibleReaderScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${book.name} ${chapter.chapter}:${startVerse}${endVerse != startVerse ? '-$endVerse' : ''}'),
+        title: Text('${book.name} ${chapter.chapter}:$startVerse${endVerse != startVerse ? '-$endVerse' : ''}'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),

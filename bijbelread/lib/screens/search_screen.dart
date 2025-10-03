@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/bible_provider.dart';
 import '../models/search_result.dart';
-import '../models/bible_book.dart';
 import '../widgets/search_result_item.dart';
 import '../widgets/search_filter_chips.dart';
 import '../l10n/strings_nl.dart' as strings;

@@ -13,7 +13,7 @@ void main() async {
     final booksResponse = await http.get(Uri.parse('$baseUrl?p=boekenlijst'));
     print('Books status: ${booksResponse.statusCode}');
     print('Books response length: ${booksResponse.body.length}');
-    if (booksResponse.body.length > 0) {
+    if (booksResponse.body.isNotEmpty) {
       print('Books response (first 300 chars): ${booksResponse.body.substring(0, booksResponse.body.length > 300 ? 300 : booksResponse.body.length)}');
     }
 
@@ -22,7 +22,7 @@ void main() async {
     final verseResponse = await http.get(Uri.parse('$baseUrl?b=5&h=1'));
     print('Verse status: ${verseResponse.statusCode}');
     print('Verse response length: ${verseResponse.body.length}');
-    if (verseResponse.body.length > 0) {
+    if (verseResponse.body.isNotEmpty) {
       print('Verse response (first 500 chars): ${verseResponse.body.substring(0, verseResponse.body.length > 500 ? 500 : verseResponse.body.length)}');
     } else {
       print('Verse response is EMPTY!');
@@ -33,7 +33,7 @@ void main() async {
     final genesisResponse = await http.get(Uri.parse('$baseUrl?b=1&h=1'));
     print('Genesis status: ${genesisResponse.statusCode}');
     print('Genesis response length: ${genesisResponse.body.length}');
-    if (genesisResponse.body.length > 0) {
+    if (genesisResponse.body.isNotEmpty) {
       print('Genesis response (first 500 chars): ${genesisResponse.body.substring(0, genesisResponse.body.length > 500 ? 500 : genesisResponse.body.length)}');
     } else {
       print('Genesis response is EMPTY!');
@@ -44,7 +44,7 @@ void main() async {
     final verseRangeResponse = await http.get(Uri.parse('$baseUrl?b=1&h=1&v=1-3'));
     print('VerseRange status: ${verseRangeResponse.statusCode}');
     print('VerseRange response length: ${verseRangeResponse.body.length}');
-    if (verseRangeResponse.body.length > 0) {
+    if (verseRangeResponse.body.isNotEmpty) {
       print('VerseRange response (first 500 chars): ${verseRangeResponse.body.substring(0, verseRangeResponse.body.length > 500 ? 500 : verseRangeResponse.body.length)}');
     } else {
       print('VerseRange response is EMPTY!');
@@ -59,7 +59,7 @@ void main() async {
       );
       print('Fallback status: ${fallbackResponse.statusCode}');
       print('Fallback response length: ${fallbackResponse.body.length}');
-      if (fallbackResponse.body.length > 0) {
+      if (fallbackResponse.body.isNotEmpty) {
         print('Fallback response (first 500 chars): ${fallbackResponse.body.substring(0, fallbackResponse.body.length > 500 ? 500 : fallbackResponse.body.length)}');
       }
     } catch (e) {

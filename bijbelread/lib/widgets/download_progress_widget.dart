@@ -3,7 +3,6 @@ import 'package:percent_indicator/percent_indicator.dart';
 
 import '../models/download_task.dart';
 import '../models/offline_content.dart';
-import '../l10n/strings_nl.dart';
 
 /// Widget for displaying download progress
 class DownloadProgressWidget extends StatelessWidget {

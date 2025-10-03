@@ -12,7 +12,6 @@ import '../services/offline_bible_service.dart';
 import '../services/bible_service.dart';
 import '../services/connection_service.dart';
 import '../services/logger.dart';
-import '../l10n/strings_nl.dart';
 
 /// Screen for managing offline Bible content and downloads
 class DownloadScreen extends StatefulWidget {

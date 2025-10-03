@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../services/connection_service.dart';
-import '../l10n/strings_nl.dart';
 
 /// Widget for displaying offline/connection status
 class OfflineIndicator extends StatefulWidget {
