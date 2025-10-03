@@ -288,7 +288,7 @@ class GeminiService {
 
   /// Makes the HTTP request to the Gemini API
   Future<http.Response> _makeApiRequest(String description) async {
-    final url = Uri.parse('${GeminiConfig.baseUrl}/models/gemini-2.5-flash-lite:generateContent?key=$_apiKey');
+    final url = Uri.parse('${GeminiConfig.baseUrl}/models/gemini-flash-latest:generateContent?key=$_apiKey');
 
     final prompt = _buildPrompt(description);
     final requestBody = json.encode({
