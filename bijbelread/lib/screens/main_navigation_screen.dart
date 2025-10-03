@@ -4,7 +4,6 @@ import '../providers/bible_provider.dart';
 import '../models/bible_book.dart';
 import '../models/bible_chapter.dart';
 import 'chapter_selection_screen.dart';
-import 'search_screen.dart';
 import 'bookmarks_screen.dart';
 import 'settings_screen.dart';
 import '../l10n/strings_nl.dart' as strings;
@@ -43,10 +42,6 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         title: Text(strings.AppStrings.appName),
         actions: [
           IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: _showSearchDialog,
-          ),
-          IconButton(
             icon: const Icon(Icons.bookmark),
             onPressed: _showBookmarks,
           ),
@@ -66,10 +61,6 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             label: 'Lezen',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Zoeken',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.bookmark),
             label: 'Bladwijzers',
           ),
@@ -83,8 +74,6 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       case 0:
         return _buildReaderTab();
       case 1:
-        return _buildSearchTab();
-      case 2:
         return _buildBookmarksTab();
       default:
         return _buildReaderTab();
@@ -124,155 +113,169 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           );
         }
 
-        return Padding(
-          padding: const EdgeInsets.all(16),
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      'Navigeer naar bijbeltekst',
-                      style: Theme.of(context).textTheme.headlineSmall,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 32),
-
-                    // Book dropdown with proper width handling
-                    LayoutBuilder(
-                      builder: (context, constraints) {
-                        return Container(
-                          width: double.infinity,
-                          child: DropdownButtonFormField<BibleBook>(
-                            decoration: const InputDecoration(
-                              labelText: 'Bijbelboek',
-                              border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                            ),
-                            initialValue: _selectedBook,
-                            hint: const Text('Kies een bijbelboek'),
-                            items: bibleProvider.books.map((book) {
-                              return DropdownMenuItem(
-                                value: book,
-                                child: Container(
-                                  width: constraints.maxWidth - 60, // Account for dropdown arrow and padding
-                                  child: Text(
-                                    '${book.name} (${book.chapterCount} hoofdstukken)',
-                                    overflow: TextOverflow.ellipsis,
-                                    softWrap: false,
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedBook = value;
-                              });
-                            },
-                            validator: (value) {
-                              if (value == null) {
-                                return 'Selecteer een bijbelboek';
-                              }
-                              return null;
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Chapter and verse inputs in a row
-                    Row(
+        return Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(20),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: 500, // Limit width for better readability
+                minHeight: MediaQuery.of(context).size.height - 200,
+              ),
+              child: Card(
+                elevation: 4,
+                child: Padding(
+                  padding: const EdgeInsets.all(32),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Expanded(
-                          child: TextFormField(
-                            controller: _chapterController,
-                            decoration: const InputDecoration(
-                              labelText: 'Hoofdstuk',
-                              border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                            ),
-                            keyboardType: TextInputType.number,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Vul hoofdstuk in';
-                              }
-                              final chapter = int.tryParse(value);
-                              if (chapter == null || chapter < 1) {
-                                return 'Ongeldig hoofdstuk';
-                              }
-                              if (_selectedBook != null && chapter > _selectedBook!.chapterCount) {
-                                return 'Hoofdstuk bestaat niet';
-                              }
-                              return null;
-                            },
-                          ),
+                        Icon(
+                          Icons.menu_book,
+                          size: 48,
+                          color: Theme.of(context).primaryColor,
                         ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: TextFormField(
-                            controller: _verseController,
-                            decoration: const InputDecoration(
-                              labelText: 'Vers',
-                              border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        const SizedBox(height: 16),
+                        Text(
+                          'Navigeer naar bijbeltekst',
+                          style: Theme.of(context).textTheme.headlineSmall,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Kies een bijbelboek, hoofdstuk en vers om direct naar de tekst te gaan',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 32),
+
+                        // Book dropdown
+                        DropdownButtonFormField<BibleBook>(
+                          decoration: const InputDecoration(
+                            labelText: 'Bijbelboek',
+                            border: OutlineInputBorder(),
+                            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                            prefixIcon: Icon(Icons.library_books),
+                          ),
+                          initialValue: _selectedBook,
+                          hint: const Text('Kies een bijbelboek'),
+                          items: bibleProvider.books.map((book) {
+                            return DropdownMenuItem(
+                              value: book,
+                              child: Text('${book.name} (${book.chapterCount} hfd)'),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedBook = value;
+                            });
+                          },
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Selecteer een bijbelboek';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 24),
+
+                        // Chapter and verse inputs in a row
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextFormField(
+                                controller: _chapterController,
+                                decoration: const InputDecoration(
+                                  labelText: 'Hoofdstuk',
+                                  border: OutlineInputBorder(),
+                                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                                  prefixIcon: Icon(Icons.bookmark),
+                                ),
+                                keyboardType: TextInputType.number,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Vul hoofdstuk in';
+                                  }
+                                  final chapter = int.tryParse(value);
+                                  if (chapter == null || chapter < 1) {
+                                    return 'Ongeldig hoofdstuk';
+                                  }
+                                  if (_selectedBook != null && chapter > _selectedBook!.chapterCount) {
+                                    return 'Hoofdstuk bestaat niet';
+                                  }
+                                  return null;
+                                },
+                              ),
                             ),
-                            keyboardType: TextInputType.number,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Vul vers in';
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: TextFormField(
+                                controller: _verseController,
+                                decoration: const InputDecoration(
+                                  labelText: 'Vers',
+                                  border: OutlineInputBorder(),
+                                  contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                                  prefixIcon: Icon(Icons.format_list_numbered),
+                                ),
+                                keyboardType: TextInputType.number,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Vul vers in';
+                                  }
+                                  final verse = int.tryParse(value);
+                                  if (verse == null || verse < 1) {
+                                    return 'Ongeldig vers';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 24),
+
+                        // End verse input
+                        TextFormField(
+                          controller: _endVerseController,
+                          decoration: const InputDecoration(
+                            labelText: 'Eind vers (optioneel)',
+                            hintText: 'Laat leeg voor enkel vers',
+                            border: OutlineInputBorder(),
+                            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                            prefixIcon: Icon(Icons.arrow_forward),
+                          ),
+                          keyboardType: TextInputType.number,
+                          validator: (value) {
+                            if (value != null && value.isNotEmpty) {
+                              final endVerse = int.tryParse(value);
+                              if (endVerse == null || endVerse < 1) {
+                                return 'Ongeldig eind vers';
                               }
-                              final verse = int.tryParse(value);
-                              if (verse == null || verse < 1) {
-                                return 'Ongeldig vers';
+                              final startVerse = int.tryParse(_verseController.text);
+                              if (startVerse != null && endVerse < startVerse) {
+                                return 'Eind vers moet na begin vers zijn';
                               }
-                              return null;
-                            },
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 32),
+
+                        // Navigate button
+                        ElevatedButton.icon(
+                          onPressed: () => _navigateToVerse(),
+                          icon: const Icon(Icons.arrow_forward),
+                          label: const Text('Ga naar bijbeltekst'),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 24),
+                            textStyle: const TextStyle(fontSize: 16),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
-
-                    // End verse input
-                    TextFormField(
-                      controller: _endVerseController,
-                      decoration: const InputDecoration(
-                        labelText: 'Eind vers (optioneel)',
-                        hintText: 'Laat leeg voor enkel vers',
-                        border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      ),
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value != null && value.isNotEmpty) {
-                          final endVerse = int.tryParse(value);
-                          if (endVerse == null || endVerse < 1) {
-                            return 'Ongeldig eind vers';
-                          }
-                          final startVerse = int.tryParse(_verseController.text);
-                          if (startVerse != null && endVerse < startVerse) {
-                            return 'Eind vers moet na begin vers zijn';
-                          }
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 32),
-
-                    // Navigate button
-                    ElevatedButton.icon(
-                      onPressed: () => _navigateToVerse(),
-                      icon: const Icon(Icons.menu_book),
-                      label: const Text('Ga naar bijbeltekst'),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -282,9 +285,6 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     );
   }
 
-  Widget _buildSearchTab() {
-    return const SearchScreen();
-  }
 
   Widget _buildBookmarksTab() {
     return const BookmarksScreen();
@@ -296,10 +296,6 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     });
   }
 
-  void _showSearchDialog() {
-    // Navigate directly to search tab
-    setState(() => _selectedIndex = 1);
-  }
 
   void _navigateToBookSelection(BibleBook book) {
     Navigator.of(context).push(
