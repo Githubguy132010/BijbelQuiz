@@ -17,7 +17,6 @@ import 'services/notification_service.dart';
 import 'services/performance_service.dart';
 import 'services/connection_service.dart';
 import 'services/question_cache_service.dart';
-import 'services/emergency_service.dart';
 import 'services/gemini_service.dart';
 import 'services/feature_flags_service.dart';
 import 'screens/store_screen.dart';
@@ -73,14 +72,10 @@ void main() async {
   // Track app launch performance
   WidgetsBinding.instance.addPostFrameCallback((_) async {
     try {
-      final context = EmergencyService.navigatorKey.currentContext;
-      if (context != null) {
-        await analyticsService.trackPerformance(context, 'app_startup', appStartDuration);
-        await analyticsService.trackAppLaunch(context);
-        await analyticsService.trackSessionEvent(context, 'app_started');
-      }
+      // Analytics tracking removed - emergency service navigator key no longer available
+      AppLogger.info('App started successfully in ${appStartDuration.inMilliseconds}ms');
     } catch (e) {
-      AppLogger.error('Failed to track app launch analytics', e);
+      AppLogger.error('Error in app startup', e);
     }
   });
 }
@@ -96,7 +91,6 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
   PerformanceService? _performanceService;
   ConnectionService? _connectionService;
   QuestionCacheService? _questionCacheService;
-  EmergencyService? _emergencyService;
   GeminiService? _geminiService;
   FeatureFlagsService? _featureFlagsService;
 
@@ -119,7 +113,6 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
       final performanceService = PerformanceService();
       final connectionService = ConnectionService();
       final questionCacheService = QuestionCacheService();
-      final emergencyService = EmergencyService();
       final featureFlagsService = FeatureFlagsService();
 
       // Initialize Gemini service (with error handling for missing API key)
@@ -141,17 +134,8 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
 
       // Set up connection status tracking
       connectionService.setConnectionStatusCallback((isConnected, connectionType) {
-        // Track connection status changes
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (EmergencyService.navigatorKey.currentContext != null) {
-            final context = EmergencyService.navigatorKey.currentContext!;
-            final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
-            analyticsService.trackTechnicalEvent(context, 'connection_status_changed', isConnected ? 'connected' : 'disconnected', additionalProperties: {
-              'connection_type': connectionType.toString(),
-              'platform': Platform.operatingSystem.toLowerCase(),
-            });
-          }
-        });
+        // Connection status tracking removed - emergency service navigator key no longer available
+        AppLogger.info('Connection status changed: ${isConnected ? 'connected' : 'disconnected'} (${connectionType})');
       });
 
       // Kick off initialization in background
@@ -170,7 +154,6 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
         _performanceService = performanceService;
         _connectionService = connectionService;
         _questionCacheService = questionCacheService;
-        _emergencyService = emergencyService;
         _geminiService = geminiService;
         _featureFlagsService = featureFlagsService;
       });
@@ -180,9 +163,6 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
       await initFuture;
       AppLogger.info('All services initialized successfully');
 
-      // Start polling for emergency messages
-      AppLogger.info('Starting emergency service polling...');
-      emergencyService.startPolling();
 
       AppLogger.info('Initializing notification service for platform: ${Platform.operatingSystem}');
       if (!kIsWeb && !Platform.isLinux) {
@@ -214,7 +194,6 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
   /// Builds the MaterialApp with theme configuration
   Widget _buildMaterialApp(SettingsProvider settings) {
     return MaterialApp(
-      navigatorKey: EmergencyService.navigatorKey,
       navigatorObservers: [analyticsService.getObserver()],
       title: strings.AppStrings.appName,
       debugShowCheckedModeBanner: false,
@@ -244,7 +223,6 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
       if (_performanceService != null) Provider.value(value: _performanceService!),
       if (_connectionService != null) Provider.value(value: _connectionService!),
       if (_questionCacheService != null) Provider.value(value: _questionCacheService!),
-      if (_emergencyService != null) Provider.value(value: _emergencyService!),
       if (_geminiService != null) Provider.value(value: _geminiService!),
       if (_featureFlagsService != null) Provider.value(value: _featureFlagsService!),
     ];
@@ -299,29 +277,23 @@ class _AppLifecycleObserver extends WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    final context = EmergencyService.navigatorKey.currentContext;
-    if (context == null) return;
-
+    // App lifecycle tracking removed - emergency service navigator key no longer available
     switch (state) {
       case AppLifecycleState.resumed:
-        _parent._analyticsService.trackSessionEvent(context, 'app_resumed');
-        if (_parent._lastPausedTime != null) {
-          final backgroundDuration = DateTime.now().difference(_parent._lastPausedTime!);
-          _parent._analyticsService.trackPerformance(context, 'app_background_duration', backgroundDuration);
-        }
+        AppLogger.info('App lifecycle: resumed');
         break;
       case AppLifecycleState.paused:
         _parent._lastPausedTime = DateTime.now();
-        _parent._analyticsService.trackSessionEvent(context, 'app_paused');
+        AppLogger.info('App lifecycle: paused');
         break;
       case AppLifecycleState.inactive:
-        _parent._analyticsService.trackSessionEvent(context, 'app_inactive');
+        AppLogger.info('App lifecycle: inactive');
         break;
       case AppLifecycleState.detached:
-        _parent._analyticsService.trackSessionEvent(context, 'app_detached');
+        AppLogger.info('App lifecycle: detached');
         break;
       case AppLifecycleState.hidden:
-        _parent._analyticsService.trackSessionEvent(context, 'app_hidden');
+        AppLogger.info('App lifecycle: hidden');
         break;
     }
   }

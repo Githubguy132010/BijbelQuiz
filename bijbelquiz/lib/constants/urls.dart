@@ -9,14 +9,8 @@ class AppUrls {
   static final String homepage = baseDomain;
 
   // API endpoints
-  static final String emergencyApi = '$baseDomainAPI/emergency.ts';
   static final String bibleApiBase = 'https://www.online-bijbel.nl/api.php';
 
-  // Bible API Endpoints
-  static final String bibleBooksListApi = '$bibleApiBase?p=boekenlijst';
-
-  // Other API Endpoints
-  static final String stripeWebhookApi = '$baseDomainAPI/stripe/webhook';
 
   // App-specific URLs
   static final String donateUrl = '$baseDomain/donate';

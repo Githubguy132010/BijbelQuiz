@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:http/http.dart' as http;
 import '../models/quiz_question.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'logger.dart';
@@ -16,7 +15,6 @@ class QuestionCacheConfig {
   static const int maxMemoryCacheSize = 25; // Reduced from 50 to 25 for very low-end devices
   static const Duration cacheExpiry = Duration(days: 7);
   static const int maxPersistentCacheSize = 25; // Reduced from 50 to 25 for very low-end devices
-  static const String remoteQuestionsUrl = 'https://backend.bijbelquiz.app/api/questions';
 }
 
 /// A service for caching and lazy loading quiz questions with optimized memory usage
@@ -46,8 +44,6 @@ class QuestionCacheService {
   // Track which questions are loaded in memory
   final Map<String, Set<int>> _loadedQuestionIndices = {};
   
-  // Timer for periodic remote updates
-  Timer? _remoteUpdateTimer;
   
   // LRU cache implementation
 
@@ -67,29 +63,12 @@ class QuestionCacheService {
       final memoryUsage = getMemoryUsage();
       AppLogger.info('QuestionCacheService memory usage after init: $memoryUsage');
       
-      // Start periodic check for remote updates when on WiFi
-      _startRemoteUpdateCheck();
     } catch (e) {
       AppLogger.error('Failed to initialize QuestionCacheService', e);
       // Continue without persistent cache if SharedPreferences fails
     }
   }
   
-  /// Start periodic check for remote updates when on WiFi
-  void _startRemoteUpdateCheck() {
-    _remoteUpdateTimer = Timer.periodic(const Duration(hours: 1), (timer) async {
-      try {
-        // Check if we're connected to WiFi
-        final connectionService = ConnectionService();
-        if (connectionService.isWiFiConnected) {
-          // Check for remote updates
-          await _checkForRemoteUpdates();
-        }
-      } catch (e) {
-        AppLogger.error('Error during remote update check', e);
-      }
-    });
-  }
 
   /// Clear cache if app version has changed
   Future<void> _clearCacheOnAppUpdate() async {
@@ -123,65 +102,6 @@ class QuestionCacheService {
     }
   }
   
-  /// Check for remote updates and update local cache if needed
-  Future<void> _checkForRemoteUpdates() async {
-    try {
-      // Check remote questions
-      final response = await http.get(Uri.parse(QuestionCacheConfig.remoteQuestionsUrl));
-      
-      if (response.statusCode == 200) {
-        final List<dynamic> remoteData = json.decode(response.body);
-        
-        // Compare with local metadata
-        final localMetadata = _questionMetadata['nl'] ?? [];
-        
-        // If remote has more questions or different content, update cache
-        if (remoteData.length != localMetadata.length) {
-          // Update metadata cache
-          final metadata = remoteData.map<Map<String, dynamic>>((json) {
-            try {
-              return {
-                'id': json['id'] ?? '',
-                'difficulty': json['moeilijkheidsgraad']?.toString() ?? '',
-                'categories': (json['categories'] as List<dynamic>?)?.cast<String>() ?? [],
-                'type': json['type']?.toString() ?? 'mc',
-                'biblicalReference': json['biblicalReference'] is String ? json['biblicalReference'] as String : null,
-              };
-            } catch (e) {
-              throw Exception('Invalid question format: $e');
-            }
-          }).toList();
-          
-          // Sort questions by difficulty for better performance
-          metadata.sort((a, b) {
-            final int da = int.tryParse(a['difficulty']?.toString() ?? '') ?? 3;
-            final int db = int.tryParse(b['difficulty']?.toString() ?? '') ?? 3;
-            return da.compareTo(db);
-          });
-          
-          _questionMetadata['nl'] = metadata;
-          _loadedQuestionIndices['nl'] = <int>{};
-          
-          // Cache the updated metadata
-          await _cacheMetadata('nl', metadata);
-          
-          // Cache the full question data for offline use
-          await _cacheDownloadedQuestions('nl', remoteData);
-          
-          // Clear memory cache to force reload
-          _memoryCache.clear();
-          _lruList.clear();
-          _accessFrequency.clear();
-          _lastAccessTime.clear();
-          _predictiveLoadCandidates.clear();
-          
-          AppLogger.info('Updated questions cache from remote server');
-        }
-      }
-    } catch (e) {
-      AppLogger.error('Error checking for remote updates', e);
-    }
-  }
 
   /// Get questions for a specific language with lazy loading
   /// [startIndex] - The starting index of questions to load
@@ -275,16 +195,7 @@ class QuestionCacheService {
         return;
       }
       
-      // Try to load from remote server if connected to WiFi
-      final remoteMetadata = await _loadRemoteQuestionsMetadata(language);
-      if (remoteMetadata != null && remoteMetadata.isNotEmpty) {
-        _questionMetadata[language] = remoteMetadata;
-        _loadedQuestionIndices[language] = {};
-        completer.complete();
-        return;
-      }
-      
-      // If no cache and no remote, load from assets
+      // If no cache, load from assets
       final String response = await rootBundle.loadString('assets/questions-nl-sv.json');
       final List<dynamic> data = json.decode(response);
       
@@ -333,64 +244,6 @@ class QuestionCacheService {
     }
   }
   
-  /// Load question metadata from remote server if connected to WiFi
-  Future<List<Map<String, dynamic>>?> _loadRemoteQuestionsMetadata(String language) async {
-    try {
-      // Check if we're connected to WiFi (not just any connection)
-      final connectionService = ConnectionService();
-      if (!connectionService.isConnected || connectionService.connectionType != ConnectionType.fast) {
-        return null;
-      }
-      
-      final response = await http.get(Uri.parse(QuestionCacheConfig.remoteQuestionsUrl));
-      
-      if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-        
-        if (data.isEmpty) {
-          return null;
-        }
-        
-        // Extract and store just the metadata (much smaller memory footprint)
-        final metadata = data.map<Map<String, dynamic>>((json) {
-          try {
-            return {
-              'id': json['id'] ?? '',
-              'difficulty': json['moeilijkheidsgraad']?.toString() ?? '',
-              'categories': (json['categories'] as List<dynamic>?)?.cast<String>() ?? [],
-              'type': json['type']?.toString() ?? 'mc',
-              'biblicalReference': json['biblicalReference'] is String ? json['biblicalReference'] as String : null,
-            };
-          } catch (e) {
-            throw Exception('Invalid question format: $e');
-          }
-        }).toList();
-        
-        if (metadata.isEmpty) {
-          return null;
-        }
-        
-        // Sort questions by difficulty for better performance
-        metadata.sort((a, b) {
-          final int da = int.tryParse(a['difficulty']?.toString() ?? '') ?? 3;
-          final int db = int.tryParse(b['difficulty']?.toString() ?? '') ?? 3;
-          return da.compareTo(db);
-        });
-        
-        // Cache the metadata for faster startup next time
-        await _cacheMetadata(language, metadata);
-        
-        AppLogger.info('Successfully loaded ${metadata.length} questions metadata from remote server');
-        return metadata;
-      } else {
-        AppLogger.error('Failed to load remote questions metadata: ${response.statusCode}');
-        return null;
-      }
-    } catch (e) {
-      AppLogger.error('Error loading remote questions metadata', e);
-      return null;
-    }
-  }
   
   /// Load specific questions by their indices
   Future<List<QuizQuestion>> _loadQuestionsByIndices(
@@ -400,12 +253,6 @@ class QuestionCacheService {
     if (indices.isEmpty) return [];
     
     try {
-      // Try to load from remote server first if connected to WiFi
-      final remoteQuestions = await _loadQuestionsByIndicesRemote(language, indices);
-      if (remoteQuestions != null) {
-        return remoteQuestions;
-      }
-      
       // Try to load from cache if available and valid
       if (await _isCacheValid(language)) {
         final cachedQuestions = await _loadQuestionsFromCache(language, indices);
@@ -446,65 +293,6 @@ class QuestionCacheService {
     }
   }
   
-  /// Load specific questions by their indices from remote server
-  Future<List<QuizQuestion>?> _loadQuestionsByIndicesRemote(
-    String language,
-    List<int> indices,
-  ) async {
-    try {
-      AppLogger.info('Checking WiFi connection for remote question loading');
-      
-      // Check if we're connected to WiFi (not just any connection)
-      final connectionService = ConnectionService();
-      if (!connectionService.isConnected || connectionService.connectionType != ConnectionType.fast) {
-        AppLogger.info('Not connected to WiFi, skipping remote question loading');
-        return null;
-      }
-      
-      AppLogger.info('Connected to WiFi, attempting to load questions from remote server');
-      final response = await http.get(Uri.parse(QuestionCacheConfig.remoteQuestionsUrl));
-      
-      if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-        
-        AppLogger.info('Successfully loaded ${data.length} questions from remote server');
-        
-        if (data.isEmpty) {
-          AppLogger.warning('Remote questions data is empty');
-          return null;
-        }
-        
-        final loadedQuestions = <QuizQuestion>[];
-        
-        for (final index in indices) {
-          if (index < 0 || index >= data.length) continue;
-          
-          try {
-            final questionData = data[index] as Map<String, dynamic>;
-            final question = QuizQuestion.fromJson(questionData);
-            _addToMemoryCache(language, index, question);
-            _updateLru(language, index);
-            _loadedQuestionIndices.putIfAbsent(language, () => <int>{}).add(index);
-            loadedQuestions.add(question);
-          } catch (e) {
-            AppLogger.error('Error parsing question at index $index', e);
-          }
-        }
-        
-        // Cache the downloaded questions for offline use
-        await _cacheDownloadedQuestions(language, data);
-        
-        AppLogger.info('Successfully loaded ${loadedQuestions.length} questions from remote server');
-        return loadedQuestions;
-      } else {
-        AppLogger.error('Failed to load remote questions: ${response.statusCode} - ${response.body}');
-        return null;
-      }
-    } catch (e) {
-      AppLogger.error('Error loading remote questions by indices', e);
-      return null;
-    }
-  }
   
   /// Load questions from offline cache
   Future<List<QuizQuestion>?> _loadQuestionsFromCache(String language, List<int> indices) async {
@@ -807,7 +595,7 @@ class QuestionCacheService {
 
   /// Dispose of resources
   void dispose() {
-    _remoteUpdateTimer?.cancel();
+    // No resources to dispose
   }
 
   /// Get memory usage information with performance optimizations
