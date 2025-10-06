@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/quiz_question.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'logger.dart';
-import 'connection_service.dart';
 
  // Simplified memory cache: store QuizQuestion directly; access tracked via LRU list
 

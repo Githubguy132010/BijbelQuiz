@@ -135,7 +135,7 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
       // Set up connection status tracking
       connectionService.setConnectionStatusCallback((isConnected, connectionType) {
         // Connection status tracking removed - emergency service navigator key no longer available
-        AppLogger.info('Connection status changed: ${isConnected ? 'connected' : 'disconnected'} (${connectionType})');
+        AppLogger.info('Connection status changed: ${isConnected ? 'connected' : 'disconnected'} ($connectionType)');
       });
 
       // Kick off initialization in background
