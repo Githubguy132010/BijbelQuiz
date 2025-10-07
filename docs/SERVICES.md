@@ -10,7 +10,7 @@ The BijbelQuiz app follows a service-oriented architecture with modular services
 
 ### QuizSoundService
 
-**Location:** `app/lib/services/quiz_sound_service.dart`
+**Location:** `bijbelquiz/lib/services/quiz_sound_service.dart`
 
 **Purpose:** Centralized sound management for quiz-related audio feedback with mute support.
 
@@ -108,19 +108,6 @@ await questionLoadingService.loadMoreQuestionsAdvanced(
 - Memory usage monitoring
 - Predictive loading candidate identification
 
-### EmergencyService
-
-**Location:** `app/lib/services/emergency_service.dart`
-
-**Purpose:** Emergency message system for broadcasting important notifications to all users.
-
-**Key Features:**
-
-- Polls emergency API every 5 minutes
-- Displays blocking or dismissible messages
-- Handles message expiration
-- Integrates with dialog system
-
 ### NotificationService
 
 **Location:** `app/lib/services/notification_service.dart`
@@ -134,9 +121,115 @@ await questionLoadingService.loadMoreQuestionsAdvanced(
 - User preference integration
 - Time zone support
 
+### ProgressiveQuestionSelector
+
+**Location:** `bijbelquiz/lib/services/progressive_question_selector.dart`
+
+**Purpose:** Intelligent question selection algorithm that adapts difficulty based on user performance.
+
+**Key Features:**
+
+- Dynamic difficulty adjustment based on performance metrics
+- Progressive Question Up-selection (PQU) algorithm
+- Anti-repetition mechanisms to avoid showing recent questions
+- Performance tracking and analysis
+- Adaptive batching for optimal performance
+
+### AnalyticsService
+
+**Location:** `bijbelquiz/lib/services/analytics_service.dart`
+
+**Purpose:** Analytics and telemetry service for tracking user interactions and app performance.
+
+**Key Features:**
+
+- Event tracking with user consent management
+- Integration with PostHog analytics platform
+- Screen view tracking
+- User preference respecting (opt-in/out)
+- Performance impact monitoring
+
+### FeatureFlagsService
+
+**Location:** `bijbelquiz/lib/services/feature_flags_service.dart`
+
+**Purpose:** Feature flag management for controlling app functionality remotely.
+
+**Key Features:**
+
+- Remote feature toggles
+- Gradual feature rollouts
+- User targeting capabilities
+- Real-time configuration updates
+
+### GeminiService
+
+**Location:** `bijbelquiz/lib/services/gemini_service.dart`
+
+**Purpose:** Integration with Google's Gemini AI for enhanced app features.
+
+**Key Features:**
+
+- AI-powered assistance
+- Natural language processing
+- Contextual help and suggestions
+- API rate limiting and error handling
+
+### LessonService
+
+**Location:** `bijbelquiz/lib/services/lesson_service.dart`
+
+**Purpose:** Lesson management and progression tracking.
+
+**Key Features:**
+
+- Lesson unlock mechanics
+- Progress persistence
+- Achievement tracking
+- Lesson completion validation
+
+### PlatformFeedbackService
+
+**Location:** `bijbelquiz/lib/services/platform_feedback_service.dart`
+
+**Purpose:** Platform-specific feedback and haptic responses.
+
+**Key Features:**
+
+- Haptic feedback on supported devices
+- Platform-specific UI adaptations
+- Accessibility support
+- Performance optimizations per platform
+
+### QuizAnswerHandler
+
+**Location:** `bijbelquiz/lib/services/quiz_answer_handler.dart`
+
+**Purpose:** Quiz answer processing and validation logic.
+
+**Key Features:**
+
+- Answer validation and scoring
+- Streak calculation and management
+- Performance metrics computation
+- Integration with game statistics
+
+### QuizTimerManager
+
+**Location:** `bijbelquiz/lib/services/quiz_timer_manager.dart`
+
+**Purpose:** Quiz timer functionality and time management.
+
+**Key Features:**
+
+- Countdown timer management
+- Time-based scoring adjustments
+- Pause/resume functionality
+- Integration with quiz flow
+
 ### Logger
 
-**Location:** `app/lib/services/logger.dart`
+**Location:** `bijbelquiz/lib/services/logger.dart`
 
 **Purpose:** Centralized logging system with configurable levels.
 

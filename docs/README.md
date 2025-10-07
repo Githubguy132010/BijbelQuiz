@@ -118,16 +118,19 @@ flutter build web --release
 
 ```bash
 BijbelQuiz/
-├── app/                       # Flutter application
+├── bijbelquiz/                # Main Flutter application
 │   ├── lib/                   # Dart source code
 │   │   ├── main.dart          # App entry point and theme configuration
+│   │   ├── settings_screen.dart # Settings screen
 │   │   ├── config/            # App configuration
 │   │   ├── constants/         # App constants and URLs
 │   │   ├── l10n/              # Localization strings
 │   │   ├── models/            # Data models
 │   │   │   ├── quiz_question.dart   # Question data structure
 │   │   │   ├── quiz_state.dart      # Quiz session state
-│   │   │   └── lesson.dart          # Lesson configuration
+│   │   │   ├── lesson.dart          # Lesson configuration
+│   │   │   ├── bible_reference.dart # Bible reference model
+│   │   │   └── ai_theme.dart         # AI theme model
 │   │   ├── providers/         # State management using Provider pattern
 │   │   │   ├── settings_provider.dart    # App settings and preferences
 │   │   │   ├── game_stats_provider.dart  # Game statistics and scoring
@@ -138,27 +141,29 @@ BijbelQuiz/
 │   │   │   ├── sound_service.dart     # Audio playback
 │   │   │   ├── connection_service.dart # Network connectivity
 │   │   │   ├── question_cache_service.dart # Question caching
-│   │   │   ├── emergency_service.dart # Emergency messaging
 │   │   │   ├── notification_service.dart # Local notifications
 │   │   │   ├── progressive_question_selector.dart # Question difficulty algorithm
-│   │   │   └── quiz_animation_controller.dart # Animation management
+│   │   │   ├── quiz_animation_controller.dart # Animation management
+│   │   │   ├── analytics_service.dart # Analytics and telemetry
+│   │   │   ├── feature_flags_service.dart # Feature flag management
+│   │   │   ├── gemini_service.dart    # AI/Gemini integration
+│   │   │   ├── lesson_service.dart    # Lesson management
+│   │   │   ├── platform_feedback_service.dart # Platform-specific feedback
+│   │   │   ├── quiz_answer_handler.dart # Quiz answer processing
+│   │   │   ├── quiz_sound_service.dart # Quiz sound management
+│   │   │   └── quiz_timer_manager.dart # Quiz timer functionality
 │   │   ├── screens/           # UI screens
 │   │   │   ├── quiz_screen.dart         # Main quiz interface
 │   │   │   ├── lesson_select_screen.dart # Lesson selection
 │   │   │   ├── lesson_complete_screen.dart # Lesson completion
 │   │   │   ├── guide_screen.dart        # User guide
-│   │   │   └── store_screen.dart        # In-app store
+│   │   │   ├── store_screen.dart        # In-app store
+│   │   │   ├── main_navigation_screen.dart # Main navigation
+│   │   │   └── social_screen.dart       # Social features
 │   │   ├── widgets/           # Reusable UI components
-│   │   │   ├── question_card.dart       # Question display
-│   │   │   ├── answer_button.dart       # Answer selection
-│   │   │   ├── question_widget.dart     # Question rendering
-│   │   │   ├── common_widgets.dart      # Shared widgets
-│   │   │   └── metric_item.dart         # Statistics display
 │   │   ├── theme/             # Theme definitions
 │   │   │   └── app_theme.dart          # App theming
 │   │   └── utils/             # Utility functions
-│   │       ├── responsive_utils.dart   # Responsive design helpers
-│   │       └── theme_utils.dart        # Theme utilities
 │   ├── android/               # Android platform code
 │   ├── ios/                   # iOS platform code
 │   ├── linux/                 # Linux platform code
@@ -167,7 +172,8 @@ BijbelQuiz/
 │   ├── windows/               # Windows platform code
 │   ├── assets/                # App assets (questions, fonts, sounds)
 │   ├── test/                  # Unit and integration tests
-│   └── pubspec.yaml           # Flutter dependencies and configuration
+│   ├── pubspec.yaml           # Flutter dependencies and configuration
+│   └── build_all.sh           # Build script for all platforms
 ├── docs/                      # Documentation
 │   ├── README.md              # Main project documentation
 │   ├── CONTRIBUTING.md        # Contribution guidelines
@@ -177,8 +183,14 @@ BijbelQuiz/
 │   ├── LOCAL_DEVELOPMENT.md   # Local development setup
 │   ├── README-questions.md    # Question format documentation
 │   ├── CODE_OF_CONDUCT.md     # Code of conduct
-│   ├── roadmap.md             # Project roadmap
-│   └── BIJBELQUIZ_IMPROVEMENTS.md # Improvement suggestions
+│   ├── COMPREHENSIVE_ROADMAP.md # Project roadmap
+│   ├── ANALYTICS.md           # Analytics documentation
+│   ├── ASSETS_LICENSES.md     # Asset licenses
+│   ├── SERVICES.md            # Services documentation
+│   ├── EMERGENCY_SYSTEM.md    # Emergency messaging system
+│   ├── MCP_SERVER_DOCS.md     # MCP server documentation
+│   ├── RISK_MONITORING.md     # API security inventory
+│   └── question_picking_algorithm.md # Question selection algorithm
 └── websites/                  # Web assets and backend
     ├── backend.bijbelquiz.app/ # Backend API and admin tools
     │   ├── api/               # REST API endpoints
@@ -347,6 +359,16 @@ class SettingsProvider extends ChangeNotifier {
 - **QuestionLoadingService**: Advanced background question loading with predictive caching
 - **ConnectionService**: Manages network connectivity
 - **QuestionCacheService**: Caches questions for offline use
+- **NotificationService**: Local notification management for daily motivation reminders
+- **ProgressiveQuestionSelector**: Intelligent difficulty adjustment algorithm
+- **QuizAnimationController**: Animation management
+- **AnalyticsService**: Analytics and telemetry service
+- **FeatureFlagsService**: Feature flag management
+- **GeminiService**: AI/Gemini integration service
+- **LessonService**: Lesson management service
+- **PlatformFeedbackService**: Platform-specific feedback service
+- **QuizAnswerHandler**: Quiz answer processing service
+- **QuizTimerManager**: Quiz timer functionality
 - **Logger**: Centralized logging with configurable levels
 
 ## 📚 Additional Documentation
@@ -356,6 +378,11 @@ class SettingsProvider extends ChangeNotifier {
 - **[EMERGENCY_SYSTEM.md](EMERGENCY_SYSTEM.md)**: Emergency messaging system documentation
 - **[LOCAL_DEVELOPMENT.md](LOCAL_DEVELOPMENT.md)**: Local development setup guide
 - **[README-questions.md](README-questions.md)**: Question format documentation
+- **[COMPREHENSIVE_ROADMAP.md](COMPREHENSIVE_ROADMAP.md)**: Project roadmap and feature planning
+- **[ASSETS_LICENSES.md](ASSETS_LICENSES.md)**: Licenses for third-party assets
+- **[MCP_SERVER_DOCS.md](MCP_SERVER_DOCS.md)**: Model Context Protocol server documentation
+- **[RISK_MONITORING.md](RISK_MONITORING.md)**: API security inventory and risk assessment
+- **[question_picking_algorithm.md](question_picking_algorithm.md)**: Detailed algorithm documentation
 
 ## 🤝 Contributing
 

@@ -19,13 +19,6 @@ The backend is now located in the `websites/backend.bijbelquiz.app/` directory. 
 
 3. For local backend development, see the backend documentation in `websites/backend.bijbelquiz.app/README.md`.
 
-## Testing Emergency Messaging
-
-For testing emergency messaging functionality, use the `emergency_message_tool.py` script:
-
-```bash
-python3 emergency_message_tool.py
-```
 
 ## Testing the Update Flow
 
