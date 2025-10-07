@@ -141,11 +141,11 @@ class BibleService {
       // Convert abbreviated book ID to numeric ID for API
       final numericBookId = BibleBookMapper.getNumericBookId(bookId);
 
-      // Build URL with verse parameter (API works better with specific verses)
+      // Build URL with verse parameter - API requires verse parameter to return content
       String url = '$_baseUrl?b=$numericBookId&h=$chapter';
 
-      // For full chapters, request a reasonable verse range (first 50 verses)
-      // The API seems to work better with specific verse requests
+      // For full chapters, request a large verse range to get the entire chapter
+      // The API doesn't return content without a verse parameter, so we request a large range
       if (startVerse != null) {
         if (endVerse != null && endVerse != startVerse) {
           url += '&v=$startVerse-$endVerse';
@@ -153,8 +153,8 @@ class BibleService {
           url += '&v=$startVerse';
         }
       } else {
-        // For full chapter, request verses 1-50 (most chapters won't have more than this)
-        url += '&v=1-50';
+        // For full chapter, request verses 1-200 (covers even the longest chapters like Psalm 119)
+        url += '&v=1-200';
       }
 
       AppLogger.info('Making API request to: $url');

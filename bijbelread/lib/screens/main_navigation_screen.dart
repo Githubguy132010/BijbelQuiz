@@ -145,7 +145,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Kies een bijbelboek, hoofdstuk en vers om direct naar de tekst te gaan',
+                          'Kies een bijbelboek en hoofdstuk. Vers is optioneel - laat leeg voor hele hoofdstuk',
                           style: Theme.of(context).textTheme.bodyMedium,
                           textAlign: TextAlign.center,
                         ),
@@ -214,19 +214,19 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                               child: TextFormField(
                                 controller: _verseController,
                                 decoration: const InputDecoration(
-                                  labelText: 'Vers',
+                                  labelText: 'Vers (optioneel)',
+                                  hintText: 'Laat leeg voor hele hoofdstuk',
                                   border: OutlineInputBorder(),
                                   contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                                   prefixIcon: Icon(Icons.format_list_numbered),
                                 ),
                                 keyboardType: TextInputType.number,
                                 validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Vul vers in';
-                                  }
-                                  final verse = int.tryParse(value);
-                                  if (verse == null || verse < 1) {
-                                    return 'Ongeldig vers';
+                                  if (value != null && value.isNotEmpty) {
+                                    final verse = int.tryParse(value);
+                                    if (verse == null || verse < 1) {
+                                      return 'Ongeldig vers';
+                                    }
                                   }
                                   return null;
                                 },
@@ -322,9 +322,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     }
 
     final chapter = int.parse(_chapterController.text);
-    final startVerse = int.parse(_verseController.text);
-    final endVerseText = _endVerseController.text.trim();
-    final endVerse = endVerseText.isNotEmpty ? int.parse(endVerseText) : startVerse;
+    final verseText = _verseController.text.trim();
 
     // Create a BibleChapter object for navigation
     final chapterObj = BibleChapter(
@@ -333,17 +331,35 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       verseCount: 0, // Will be loaded from API
     );
 
-    // Navigate to the reader screen
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => _BibleReaderScreen(
-          book: _selectedBook!,
-          chapter: chapterObj,
-          startVerse: startVerse,
-          endVerse: endVerse,
+    if (verseText.isNotEmpty) {
+      // Navigate to specific verse(s)
+      final startVerse = int.parse(verseText);
+      final endVerseText = _endVerseController.text.trim();
+      final endVerse = endVerseText.isNotEmpty ? int.parse(endVerseText) : startVerse;
+
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => _BibleReaderScreen(
+            book: _selectedBook!,
+            chapter: chapterObj,
+            startVerse: startVerse,
+            endVerse: endVerse,
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      // Navigate to entire chapter (no verse specified)
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => _BibleReaderScreen(
+            book: _selectedBook!,
+            chapter: chapterObj,
+            startVerse: null, // No specific verse - will load entire chapter
+            endVerse: null,
+          ),
+        ),
+      );
+    }
   }
 
   @override
@@ -359,21 +375,23 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 class _BibleReaderScreen extends StatelessWidget {
   final BibleBook book;
   final BibleChapter chapter;
-  final int startVerse;
-  final int endVerse;
+  final int? startVerse;
+  final int? endVerse;
 
   const _BibleReaderScreen({
     required this.book,
     required this.chapter,
-    required this.startVerse,
-    required this.endVerse,
+    this.startVerse,
+    this.endVerse,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${book.name} ${chapter.chapter}:$startVerse${endVerse != startVerse ? '-$endVerse' : ''}'),
+        title: Text(startVerse != null
+          ? '${book.name} ${chapter.chapter}:$startVerse${endVerse != startVerse ? '-$endVerse' : ''}'
+          : '${book.name} ${chapter.chapter}'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
@@ -412,7 +430,7 @@ class _BibleReaderScreen extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () => bibleProvider.loadVerses(book.id, chapter.chapter,
                       startVerse: startVerse,
-                      endVerse: endVerse != startVerse ? endVerse : null,
+                      endVerse: endVerse,
                     ),
                     child: Text(strings.AppStrings.submit),
                   ),
@@ -426,7 +444,7 @@ class _BibleReaderScreen extends StatelessWidget {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               bibleProvider.loadVerses(book.id, chapter.chapter,
                 startVerse: startVerse,
-                endVerse: endVerse != startVerse ? endVerse : null,
+                endVerse: endVerse,
               );
             });
             return const Center(
@@ -442,10 +460,17 @@ class _BibleReaderScreen extends StatelessWidget {
   }
 
   Widget _buildBibleText(List verses, BuildContext context) {
-    // Filter verses based on start and end verse
+    // Filter verses based on start and end verse if specified, otherwise show all verses
     final filteredVerses = verses.where((verse) {
       final verseNumber = verse.verse as int;
-      return verseNumber >= startVerse && verseNumber <= endVerse;
+      if (startVerse != null && endVerse != null) {
+        return verseNumber >= startVerse! && verseNumber <= endVerse!;
+      } else if (startVerse != null) {
+        return verseNumber >= startVerse!;
+      } else {
+        // No verse filter - show all verses (entire chapter)
+        return true;
+      }
     }).toList();
 
     if (filteredVerses.isEmpty) {
@@ -552,8 +577,8 @@ class _BibleReaderScreen extends StatelessWidget {
         builder: (context) => _BibleReaderScreen(
           book: book,
           chapter: chapterObj,
-          startVerse: 1, // Start from beginning of new chapter
-          endVerse: 1, // Show all verses (same as start to show whole chapter)
+          startVerse: null, // No specific verse - will load entire chapter
+          endVerse: null,
         ),
       ),
     );

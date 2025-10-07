@@ -16,9 +16,9 @@ void main() async {
       print('Books response (first 300 chars): ${booksResponse.body.substring(0, booksResponse.body.length > 300 ? 300 : booksResponse.body.length)}');
     }
 
-    // Test specific chapter (CORRECT API FORMAT)
-    print('\n2. Testing Deuteronomy chapter 1 (correct format: b=5&h=1)...');
-    final verseResponse = await http.get(Uri.parse('$baseUrl?b=5&h=1'));
+    // Test specific chapter with verse range (NEW API FORMAT for full chapters)
+    print('\n2. Testing Deuteronomy chapter 1 (new format: b=5&h=1&v=1-200)...');
+    final verseResponse = await http.get(Uri.parse('$baseUrl?b=5&h=1&v=1-200'));
     print('Verse status: ${verseResponse.statusCode}');
     print('Verse response length: ${verseResponse.body.length}');
     if (verseResponse.body.isNotEmpty) {
@@ -27,9 +27,9 @@ void main() async {
       print('Verse response is EMPTY!');
     }
 
-    // Test Genesis chapter 1 for comparison (CORRECT API FORMAT)
-    print('\n3. Testing Genesis chapter 1 (correct format: b=1&h=1)...');
-    final genesisResponse = await http.get(Uri.parse('$baseUrl?b=1&h=1'));
+    // Test Genesis chapter 1 for comparison (NEW API FORMAT for full chapters)
+    print('\n3. Testing Genesis chapter 1 (new format: b=1&h=1&v=1-200)...');
+    final genesisResponse = await http.get(Uri.parse('$baseUrl?b=1&h=1&v=1-200'));
     print('Genesis status: ${genesisResponse.statusCode}');
     print('Genesis response length: ${genesisResponse.body.length}');
     if (genesisResponse.body.isNotEmpty) {
