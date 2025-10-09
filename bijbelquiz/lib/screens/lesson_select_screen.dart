@@ -59,7 +59,7 @@ class _LessonSelectScreenState extends State<LessonSelectScreen> {
     });
 
     _loadLessons();
-    _loadAndMarkStreak();
+    _loadStreakData();
 
     // Check if we need to show the guide screen (only once)
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -118,25 +118,21 @@ class _LessonSelectScreenState extends State<LessonSelectScreen> {
 
   bool _isSunday(DateTime d) => d.weekday == DateTime.sunday;
 
-  Future<void> _loadAndMarkStreak() async {
+  Future<void> _loadStreakData() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final list = prefs.getStringList(_activeDaysKey) ?? <String>[];
       _activeDays = list.toSet();
-
-      // Mark today as used (opening the app counts as using BijbelQuiz)
-      final today = DateTime.now();
-      final todayStr = _fmtDate(DateTime(today.year, today.month, today.day));
-      if (!_activeDays.contains(todayStr)) {
-        _activeDays.add(todayStr);
-        await prefs.setStringList(_activeDaysKey, _activeDays.toList());
-      }
 
       _recomputeStreak();
     } catch (_) {
       // Ignore streak errors silently
     }
     if (mounted) setState(() {});
+  }
+
+  Future<void> _refreshStreakData() async {
+    await _loadStreakData();
   }
 
   void _recomputeStreak() {
@@ -495,7 +491,7 @@ class _LessonSelectScreenState extends State<LessonSelectScreen> {
                                     continueLesson: continueLesson,
                                     streakDays: _streakDays,
                                     dayWindow: _getFiveDayWindow(),
-                                    onAfterQuizReturn: _loadLessons,
+                                    onAfterQuizReturn: _refreshStreakData,
                                   ),
                                   const SizedBox(height: 8),
                                 ],
@@ -564,8 +560,9 @@ class _LessonSelectScreenState extends State<LessonSelectScreen> {
                                                 builder: (_) => QuizScreen(lesson: lesson, sessionLimit: lesson.maxQuestions),
                                               ),
                                             );
-                                            // After returning from the quiz, ensure the grid extends if needed.
+                                            // After returning from the quiz, refresh streak data and reload lessons if needed.
                                             if (!mounted) return;
+                                            await _refreshStreakData();
                                             await _loadLessons();
                                           },
                                         );

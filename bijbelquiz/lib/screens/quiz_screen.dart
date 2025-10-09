@@ -2,6 +2,7 @@ import 'package:bijbelquiz/services/analytics_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/quiz_state.dart';
 import '../models/quiz_question.dart';
 import '../services/sound_service.dart';
@@ -620,6 +621,27 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
     }
   }
 
+  /// Mark today's streak as active since a lesson was completed
+  Future<void> _markStreakActive() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      const activeDaysKey = 'daily_active_days_v1';
+      final list = prefs.getStringList(activeDaysKey) ?? <String>[];
+      final activeDays = list.toSet();
+
+      // Mark today as used (lesson completion counts as using BijbelQuiz)
+      final today = DateTime.now();
+      final todayStr = '${today.year.toString().padLeft(4, '0')}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+      if (!activeDays.contains(todayStr)) {
+        activeDays.add(todayStr);
+        await prefs.setStringList(activeDaysKey, activeDays.toList());
+      }
+    } catch (e) {
+      // Ignore streak errors silently
+      AppLogger.warning('Failed to mark streak as active: $e');
+    }
+  }
+
 
 
   void _handleAnswer(int selectedIndex) {
@@ -942,6 +964,9 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
 
   Future<void> _completeLessonSession() async {
     final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
+
+    // Mark today's streak as active since lesson was completed
+    await _markStreakActive();
 
     // Track lesson completion with comprehensive data
     analyticsService.trackQuizEvent(context, 'lesson_completed', additionalProperties: {
