@@ -55,6 +55,10 @@
     {
       "source": "/privacy",
       "destination": "https://bijbelquiz.app/privacy.html"
+    },
+    {
+      "source": "/algemene-voorwaarden",
+      "destination": "https://bijbelquiz.app/algemene-voorwaarden.html"
     }
   ],
   "headers": [

@@ -338,6 +338,75 @@ class _GuidePageViewState extends State<GuidePageView> {
 
   bool _permissionGranted = true;
 
+  bool _isWelcomePage() {
+    return widget.page.title == strings.AppStrings.welcomeTitle && widget.page.icon == Icons.church;
+  }
+
+  Widget _buildTermsAgreementText() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: widget.colorScheme.onSurface.withValues(alpha: 0.7),
+                  height: 1.4,
+                ),
+            children: [
+              const TextSpan(text: 'Als u doorgaat gaat u akkoord met onze '),
+              WidgetSpan(
+                alignment: PlaceholderAlignment.baseline,
+                baseline: TextBaseline.alphabetic,
+                child: GestureDetector(
+                  onTap: () async {
+                    const url = 'https://bijbelquiz.app/algemene-voorwaarden.html';
+                    if (await canLaunchUrl(Uri.parse(url))) {
+                      await launchUrl(
+                        Uri.parse(url),
+                        mode: LaunchMode.externalApplication,
+                      );
+                    }
+                  },
+                  child: Text(
+                    'algemene voorwaarden',
+                    style: TextStyle(
+                      color: widget.colorScheme.primary,
+                      height: 1.4,
+                    ),
+                  ),
+                ),
+              ),
+              const TextSpan(text: ' en '),
+              WidgetSpan(
+                alignment: PlaceholderAlignment.baseline,
+                baseline: TextBaseline.alphabetic,
+                child: GestureDetector(
+                  onTap: () async {
+                    const url = 'https://bijbelquiz.app/privacy.html';
+                    if (await canLaunchUrl(Uri.parse(url))) {
+                      await launchUrl(
+                        Uri.parse(url),
+                        mode: LaunchMode.externalApplication,
+                      );
+                    }
+                  },
+                  child: Text(
+                    'privacybeleid',
+                    style: TextStyle(
+                      color: widget.colorScheme.primary,
+                      height: 1.4,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -577,6 +646,12 @@ class _GuidePageViewState extends State<GuidePageView> {
                           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                         ),
                       ),
+                    ],
+
+                    // Add terms agreement text on first page (welcome page)
+                    if (_isWelcomePage()) ...[
+                      const SizedBox(height: 24),
+                      _buildTermsAgreementText(),
                     ],
                   ],
                 ),
