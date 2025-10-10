@@ -264,7 +264,10 @@ p {
 
 /* Buttons */
 .btn {
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   width: 100%;
   padding: 0.875rem 1.25rem;
   margin-bottom: 1rem;
@@ -280,6 +283,12 @@ p {
   overflow: hidden;
   text-align: center;
   touch-action: manipulation;
+}
+
+/* Fix icon alignment in buttons */
+.btn i.material-icons {
+  vertical-align: middle;
+  flex-shrink: 0;
 }
 
 /* Button tap/active state */
