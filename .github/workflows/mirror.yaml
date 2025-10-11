@@ -16,7 +16,7 @@ jobs:
 
       - name: Mirror push to Codeberg
         env:
-          CODEBERG_REPO: https://ThomasNowProductions:${{ secrets.CODEBERG_TOKEN }}@codeberg.org/ThomasNowProductions/BijbelQuiz.git
+          CODEBERG_REPO: https://ThomasNowProductions:${{ secrets.CODEBERG_TOKEN }}@codeberg.org/BijbelQuiz/BijbelQuiz.git
         run: |
           git remote add codeberg $CODEBERG_REPO || true
           git push --mirror codeberg
