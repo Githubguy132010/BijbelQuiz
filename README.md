@@ -75,8 +75,8 @@ Web applications:
 
 ## Git repositories
 
-- [Codeberg](https://codeberg.org/ThomasNowProductions/BijbelQuiz) (secondary)
-- [GitHub](https://github.com/ThomasNowProductions/BijbelQuiz) (primary)
+- [Codeberg](https://codeberg.org/BijbelQuiz/BijbelQuiz) (secondary)
+- [GitHub](https://github.com/BijbelQuiz/BijbelQuiz) (primary)
 - [GitLab](https://gitlab.com/ThomasNow/bijbelquiz) (tertiary)
 
 Please open as much as possible issues and pull requests on GitHub.
