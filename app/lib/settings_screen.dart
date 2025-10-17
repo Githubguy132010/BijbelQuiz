@@ -1391,6 +1391,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 AppUrls.blueskyUrl,
                 colorScheme,
               ),
+              const SizedBox(height: 12),
+              _buildSocialMediaButton(
+                context,
+                strings.AppStrings.nooki,
+                Icons.group,
+                AppUrls.nookiUrl,
+                colorScheme,
+              ),
             ],
           ),
           actions: [

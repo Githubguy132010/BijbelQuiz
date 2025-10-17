@@ -221,6 +221,11 @@ class PromoCard extends StatelessWidget {
                   icon: Icons.cloud,
                   onPressed: () => onAction(strings.AppStrings.blueskyUrl),
                 ),
+                _SocialButton(
+                  label: strings.AppStrings.followNooki,
+                  icon: Icons.group,
+                  onPressed: () => onAction(strings.AppStrings.nookiUrl),
+                ),
               ],
             ),
           ],
