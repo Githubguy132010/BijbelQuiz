@@ -1,9 +1,7 @@
-import '../config/app_config.dart';
-
 class AppUrls {
   // Base domains
-  static String get baseDomain => AppConfig.baseDomain;
-  static String get baseDomainAPI => AppConfig.baseDomainAPI;
+  static const String baseDomain = 'https://bijbelquiz.app';
+  static const String baseDomainAPI = 'https://backend.bijbelquiz.app/api';
 
   // Homepage
   static final String homepage = baseDomain;
@@ -38,6 +36,6 @@ class AppUrls {
   static String get nookiUrl => '$baseDomain/nooki';
 
   // ===== CONTACT =====
-  static String get contactEmail => AppConfig.contactEmail;
+  static const String contactEmail = 'thomasnowprod@proton.me';
   static String get contactEmailUrl => '$baseDomain/email';
 }
