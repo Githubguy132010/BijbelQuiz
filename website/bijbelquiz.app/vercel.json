@@ -67,6 +67,10 @@
     {
       "source": "/nooki",
       "destination": "https://nooki.me/c/BijbelQuiz"
+    },
+    {
+      "source": "/links",
+      "destination": "https://bijbelquiz.app/links.html"
     }
   ],
   "headers": [
