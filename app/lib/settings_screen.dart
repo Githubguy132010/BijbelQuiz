@@ -450,7 +450,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           colorScheme,
           isSmallScreen,
           isDesktop,
-          title: 'Local API',
+          title: strings.AppStrings.localApi,
           children: [
             _buildSettingItem(
               context,
@@ -458,8 +458,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               colorScheme,
               isSmallScreen,
               isDesktop,
-              title: 'Enable Local API',
-              subtitle: 'Allow external apps to access quiz data',
+              title: strings.AppStrings.enableLocalApi,
+              subtitle: strings.AppStrings.enableLocalApiDesc,
               icon: Icons.api,
               child: Switch(
                 value: settings.apiEnabled,
@@ -476,8 +476,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 colorScheme,
                 isSmallScreen,
                 isDesktop,
-                title: 'API Key',
-                subtitle: settings.apiKey.isEmpty ? 'Generate a key for API access' : _formatApiKey(settings.apiKey),
+                title: strings.AppStrings.apiKey,
+                subtitle: settings.apiKey.isEmpty ? strings.AppStrings.generateApiKey : _formatApiKey(settings.apiKey),
                 icon: Icons.key,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -486,7 +486,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       IconButton(
                         onPressed: () => _copyApiKeyToClipboard(context, settings.apiKey),
                         icon: Icon(Icons.copy, size: 20),
-                        tooltip: 'Copy API Key',
+                        tooltip: strings.AppStrings.copyApiKey,
                         style: IconButton.styleFrom(
                           backgroundColor: colorScheme.primary.withAlpha((0.1 * 255).round()),
                           foregroundColor: colorScheme.primary,
@@ -504,7 +504,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             _showApiKeyDialog(context, settings);
                           }
                         },
-                        child: Text(settings.apiKey.isEmpty ? 'Generate Key' : 'Regenerate'),
+                        child: Text(settings.apiKey.isEmpty ? strings.AppStrings.generateKey : strings.AppStrings.regenerateApiKey),
                       ),
                     ),
                   ],
@@ -516,8 +516,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 colorScheme,
                 isSmallScreen,
                 isDesktop,
-                title: 'API Port',
-                subtitle: 'Port for local API server (${settings.apiPort})',
+                title: strings.AppStrings.apiPort,
+                subtitle: '${strings.AppStrings.apiPortDesc} (${settings.apiPort})',
                 icon: Icons.settings_ethernet,
                 child: SizedBox(
                   width: 100,
@@ -544,9 +544,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 colorScheme,
                 isSmallScreen,
                 isDesktop,
-                title: 'API Status',
-                subtitle: _getApiStatusText(),
-                icon: _getApiStatusIcon(),
+                title: strings.AppStrings.apiStatus,
+                subtitle: strings.AppStrings.apiStatusDesc,
+                icon: Icons.info_outline,
                 child: Consumer<ApiService?>(
                   builder: (context, apiService, child) {
                     // Also check if API is enabled in settings
@@ -559,13 +559,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     String statusText;
                     if (!isApiEnabled) {
                       statusColor = Colors.grey;
-                      statusText = 'Disabled';
+                      statusText = strings.AppStrings.apiDisabled;
                     } else if (isRunning) {
                       statusColor = Colors.green;
-                      statusText = 'Running';
+                      statusText = strings.AppStrings.apiRunning;
                     } else {
                       statusColor = Colors.orange;
-                      statusText = 'Starting...';
+                      statusText = strings.AppStrings.apiStarting;
                     }
 
                     return Row(
@@ -1554,25 +1554,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Regenerate API Key'),
-          content: Text('This will generate a new API key and invalidate the current one. Continue?'),
+          title: Text(strings.AppStrings.regenerateApiKeyTitle),
+          content: Text(strings.AppStrings.regenerateApiKeyMessage),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Cancel'),
+              child: Text(strings.AppStrings.cancel),
             ),
             TextButton(
               onPressed: () async {
                 await settings.generateNewApiKey();
                 Navigator.of(context).pop();
                 if (context.mounted) {
-                  showTopSnackBar(context, 'New API key generated', style: TopSnackBarStyle.success);
+                  showTopSnackBar(context, strings.AppStrings.apiKeyGenerated, style: TopSnackBarStyle.success);
                 }
               },
               style: TextButton.styleFrom(
                 foregroundColor: Theme.of(context).colorScheme.error,
               ),
-              child: Text('Regenerate'),
+              child: Text(strings.AppStrings.regenerateApiKey),
             ),
           ],
         );
@@ -1580,13 +1580,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  String _getApiStatusText() {
-    return 'Shows if the API server is running';
-  }
-
-  IconData _getApiStatusIcon() {
-    return Icons.info_outline;
-  }
 
   /// Format API key for display (show first 6 and last 4 characters)
   String _formatApiKey(String apiKey) {
@@ -1601,7 +1594,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (context.mounted) {
         showTopSnackBar(
           context,
-          'API key copied to clipboard',
+          strings.AppStrings.apiKeyCopied,
           style: TopSnackBarStyle.success,
         );
       }
@@ -1609,7 +1602,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (context.mounted) {
         showTopSnackBar(
           context,
-          'Failed to copy API key',
+          strings.AppStrings.apiKeyCopyFailed,
           style: TopSnackBarStyle.error,
         );
       }

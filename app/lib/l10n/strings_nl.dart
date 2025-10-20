@@ -317,6 +317,28 @@ class AppStrings {
   static const String analytics = 'Analytics';
   static const String analyticsDescription = 'Help ons de app te verbeteren door anonieme gebruiksgegevens te verzenden';
 
+  // Local API Settings
+  static const String localApi = 'Lokale API';
+  static const String enableLocalApi = 'Lokale API inschakelen';
+  static const String enableLocalApiDesc = 'Sta externe apps toe om quizgegevens te benaderen';
+  static const String apiKey = 'API-sleutel';
+  static const String generateApiKey = 'Genereer een sleutel voor API-toegang';
+  static const String apiPort = 'API-poort';
+  static const String apiPortDesc = 'Poort voor lokale API-server';
+  static const String apiStatus = 'API-status';
+  static const String apiStatusDesc = 'Toont of de API-server draait';
+  static const String apiDisabled = 'Uitgeschakeld';
+  static const String apiRunning = 'Draait';
+  static const String apiStarting = 'Starten...';
+  static const String copyApiKey = 'API-sleutel kopiëren';
+  static const String regenerateApiKey = 'API-sleutel opnieuw genereren';
+  static const String regenerateApiKeyTitle = 'API-sleutel opnieuw genereren';
+  static const String regenerateApiKeyMessage = 'Dit genereert een nieuwe API-sleutel en maakt de huidige ongeldig. Doorgaan?';
+  static const String apiKeyCopied = 'API-sleutel gekopieerd naar klembord';
+  static const String apiKeyCopyFailed = 'Kon API-sleutel niet kopiëren';
+  static const String generateKey = 'Genereer sleutel';
+  static const String apiKeyGenerated = 'Nieuwe API-sleutel gegenereerd';
+
   // Social Media
   static const String followOnSocialMedia = 'Volg op social media';
   static const String followUsOnSocialMedia = 'Volg ons op social media';
