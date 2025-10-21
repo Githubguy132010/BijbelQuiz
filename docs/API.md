@@ -8,10 +8,14 @@ The BijbelQuiz app includes a local HTTP API server that allows external applica
 
 - **Local Network Access**: Runs on a configurable local port (default: 8080)
 - **Secure Authentication**: API key-based authentication via Bearer token or X-API-Key header
-- **RESTful Endpoints**: Standard HTTP methods for data access
+- **RESTful Endpoints**: Standard HTTP methods for data access with versioning support
 - **JSON Responses**: Structured data format for easy integration
 - **CORS Support**: Cross-origin requests supported for web integration
-- **Real-time Status**: Live API server status monitoring
+- **Rate Limiting**: Built-in protection against abuse (100 requests/minute per IP)
+- **Security Headers**: Enhanced security with proper HTTP headers
+- **Performance Monitoring**: Request timing and processing metrics
+- **Comprehensive Logging**: Detailed request/response logging for debugging
+- **Real-time Status**: Live API server status monitoring with uptime information
 
 ## Setup
 
@@ -58,19 +62,24 @@ curl -H "X-API-Key: your-api-key" \
 ```json
 {
   "error": "Invalid or missing API key",
-  "message": "Please provide a valid API key via Authorization header (Bearer token) or X-API-Key header"
+  "message": "Please provide a valid API key via Authorization header (Bearer token) or X-API-Key header",
+  "timestamp": "2025-10-20T16:45:49.539Z"
 }
 ```
 
-## Endpoints
+## API Versioning
+
+The BijbelQuiz API uses versioning to ensure backward compatibility and allow for future enhancements. The current version is **v1**.
 
 ### Base URL
 ```
-http://localhost:8080
+http://localhost:8080/v1
 ```
 
+All API endpoints are prefixed with the version number (`/v1`). This allows for future API versions to be introduced without breaking existing integrations.
+
 ### 1. Health Check
-**GET** `/health`
+**GET** `/v1/health`
 
 Check if the API server is running and healthy.
 
@@ -79,17 +88,19 @@ Check if the API server is running and healthy.
 {
   "status": "healthy",
   "timestamp": "2025-10-20T16:45:49.539Z",
-  "service": "BijbelQuiz API"
+  "service": "BijbelQuiz API",
+  "version": "v1",
+  "uptime": "running"
 }
 ```
 
 **Usage:**
 ```bash
-curl http://localhost:8080/health
+curl http://localhost:8080/v1/health
 ```
 
 ### 2. Get Questions
-**GET** `/questions`
+**GET** `/v1/questions`
 
 Retrieve quiz questions with optional filtering.
 
@@ -116,7 +127,9 @@ Retrieve quiz questions with optional filtering.
   ],
   "count": 1,
   "category": "Nieuwe Testament",
-  "difficulty": null
+  "difficulty": null,
+  "timestamp": "2025-10-20T16:45:49.539Z",
+  "processing_time_ms": 45
 }
 ```
 
@@ -124,19 +137,19 @@ Retrieve quiz questions with optional filtering.
 ```bash
 # Get 10 random questions
 curl -H "X-API-Key: your-api-key" \
-     http://localhost:8080/questions?limit=10
+     http://localhost:8080/v1/questions?limit=10
 
 # Get questions from Genesis category
 curl -H "X-API-Key: your-api-key" \
-     http://localhost:8080/questions?category=Genesis&limit=5
+     http://localhost:8080/v1/questions?category=Genesis&limit=5
 
 # Get hard difficulty questions
 curl -H "X-API-Key: your-api-key" \
-     http://localhost:8080/questions?difficulty=4&limit=20
+     http://localhost:8080/v1/questions?difficulty=4&limit=20
 ```
 
 ### 3. Get Questions by Category
-**GET** `/questions/{category}`
+**GET** `/v1/questions/{category}`
 
 Get questions from a specific category.
 
@@ -147,21 +160,21 @@ Get questions from a specific category.
 - `limit` (optional): Number of questions to return (default: 10, max: 50)
 - `difficulty` (optional): Filter by difficulty level (1-5)
 
-**Response:** Same format as `/questions` endpoint
+**Response:** Same format as `/v1/questions` endpoint
 
 **Examples:**
 ```bash
 # Get questions from Psalms
 curl -H "X-API-Key: your-api-key" \
-     http://localhost:8080/questions/Psalmen?limit=15
+     http://localhost:8080/v1/questions/Psalmen?limit=15
 
 # Get easy questions from Proverbs
 curl -H "X-API-Key: your-api-key" \
-     http://localhost:8080/questions/Spreuken?difficulty=2
+     http://localhost:8080/v1/questions/Spreuken?difficulty=2
 ```
 
 ### 4. Get User Progress
-**GET** `/progress`
+**GET** `/v1/progress`
 
 Retrieve user's lesson progress and unlock status.
 
@@ -175,18 +188,20 @@ Retrieve user's lesson progress and unlock status.
     "lesson_3": 3,
     "lesson_4": 1,
     "lesson_5": 2
-  }
+  },
+  "timestamp": "2025-10-20T16:45:49.539Z",
+  "processing_time_ms": 12
 }
 ```
 
 **Usage:**
 ```bash
 curl -H "X-API-Key: your-api-key" \
-     http://localhost:8080/progress
+     http://localhost:8080/v1/progress
 ```
 
 ### 5. Get Game Statistics
-**GET** `/stats`
+**GET** `/v1/stats`
 
 Retrieve current game statistics and performance metrics.
 
@@ -196,18 +211,20 @@ Retrieve current game statistics and performance metrics.
   "score": 1250,
   "currentStreak": 7,
   "longestStreak": 15,
-  "incorrectAnswers": 23
+  "incorrectAnswers": 23,
+  "timestamp": "2025-10-20T16:45:49.539Z",
+  "processing_time_ms": 8
 }
 ```
 
 **Usage:**
 ```bash
 curl -H "X-API-Key: your-api-key" \
-     http://localhost:8080/stats
+     http://localhost:8080/v1/stats
 ```
 
 ### 6. Get App Settings
-**GET** `/settings`
+**GET** `/v1/settings`
 
 Retrieve current app settings and preferences.
 
@@ -218,14 +235,16 @@ Retrieve current app settings and preferences.
   "gameSpeed": "medium",
   "mute": false,
   "analyticsEnabled": true,
-  "notificationEnabled": true
+  "notificationEnabled": true,
+  "timestamp": "2025-10-20T16:45:49.539Z",
+  "processing_time_ms": 15
 }
 ```
 
 **Usage:**
 ```bash
 curl -H "X-API-Key: your-api-key" \
-     http://localhost:8080/settings
+     http://localhost:8080/v1/settings
 ```
 
 ## Response Formats
@@ -252,7 +271,26 @@ Error responses include HTTP error status codes and JSON error details:
 - `401 Unauthorized`: Missing or invalid API key
 - `403 Forbidden`: Valid API key but insufficient permissions
 - `404 Not Found`: Endpoint or resource not found
+- `413 Payload Too Large`: Request exceeds size limit (1MB)
+- `429 Too Many Requests`: Rate limit exceeded
 - `500 Internal Server Error`: Server-side error
+
+### Enhanced Error Response Features
+
+All error responses now include:
+- **timestamp**: When the error occurred (ISO 8601 format)
+- **processing_time_ms**: How long the request took before failing
+- **valid_range/valid_values**: For validation errors, shows acceptable values
+
+### Rate Limiting Error Response
+```json
+{
+  "error": "Rate limit exceeded",
+  "message": "Too many requests. Maximum 100 requests per minute allowed.",
+  "retry_after": 60,
+  "timestamp": "2025-10-20T16:45:49.539Z"
+}
+```
 
 ## Data Types
 
@@ -270,9 +308,25 @@ Error responses include HTTP error status codes and JSON error details:
 
 ## Rate Limiting
 
-The API implements basic rate limiting to prevent abuse:
-- Maximum 100 requests per minute per IP address
-- Requests exceeding the limit return `429 Too Many Requests`
+The API implements comprehensive rate limiting to prevent abuse and ensure fair usage:
+
+### Limits
+- **Maximum 100 requests per minute per IP address**
+- **1MB maximum request payload size**
+- **Rate limit window**: 1 minute (60 seconds)
+
+### Behavior
+- Requests are tracked per IP address
+- Rate limit counters are automatically cleaned up every 5 minutes
+- Health check endpoints (`/v1/health`) are exempt from rate limiting
+- Rate-limited requests return `429 Too Many Requests` with retry information
+
+### Headers
+Rate limiting information is included in response headers:
+- `X-RateLimit-Limit`: Maximum requests per minute
+- `X-RateLimit-Remaining`: Remaining requests in current window
+- `X-RateLimit-Reset`: Unix timestamp when the rate limit resets
+- `Retry-After`: Seconds to wait before retrying (for rate-limited responses)
 
 ## Integration Examples
 
@@ -281,7 +335,7 @@ The API implements basic rate limiting to prevent abuse:
 import requests
 
 API_KEY = "your-api-key-here"
-BASE_URL = "http://localhost:8080"
+BASE_URL = "http://localhost:8080/v1"
 
 def get_questions(category=None, limit=10):
     headers = {"X-API-Key": API_KEY}
@@ -291,7 +345,9 @@ def get_questions(category=None, limit=10):
 
     response = requests.get(f"{BASE_URL}/questions", headers=headers, params=params)
     response.raise_for_status()
-    return response.json()
+    data = response.json()
+    print(f"Request processed in {data.get('processing_time_ms', 0)}ms")
+    return data
 
 # Usage
 questions = get_questions(category="Genesis", limit=5)
@@ -304,7 +360,7 @@ for q in questions['questions']:
 ### JavaScript/Node.js Example
 ```javascript
 const API_KEY = "your-api-key-here";
-const BASE_URL = "http://localhost:8080";
+const BASE_URL = "http://localhost:8080/v1";
 
 async function getQuestions(category = null, limit = 10) {
     const headers = {
@@ -318,9 +374,12 @@ async function getQuestions(category = null, limit = 10) {
 
     const response = await fetch(`${BASE_URL}/questions?${params}`, { headers });
     if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(`API error: ${response.status} - ${errorData.message || 'Unknown error'}`);
     }
-    return await response.json();
+    const data = await response.json();
+    console.log(`Request processed in ${data.processing_time_ms}ms`);
+    return data;
 }
 
 // Usage
@@ -338,23 +397,27 @@ getQuestions("Psalmen", 10)
 ### Command Line Examples
 ```bash
 # Health check
-curl http://localhost:8080/health
+curl http://localhost:8080/v1/health
 
 # Get 5 random questions
 curl -H "X-API-Key: your-api-key" \
-     http://localhost:8080/questions?limit=5
+     http://localhost:8080/v1/questions?limit=5
 
 # Get questions from Matthew with Bearer token
 curl -H "Authorization: Bearer your-api-key" \
-     http://localhost:8080/questions?category=Matteüs&limit=10
+     http://localhost:8080/v1/questions?category=Matteüs&limit=10
 
 # Get user progress
 curl -H "X-API-Key: your-api-key" \
-     http://localhost:8080/progress
+     http://localhost:8080/v1/progress
 
 # Get game statistics
 curl -H "X-API-Key: your-api-key" \
-     http://localhost:8080/stats
+     http://localhost:8080/v1/stats
+
+# Get settings
+curl -H "X-API-Key: your-api-key" \
+     http://localhost:8080/v1/settings
 ```
 
 ## Troubleshooting
@@ -362,23 +425,44 @@ curl -H "X-API-Key: your-api-key" \
 ### Common Issues
 
 1. **Connection Refused**
-   - Ensure the API is enabled in BijbelQuiz settings
-   - Check that the port (default: 8080) is not blocked by firewall
-   - Verify the app is running and not in background
+    - Ensure the API is enabled in BijbelQuiz settings
+    - Check that the port (default: 8080) is not blocked by firewall
+    - Verify the app is running and not in background
+    - Try the new versioned URL: `http://localhost:8080/v1/health`
 
 2. **Authentication Failed**
-   - Ensure you're using the correct API key
-   - Check that the API key hasn't been regenerated
-   - Try both Bearer token and X-API-Key header methods
+    - Ensure you're using the correct API key
+    - Check that the API key hasn't been regenerated
+    - Try both Bearer token and X-API-Key header methods
+    - Verify you're using the correct versioned endpoints (`/v1/`)
 
-3. **No Questions Returned**
-   - Check if questions are loaded in the BijbelQuiz app
-   - Verify category names are spelled correctly
-   - Try without category filter to see if questions are available
+3. **Rate Limit Exceeded (429 Error)**
+    - Slow down your request rate (max 100 requests/minute per IP)
+    - Implement retry logic with exponential backoff
+    - Check the `Retry-After` header for wait time
+    - Consider caching responses to reduce API calls
 
-4. **Port Already in Use**
-   - Change the API port in BijbelQuiz settings
-   - Check what process is using the port: `netstat -tulpn | grep :8080`
+4. **No Questions Returned**
+    - Check if questions are loaded in the BijbelQuiz app
+    - Verify category names are spelled correctly
+    - Try without category filter to see if questions are available
+    - Check API logs for detailed error information
+
+5. **Port Already in Use**
+    - Change the API port in BijbelQuiz settings
+    - Check what process is using the port: `netstat -tulpn | grep :8080`
+    - On Windows: `netstat -ano | findstr :8080`
+
+6. **Request Too Large (413 Error)**
+    - Reduce request payload size (limit is 1MB)
+    - Check if you're sending unnecessary data
+    - Consider paginating large requests
+
+7. **Invalid Parameter Values**
+    - Check that difficulty is between 1-5
+    - Ensure limit is between 1-50
+    - Verify category names match exactly
+    - Look for validation hints in error responses
 
 ### Debug Mode
 
@@ -401,17 +485,54 @@ ip addr show wlan0
 
 ## Security Considerations
 
+### Enhanced Security Features
+
+The API now includes several security improvements:
+
+1. **Security Headers**: All responses include security headers to prevent common web vulnerabilities
+2. **Request Size Limiting**: Maximum 1MB request payload to prevent abuse
+3. **Rate Limiting**: Automatic protection against excessive requests
+4. **Input Validation**: Comprehensive validation of all request parameters
+5. **Error Information Limiting**: Error responses don't leak sensitive system information
+
+### Security Headers Included
+- `X-Content-Type-Options: nosniff` - Prevents MIME type sniffing
+- `X-Frame-Options: DENY` - Prevents clickjacking attacks
+- `X-XSS-Protection: 1; mode=block` - Enables XSS filtering
+- `Content-Security-Policy` - Restricts resource loading
+- `Referrer-Policy: strict-origin-when-cross-origin` - Controls referrer information
+
+### Best Practices
 1. **API Key Protection**: Keep your API key secure and don't commit it to version control
 2. **Network Exposure**: The API is accessible from your local network - be aware of this when using on public WiFi
 3. **Firewall Configuration**: Consider firewall rules if you need to restrict access to specific IP ranges
 4. **Key Rotation**: Regularly regenerate your API key for enhanced security
+5. **HTTPS Usage**: Always use HTTPS in production environments
+6. **Monitor Rate Limits**: Be aware of rate limiting and implement retry logic with exponential backoff
 
 ## Performance
 
-- **Response Time**: Typically <100ms for local requests
+### Enhanced Performance Features
+
+- **Response Time**: Typically <100ms for local requests with detailed timing metrics
 - **Memory Usage**: Minimal additional memory usage when API is enabled
-- **Concurrent Requests**: Supports multiple simultaneous requests
+- **Concurrent Requests**: Supports multiple simultaneous requests with rate limiting
 - **Caching**: Questions are cached in the BijbelQuiz app for fast retrieval
+- **Request Optimization**: Automatic cleanup of rate limiting data every 5 minutes
+- **Processing Metrics**: All responses include processing time for performance monitoring
+
+### Performance Monitoring
+
+Each API response includes:
+- `processing_time_ms`: Time taken to process the request
+- `timestamp`: When the response was generated
+- Rate limiting headers for client-side optimization
+
+### Best Practices for Performance
+1. **Enable request caching** in your application to reduce API calls
+2. **Monitor processing_time_ms** to identify slow endpoints
+3. **Implement exponential backoff** for rate-limited requests
+4. **Batch requests** when possible to reduce connection overhead
 
 ## Support
 
@@ -422,6 +543,16 @@ For API-related issues:
 4. Check BijbelQuiz app logs for error details
 
 ## Changelog
+
+### Version 1.1.0 (Latest)
+- **API Versioning**: All endpoints now use `/v1/` prefix for future compatibility
+- **Rate Limiting**: Implemented 100 requests/minute per IP with automatic cleanup
+- **Enhanced Security**: Added security headers, request size limiting, and input validation
+- **Performance Monitoring**: Added processing time metrics to all responses
+- **Improved Error Handling**: Enhanced error responses with timestamps and validation hints
+- **Better Logging**: Comprehensive request/response logging with timing information
+- **Input Validation**: Strict validation for all parameters with detailed error messages
+- **Documentation Updates**: Updated all examples and added new troubleshooting section
 
 ### Version 1.0.0
 - Initial API implementation
