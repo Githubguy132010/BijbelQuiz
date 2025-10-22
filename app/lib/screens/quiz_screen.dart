@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../models/quiz_state.dart';
 import '../models/quiz_question.dart';
 import '../services/sound_service.dart';
@@ -24,6 +25,7 @@ import '../widgets/metrics_widget.dart';
 import '../widgets/app_bar_widget.dart';
 import '../utils/responsive_utils.dart';
 import '../widgets/common_widgets.dart';
+import '../constants/urls.dart';
 import 'dart:async';
 import 'dart:math';
 import '../widgets/quiz_skeleton.dart';
@@ -859,8 +861,10 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
         quizState: _quizState,
         gameStats: gameStats,
         settings: settings,
+        questionId: _quizState.question.id,
         onSkipPressed: _handleSkip,
         onUnlockPressed: _handleUnlockBiblicalReference,
+        onFlagPressed: _handleFlag,
         isDesktop: isDesktop,
       ),
       body: SafeArea(
@@ -1022,6 +1026,24 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
   }
 
   // Callback methods for bottom bar buttons
+  Future<void> _handleFlag() async {
+    final question = _quizState.question;
+    final questionId = question.id;
+    final subject = 'BijbelQuiz vraag is incorrect';
+    final body = 'Er is een probleem met vraag $questionId in de BijbelQuiz app.';
+    final email = AppUrls.contactEmail;
+    final url = 'mailto:$email?subject=${Uri.encodeComponent(subject)}&body=${Uri.encodeComponent(body)}';
+
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      // Handle error, perhaps show a snackbar
+      if (mounted) {
+        showTopSnackBar(context, 'Could not open email client', style: TopSnackBarStyle.error);
+      }
+    }
+  }
+
   Future<void> _handleSkip() async {
     final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
     final question = _quizState.question;

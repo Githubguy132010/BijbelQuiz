@@ -5,13 +5,15 @@ import '../models/quiz_state.dart';
 import '../l10n/strings_nl.dart' as strings;
 
 /// Bottom navigation bar for quiz screen with action buttons
-/// (skip question, unlock biblical reference) and cost display.
+/// (skip question, unlock biblical reference, report question) and cost display.
 class QuizBottomBar extends StatelessWidget {
   final QuizState quizState;
   final GameStatsProvider gameStats;
   final SettingsProvider settings;
+  final String questionId;
   final VoidCallback onSkipPressed;
   final VoidCallback onUnlockPressed;
+  final VoidCallback onFlagPressed;
   final bool isDesktop;
 
   const QuizBottomBar({
@@ -19,8 +21,10 @@ class QuizBottomBar extends StatelessWidget {
     required this.quizState,
     required this.gameStats,
     required this.settings,
+    required this.questionId,
     required this.onSkipPressed,
     required this.onUnlockPressed,
+    required this.onFlagPressed,
     required this.isDesktop,
   });
 
@@ -83,6 +87,17 @@ class QuizBottomBar extends StatelessWidget {
                   onPressed: onUnlockPressed,
                   isDesktop: isDesktop,
                 ),
+
+              // Report question button
+              _buildActionButton(
+                context: context,
+                icon: Icons.flag_rounded,
+                label: settings.language == 'en' ? 'Report' : 'Melden',
+                cost: 0,
+                canUse: true,
+                onPressed: onFlagPressed,
+                isDesktop: isDesktop,
+              ),
             ],
           ),
         ),
@@ -185,6 +200,8 @@ class QuizBottomBar extends StatelessWidget {
       return 'Skip question';
     } else if (icon == Icons.book_rounded) {
       return 'Unlock biblical reference';
+    } else if (icon == Icons.flag_rounded) {
+      return 'Report question';
     }
     return '';
   }

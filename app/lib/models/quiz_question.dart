@@ -59,6 +59,9 @@ String _questionTypeToString(QuestionType type) {
 }
 
 class QuizQuestion {
+  /// The unique ID of the quiz question.
+  final String id;
+
   /// The text of the quiz question.
   final String question;
 
@@ -85,9 +88,10 @@ class QuizQuestion {
 
   /// Creates a new [QuizQuestion].
   ///
-  /// The [question], [correctAnswer], [incorrectAnswers], [difficulty], and [type] are required.
+  /// The [id], [question], [correctAnswer], [incorrectAnswers], [difficulty], and [type] are required.
   /// The answer options are automatically shuffled upon creation.
   QuizQuestion({
+    required this.id,
     required this.question,
     required this.correctAnswer,
     required this.incorrectAnswers,
@@ -100,15 +104,17 @@ class QuizQuestion {
   /// Creates a [QuizQuestion] from a JSON map.
   ///
   /// This factory is used to parse question data from a JSON source.
-  /// The JSON keys 'vraag', 'juisteAntwoord', 'fouteAntwoorden', 'moeilijkheidsgraad', and 'type' are used to populate the question's properties.
+  /// The JSON keys 'id', 'vraag', 'juisteAntwoord', 'fouteAntwoorden', 'moeilijkheidsgraad', and 'type' are used to populate the question's properties.
   factory QuizQuestion.fromJson(Map<String, dynamic> json) {
     final type = _parseQuestionType(json['type']?.toString());
     final correctAnswer = json['juisteAntwoord']?.toString() ?? '';
     final incorrectAnswers = _parseIncorrectAnswers(json['fouteAntwoorden'], type, correctAnswer);
     final categories = _parseCategories(json['categories']);
     final biblicalReference = json['biblicalReference'] as String?;
+    final id = json['id']?.toString() ?? '';
 
     return QuizQuestion(
+      id: id,
       question: json['vraag']?.toString() ?? '',
       correctAnswer: correctAnswer,
       incorrectAnswers: incorrectAnswers,
@@ -124,6 +130,7 @@ class QuizQuestion {
   /// This method is used for caching questions to persistent storage.
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'vraag': question,
       'juisteAntwoord': correctAnswer,
       'fouteAntwoorden': incorrectAnswers,

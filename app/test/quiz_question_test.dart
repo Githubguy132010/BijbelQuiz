@@ -5,6 +5,7 @@ void main() {
   group('QuizQuestion', () {
     test('should create QuizQuestion with required parameters', () {
       final question = QuizQuestion(
+        id: 'test001',
         question: 'What is the first book of the Bible?',
         correctAnswer: 'Genesis',
         incorrectAnswers: ['Exodus', 'Leviticus', 'Numbers'],
@@ -23,6 +24,7 @@ void main() {
 
     test('should create QuizQuestion with optional parameters', () {
       final question = QuizQuestion(
+        id: 'test002',
         question: 'In which city was Jesus born?',
         correctAnswer: 'Bethlehem',
         incorrectAnswers: ['Nazareth', 'Jerusalem'],
@@ -38,6 +40,7 @@ void main() {
 
     test('should parse from JSON - multiple choice', () {
       final json = {
+        'id': 'test009',
         'vraag': 'What is 2+2?',
         'juisteAntwoord': '4',
         'fouteAntwoorden': ['3', '5', '6'],
@@ -60,6 +63,7 @@ void main() {
 
     test('should parse from JSON - fill in the blank', () {
       final json = {
+        'id': 'test010',
         'vraag': 'Complete the verse: "In the beginning ___"',
         'juisteAntwoord': 'God created',
         'fouteAntwoorden': ['was the word', 'there was light'],
@@ -154,6 +158,7 @@ void main() {
 
     test('should serialize to JSON', () {
       final question = QuizQuestion(
+        id: 'test003',
         question: 'Test question?',
         correctAnswer: 'Yes',
         incorrectAnswers: ['No', 'Maybe'],
@@ -176,6 +181,7 @@ void main() {
 
     test('should shuffle answer options', () {
       final question = QuizQuestion(
+        id: 'test004',
         question: 'What is the capital of France?',
         correctAnswer: 'Paris',
         incorrectAnswers: ['London', 'Berlin', 'Madrid'],
@@ -193,6 +199,7 @@ void main() {
 
     test('should return correct answer index', () {
       final question = QuizQuestion(
+        id: 'test005',
         question: 'What is 5 * 5?',
         correctAnswer: '25',
         incorrectAnswers: ['15', '20', '30'],
@@ -206,6 +213,7 @@ void main() {
 
     test('should return primary category', () {
       final question = QuizQuestion(
+        id: 'test006',
         question: 'Bible question',
         correctAnswer: 'Answer',
         incorrectAnswers: ['Wrong1', 'Wrong2'],
@@ -219,6 +227,7 @@ void main() {
 
     test('should return empty string when no categories', () {
       final question = QuizQuestion(
+        id: 'test007',
         question: 'Bible question',
         correctAnswer: 'Answer',
         incorrectAnswers: ['Wrong1', 'Wrong2'],
@@ -231,6 +240,7 @@ void main() {
 
     test('should handle single incorrect answer for true/false', () {
       final question = QuizQuestion(
+        id: 'test008',
         question: 'Is water wet?',
         correctAnswer: 'Waar',
         incorrectAnswers: ['Niet waar'],
