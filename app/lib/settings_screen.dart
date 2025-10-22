@@ -1608,15 +1608,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
       final totalQuestions = gameStats.score + gameStats.incorrectAnswers;
       final correctPercentage = totalQuestions > 0 ? (gameStats.score / totalQuestions * 100).round() : 0;
 
-      // Create shareable link with stats as URL parameters
+      // Create compact stats string (format: score:currentStreak:longestStreak:incorrectAnswers:totalQuestions:correctPercentage)
+      final statsString = '${gameStats.score}:${gameStats.currentStreak}:${gameStats.longestStreak}:${gameStats.incorrectAnswers}:${totalQuestions}:${correctPercentage}';
+
+      // Create hash for tamper-proofing (just based on stats data)
+      final hash = sha256.convert(utf8.encode(statsString)).toString().substring(0, 16); // Use first 16 chars for shorter URL
+
+      // Create shareable link with compact format
       final baseUrl = 'https://bijbelquiz.app/score.html';
       final Uri shareUrl = Uri.parse(baseUrl).replace(queryParameters: {
-        'score': gameStats.score.toString(),
-        'currentStreak': gameStats.currentStreak.toString(),
-        'longestStreak': gameStats.longestStreak.toString(),
-        'incorrectAnswers': gameStats.incorrectAnswers.toString(),
-        'totalQuestions': totalQuestions.toString(),
-        'correctPercentage': correctPercentage.toString(),
+        's': statsString, // 's' for stats
+        'h': hash,        // 'h' for hash
       });
 
       // Copy link to clipboard

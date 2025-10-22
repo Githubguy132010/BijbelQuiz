@@ -59,33 +59,88 @@
     </div>
 
     <script>
+        // Simple SHA-256 implementation for verification
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
         // Get URL parameters
         const urlParams = new URLSearchParams(window.location.search);
 
-        // Default stats if no parameters provided
-        const defaultStats = {
-            score: 0,
-            currentStreak: 0,
-            longestStreak: 0,
-            incorrectAnswers: 0,
-            totalQuestions: 0,
-            correctPercentage: 0
-        };
+        // Get compact stats data and hash from URL parameters
+        const statsString = urlParams.get('s');
+        const urlHash = urlParams.get('h');
 
-        // Get stats from URL parameters or use defaults
-        const stats = {
-            score: parseInt(urlParams.get('score')) || defaultStats.score,
-            currentStreak: parseInt(urlParams.get('currentStreak')) || defaultStats.currentStreak,
-            longestStreak: parseInt(urlParams.get('longestStreak')) || defaultStats.longestStreak,
-            incorrectAnswers: parseInt(urlParams.get('incorrectAnswers')) || defaultStats.incorrectAnswers,
-            totalQuestions: parseInt(urlParams.get('totalQuestions')) || defaultStats.totalQuestions,
-            correctPercentage: parseInt(urlParams.get('correctPercentage')) || defaultStats.correctPercentage
-        };
+        let stats = null;
+        let isValid = false;
+
+        // Verify and parse compact stats data
+        async function verifyAndParseStats() {
+            if (!statsString || !urlHash) {
+                return false;
+            }
+
+            try {
+                // Parse the compact stats string: score:currentStreak:longestStreak:incorrectAnswers:totalQuestions:correctPercentage
+                const parts = statsString.split(':');
+                if (parts.length !== 6) {
+                    console.warn('Invalid stats format');
+                    return false;
+                }
+
+                const statsData = {
+                    score: parseInt(parts[0]) || 0,
+                    currentStreak: parseInt(parts[1]) || 0,
+                    longestStreak: parseInt(parts[2]) || 0,
+                    incorrectAnswers: parseInt(parts[3]) || 0,
+                    totalQuestions: parseInt(parts[4]) || 0,
+                    correctPercentage: parseInt(parts[5]) || 0
+                };
+
+                // Create hash of the data to verify (just stats data, no timestamp)
+                const computedHash = await sha256(statsString);
+
+                // Use first 16 characters of hash for comparison (matches server-side truncation)
+                const truncatedHash = computedHash.substring(0, 16);
+
+                // Verify hash matches
+                if (truncatedHash === urlHash) {
+                    return statsData;
+                } else {
+                    console.warn('Hash verification failed');
+                    return false;
+                }
+            } catch (error) {
+                console.error('Error verifying stats:', error);
+                return false;
+            }
+        }
 
         // Display stats
-        function displayStats() {
+        async function displayStats() {
             const container = document.getElementById('statsContainer');
 
+            // Try to verify and parse stats
+            if (!isValid) {
+                stats = await verifyAndParseStats();
+                isValid = !!stats;
+            }
+
+            if (!isValid || !stats) {
+                container.innerHTML = `
+                    <div class="no-stats">
+                        <i class="material-icons" style="font-size: 3rem; color: var(--text-secondary); margin-bottom: 1rem;">warning</i>
+                        <h3>Ongeldige of gemanipuleerde statistieken</h3>
+                        <p>De statistieken link is ongeldig, verlopen of gemanipuleerd. Deel je statistieken opnieuw om een geldige link te krijgen.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Check if user has any stats
             if (stats.totalQuestions === 0 && stats.score === 0) {
                 container.innerHTML = `
                     <div class="no-stats">
