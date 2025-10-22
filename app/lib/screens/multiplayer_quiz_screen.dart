@@ -48,6 +48,7 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
   late Timer _gameTimer;
   int _gameTimeRemaining = 0; // in seconds
   bool _gameEnded = false;
+  bool _showResults = false;
 
   // Player scores
   int _player1Score = 0;
@@ -139,6 +140,7 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
   void _endGame() {
     _gameTimer.cancel();
     _gameEnded = true;
+    _showResults = true;
 
     final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
     analyticsService.capture(context, 'multiplayer_game_ended', properties: {
@@ -148,65 +150,10 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
       'winner': _player1Score > _player2Score ? 'player1' : (_player2Score > _player1Score ? 'player2' : 'tie'),
     });
 
-    // Show end game dialog
-    _showGameEndDialog();
+    // Update UI to show results instead of dialog
+    setState(() {});
   }
 
-  void _showGameEndDialog() {
-    final winner = _player1Score > _player2Score ? 'Speler 1' : (_player2Score > _player1Score ? 'Speler 2' : 'Gelijkspel');
-    final isTie = _player1Score == _player2Score;
-
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(
-            'Spel afgelopen!',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                isTie ? 'Het is gelijkspel!' : '$winner wint!',
-                style: const TextStyle(fontSize: 18),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Speler 1: $_player1Score punten\nSpeler 2: $_player2Score punten',
-                style: const TextStyle(fontSize: 16),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Speeltijd: ${widget.gameDurationMinutes} minuten',
-                style: const TextStyle(fontSize: 14),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close dialog
-                Navigator.of(context).pop(); // Go back to setup screen
-              },
-              child: Text(
-                'Nieuw spel',
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.primary,
-                  fontSize: 16,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   Future<void> _initializeServices() async {
     try {
@@ -599,10 +546,6 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
       );
     }
 
-    if (_gameEnded) {
-      return Container(); // Game end dialog is shown, screen will be popped
-    }
-
     return Scaffold(
       backgroundColor: colorScheme.surface,
       body: SafeArea(
@@ -654,27 +597,43 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth < 600;
 
+    // Determine winner
+    String? winner;
+    if (_player1Score > _player2Score) {
+      winner = 'player1';
+    } else if (_player2Score > _player1Score) {
+      winner = 'player2';
+    } else {
+      winner = 'tie';
+    }
+
+    final isWinner = winner == 'player1' && isPlayer1 || winner == 'player2' && !isPlayer1;
+    final isTie = winner == 'tie';
+
     return Container(
-      color: colorScheme.surface,
+      color: _showResults ? (isWinner ? colorScheme.primary : colorScheme.surface) : colorScheme.surface,
       child: Column(
         children: [
-
-          // Independently scrollable question area
+          // Show results or question based on game state
           Expanded(
             child: SingleChildScrollView(
               physics: const ClampingScrollPhysics(),
               child: Padding(
                 padding: EdgeInsets.all(isSmallScreen ? 4 : 8),
-                child: QuestionWidget(
-                  question: isPlayer1 ? _player1QuizState.question : _player2QuizState.question,
-                  selectedAnswerIndex: isPlayer1 ? _player1QuizState.selectedAnswerIndex : _player2QuizState.selectedAnswerIndex,
-                  isAnswering: isPlayer1 ? _player1QuizState.isAnswering : _player2QuizState.isAnswering,
-                  isTransitioning: isPlayer1 ? _player1QuizState.isTransitioning : _player2QuizState.isTransitioning,
-                  onAnswerSelected: (index) => _handleAnswer(index, isPlayer1),
-                  language: settings.language,
-                  performanceService: _performanceService,
-                  isCompact: true,
-                ),
+                child: _showResults
+                    ? Center(
+                        child: _buildResultsWidget(context, isPlayer1, isWinner, isTie),
+                      )
+                    : QuestionWidget(
+                        question: isPlayer1 ? _player1QuizState.question : _player2QuizState.question,
+                        selectedAnswerIndex: isPlayer1 ? _player1QuizState.selectedAnswerIndex : _player2QuizState.selectedAnswerIndex,
+                        isAnswering: isPlayer1 ? _player1QuizState.isAnswering : _player2QuizState.isAnswering,
+                        isTransitioning: isPlayer1 ? _player1QuizState.isTransitioning : _player2QuizState.isTransitioning,
+                        onAnswerSelected: (index) => _handleAnswer(index, isPlayer1),
+                        language: settings.language,
+                        performanceService: _performanceService,
+                        isCompact: true,
+                      ),
               ),
             ),
           ),
@@ -683,6 +642,56 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
     );
   }
 
+
+  Widget _buildResultsWidget(BuildContext context, bool isPlayer1, bool isWinner, bool isTie) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final score = isPlayer1 ? _player1Score : _player2Score;
+    final playerName = isPlayer1 ? 'Speler 1' : 'Speler 2';
+
+    String statusText;
+    if (isTie) {
+      statusText = 'Gelijkspel!';
+    } else if (isWinner) {
+      statusText = 'Gewonnen!';
+    } else {
+      statusText = 'Verloren!';
+    }
+
+    final textColor = isWinner ? Colors.white : colorScheme.onSurface;
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          statusText,
+          style: TextStyle(
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+            color: textColor,
+          ),
+        ),
+        const SizedBox(height: 20),
+        Text(
+          'Punten: $score',
+          style: TextStyle(
+            fontSize: 24,
+            color: textColor,
+          ),
+        ),
+        const SizedBox(height: 40),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).pop(); // Go back to setup screen
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: isWinner ? Colors.white : colorScheme.primary,
+            foregroundColor: isWinner ? colorScheme.primary : Colors.white,
+          ),
+          child: const Text('Nieuw spel'),
+        ),
+      ],
+    );
+  }
 
   String _formatDuration(Duration duration) {
     final minutes = duration.inMinutes.remainder(60).toString().padLeft(2, '0');
