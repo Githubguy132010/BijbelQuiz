@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'dart:async';
 import 'dart:math';
 import '../models/quiz_question.dart';
@@ -84,6 +85,13 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
   @override
   void initState() {
     super.initState();
+
+    // Force landscape orientation for multiplayer split-screen
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+
     final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
 
     // Track screen view
@@ -256,6 +264,7 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
     _answerHandler = QuizAnswerHandler(
       soundService: _soundService,
       platformFeedbackService: _platformFeedbackService,
+      enableSounds: false,
     );
   }
 
@@ -543,6 +552,15 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
 
     _gameTimer.cancel();
     WidgetsBinding.instance.removeObserver(this);
+
+    // Reset orientation preferences
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+
     super.dispose();
   }
 
@@ -603,11 +621,11 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
                     ),
                   ),
 
-                  // Divider - responsive width
+                  // Divider - subtle and full height
                   Container(
-                    width: isSmallScreen ? 1 : 2,
-                    color: colorScheme.primary,
-                    margin: EdgeInsets.symmetric(vertical: isSmallScreen ? 8 : 16),
+                    width: 1,
+                    color: colorScheme.outline,
+                    margin: EdgeInsets.zero,
                   ),
 
                   // Right half - Player 2 (rotated 180 degrees)
@@ -640,36 +658,6 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
       color: colorScheme.surface,
       child: Column(
         children: [
-          // Player header with score
-          Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: isSmallScreen ? 8 : 12,
-              vertical: isSmallScreen ? 4 : 6,
-            ),
-            color: colorScheme.primaryContainer,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  playerName,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: colorScheme.onPrimaryContainer,
-                        fontSize: isSmallScreen ? 14 : null,
-                      ),
-                ),
-                SizedBox(width: isSmallScreen ? 6 : 8),
-                Text(
-                  '$_player1Score',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: colorScheme.onPrimaryContainer,
-                        fontWeight: FontWeight.w600,
-                        fontSize: isSmallScreen ? 14 : null,
-                      ),
-                ),
-              ],
-            ),
-          ),
 
           // Independently scrollable question area
           Expanded(

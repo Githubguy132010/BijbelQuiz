@@ -21,12 +21,15 @@ typedef HandleNextQuestionCallback = Future<void> Function(bool isCorrect, doubl
 class QuizAnswerHandler {
   final PlatformFeedbackService _platformFeedbackService;
   final QuizSoundService _quizSoundService;
+  final bool _enableSounds;
 
   QuizAnswerHandler({
     required SoundService soundService,
     required PlatformFeedbackService platformFeedbackService,
+    bool enableSounds = true,
   }) : _platformFeedbackService = platformFeedbackService,
-        _quizSoundService = QuizSoundService(soundService);
+        _quizSoundService = QuizSoundService(soundService),
+        _enableSounds = enableSounds;
 
   /// Handle user answer selection
   void handleAnswer({
@@ -86,16 +89,18 @@ class QuizAnswerHandler {
     AppLogger.info('Answer selected: ${isCorrect ? 'correct' : 'incorrect'} for question');
 
     // Start sound playing in background (don't await to prevent blocking)
-    if (isCorrect) {
-      _quizSoundService.playCorrectAnswerSound(context).catchError((e) {
-        // Ignore sound errors to prevent affecting visual feedback timing
-        AppLogger.warning('Sound playback error (correct): $e');
-      });
-    } else {
-      _quizSoundService.playIncorrectAnswerSound(context).catchError((e) {
-        // Ignore sound errors to prevent affecting visual feedback timing
-        AppLogger.warning('Sound playback error (incorrect): $e');
-      });
+    if (_enableSounds) {
+      if (isCorrect) {
+        _quizSoundService.playCorrectAnswerSound(context).catchError((e) {
+          // Ignore sound errors to prevent affecting visual feedback timing
+          AppLogger.warning('Sound playback error (correct): $e');
+        });
+      } else {
+        _quizSoundService.playIncorrectAnswerSound(context).catchError((e) {
+          // Ignore sound errors to prevent affecting visual feedback timing
+          AppLogger.warning('Sound playback error (incorrect): $e');
+        });
+      }
     }
 
     // Use platform-standardized feedback duration for consistent cross-platform experience
