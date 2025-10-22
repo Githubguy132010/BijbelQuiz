@@ -20,8 +20,9 @@ class ProgressHeader extends StatefulWidget {
   final VoidCallback? onAfterQuizReturn;
   final int streakDays;
   final List<DayIndicator> dayWindow;
+  final VoidCallback? onMultiplayerPressed;
 
-  const ProgressHeader({super.key, required this.lessons, this.continueLesson, this.onAfterQuizReturn, this.streakDays = 0, this.dayWindow = const []});
+  const ProgressHeader({super.key, required this.lessons, this.continueLesson, this.onAfterQuizReturn, this.streakDays = 0, this.dayWindow = const [], this.onMultiplayerPressed});
 
   @override
   State<ProgressHeader> createState() => _ProgressHeaderState();
@@ -275,6 +276,25 @@ class _ProgressHeaderState extends State<ProgressHeader>
                       borderColor: cs.primary,
                     ),
                   ),
+                  if (widget.onMultiplayerPressed != null) ...[
+                    const SizedBox(height: 8),
+                    Semantics(
+                      label: 'Multiplayer mode',
+                      hint: 'Start a multiplayer quiz game',
+                      button: true,
+                      child: _AnimatedButton(
+                        onPressed: () {
+                          Provider.of<AnalyticsService>(context, listen: false).capture(context, 'start_multiplayer_quiz');
+                          widget.onMultiplayerPressed!();
+                        },
+                        label: 'Multiplayer Quiz',
+                        icon: Icons.people,
+                        color: Colors.transparent,
+                        textColor: cs.primary,
+                        borderColor: cs.primary,
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ] else ...[
@@ -293,6 +313,25 @@ class _ProgressHeaderState extends State<ProgressHeader>
                   borderColor: cs.primary,
                 ),
               ),
+              if (widget.onMultiplayerPressed != null) ...[
+                const SizedBox(height: 8),
+                Semantics(
+                  label: 'Multiplayer mode',
+                  hint: 'Start a multiplayer quiz game',
+                  button: true,
+                  child: _AnimatedButton(
+                    onPressed: () {
+                      Provider.of<AnalyticsService>(context, listen: false).capture(context, 'start_multiplayer_quiz');
+                      widget.onMultiplayerPressed!();
+                    },
+                    label: 'Multiplayer Quiz',
+                    icon: Icons.people,
+                    color: Colors.transparent,
+                    textColor: cs.primary,
+                    borderColor: cs.primary,
+                  ),
+                ),
+              ],
             ],
           ],
         ),

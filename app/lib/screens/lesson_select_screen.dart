@@ -383,21 +383,7 @@ class _LessonSelectScreenState extends State<LessonSelectScreen> {
                 ),
           ),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.people),
-            tooltip: 'Multiplayer Quiz',
-            onPressed: () {
-              final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
-              analyticsService.capture(context, 'multiplayer_button_tapped');
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => const MultiplayerGameSetupScreen(),
-                ),
-              );
-            },
-          ),
-        ],
+        actions: [],
       ),
       body: _loading
           ? const LessonGridSkeleton()
@@ -514,6 +500,15 @@ class _LessonSelectScreenState extends State<LessonSelectScreen> {
                                     streakDays: _streakDays,
                                     dayWindow: _getFiveDayWindow(),
                                     onAfterQuizReturn: _refreshStreakData,
+                                    onMultiplayerPressed: () {
+                                      final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
+                                      analyticsService.capture(context, 'multiplayer_button_tapped');
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (_) => const MultiplayerGameSetupScreen(),
+                                        ),
+                                      );
+                                    },
                                   ),
                                   const SizedBox(height: 8),
                                 ],

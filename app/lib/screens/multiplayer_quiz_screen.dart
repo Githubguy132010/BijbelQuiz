@@ -588,111 +588,65 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
     return Scaffold(
       backgroundColor: colorScheme.surface,
       body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const ClampingScrollPhysics(),
-          child: SizedBox(
-            width: size.width,
-            height: max(size.height - MediaQuery.of(context).padding.top - MediaQuery.of(context).padding.bottom, 600),
-            child: Column(
-              children: [
-                // Game timer and scores header - responsive for smaller screens
-                Container(
-                  padding: EdgeInsets.all(isSmallScreen ? 12 : 16),
-                  color: colorScheme.primaryContainer,
-                  child: Row(
-                    children: [
-                      // Game timer
-                      Expanded(
-                        child: Text(
-                          'Tijd: ${_formatDuration(Duration(seconds: _gameTimeRemaining))}',
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: colorScheme.onPrimaryContainer,
-                                fontSize: isSmallScreen ? 14 : null,
-                              ),
-                        ),
-                      ),
-                      // Player scores
-                      Text(
-                        '$_player1Score - $_player2Score',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: colorScheme.onPrimaryContainer,
-                              fontSize: isSmallScreen ? 16 : null,
-                            ),
-                      ),
-                    ],
+        child: Column(
+          children: [
+            // Split screen layout - full screen
+            Expanded(
+              child: Row(
+                children: [
+                  // Left half - Player 1 (normal orientation)
+                  Expanded(
+                    child: _buildScrollablePlayerArea(
+                      context,
+                      isPlayer1: true,
+                      playerName: 'Speler 1',
+                    ),
                   ),
-                ),
 
-                // Split screen layout with better proportions
-                Expanded(
-                  child: Row(
-                    children: [
-                      // Left half - Player 1 (normal orientation)
-                      Expanded(
-                        child: Container(
-                          color: colorScheme.surface,
-                          child: _buildPlayerQuizArea(
-                            context,
-                            isPlayer1: true,
-                            playerName: 'Speler 1',
-                          ),
-                        ),
-                      ),
-
-                      // Divider - responsive width
-                      Container(
-                        width: isSmallScreen ? 1 : 2,
-                        color: colorScheme.primary,
-                        margin: EdgeInsets.symmetric(vertical: isSmallScreen ? 8 : 16),
-                      ),
-
-                      // Right half - Player 2 (rotated 180 degrees)
-                      Expanded(
-                        child: Transform.rotate(
-                          angle: 3.14159, // 180 degrees in radians
-                          child: Container(
-                            color: colorScheme.surface,
-                            child: _buildPlayerQuizArea(
-                              context,
-                              isPlayer1: false,
-                              playerName: 'Speler 2',
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                  // Divider - responsive width
+                  Container(
+                    width: isSmallScreen ? 1 : 2,
+                    color: colorScheme.primary,
+                    margin: EdgeInsets.symmetric(vertical: isSmallScreen ? 8 : 16),
                   ),
-                ),
-              ],
+
+                  // Right half - Player 2 (rotated 180 degrees)
+                  Expanded(
+                    child: Transform.rotate(
+                      angle: 3.14159, // 180 degrees in radians
+                      child: _buildScrollablePlayerArea(
+                        context,
+                        isPlayer1: false,
+                        playerName: 'Speler 2',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildPlayerQuizArea(BuildContext context, {required bool isPlayer1, required String playerName}) {
+  Widget _buildScrollablePlayerArea(BuildContext context, {required bool isPlayer1, required String playerName}) {
     final colorScheme = Theme.of(context).colorScheme;
     final settings = Provider.of<SettingsProvider>(context);
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth < 600;
 
-    return Padding(
-      padding: EdgeInsets.all(isSmallScreen ? 4 : 8),
+    return Container(
+      color: colorScheme.surface,
       child: Column(
         children: [
-          // Player indicator and score in one row - more compact on small screens
+          // Player header with score
           Container(
             padding: EdgeInsets.symmetric(
               horizontal: isSmallScreen ? 8 : 12,
               vertical: isSmallScreen ? 4 : 6,
             ),
-            decoration: BoxDecoration(
-              color: colorScheme.primaryContainer,
-              borderRadius: BorderRadius.circular(isSmallScreen ? 12 : 16),
-            ),
+            color: colorScheme.primaryContainer,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -717,21 +671,22 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
             ),
           ),
 
-          SizedBox(height: isSmallScreen ? 4 : 8),
-
-          // Question area - use the same QuestionWidget as main quiz
+          // Independently scrollable question area
           Expanded(
-            child: Padding(
-              padding: EdgeInsets.all(isSmallScreen ? 4 : 8),
-              child: QuestionWidget(
-                question: isPlayer1 ? _player1QuizState.question : _player2QuizState.question,
-                selectedAnswerIndex: isPlayer1 ? _player1QuizState.selectedAnswerIndex : _player2QuizState.selectedAnswerIndex,
-                isAnswering: isPlayer1 ? _player1QuizState.isAnswering : _player2QuizState.isAnswering,
-                isTransitioning: isPlayer1 ? _player1QuizState.isTransitioning : _player2QuizState.isTransitioning,
-                onAnswerSelected: (index) => _handleAnswer(index, isPlayer1),
-                language: settings.language,
-                performanceService: _performanceService,
-                isCompact: true,
+            child: SingleChildScrollView(
+              physics: const ClampingScrollPhysics(),
+              child: Padding(
+                padding: EdgeInsets.all(isSmallScreen ? 4 : 8),
+                child: QuestionWidget(
+                  question: isPlayer1 ? _player1QuizState.question : _player2QuizState.question,
+                  selectedAnswerIndex: isPlayer1 ? _player1QuizState.selectedAnswerIndex : _player2QuizState.selectedAnswerIndex,
+                  isAnswering: isPlayer1 ? _player1QuizState.isAnswering : _player2QuizState.isAnswering,
+                  isTransitioning: isPlayer1 ? _player1QuizState.isTransitioning : _player2QuizState.isTransitioning,
+                  onAnswerSelected: (index) => _handleAnswer(index, isPlayer1),
+                  language: settings.language,
+                  performanceService: _performanceService,
+                  isCompact: true,
+                ),
               ),
             ),
           ),
