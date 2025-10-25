@@ -1,4 +1,4 @@
-package com.thomasnowproductions.bijbelquiz
+package app.bijbelquiz.app
 
 import io.flutter.embedding.android.FlutterActivity
 

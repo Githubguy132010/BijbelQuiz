@@ -11,7 +11,8 @@ import '../utils/color_parser.dart';
 
 /// Configuration for Gemini API service
 class GeminiConfig {
-  static const String baseUrl = 'https://generativelanguage.googleapis.com/v1beta';
+  static const String baseUrl =
+      'https://generativelanguage.googleapis.com/v1beta';
   static const Duration requestTimeout = Duration(seconds: 30);
   static const int maxRetries = 3;
   static const Duration retryDelay = Duration(seconds: 1);
@@ -75,15 +76,24 @@ class ColorPalette {
     final onColors = ColorParser.generateOnColors(colors);
 
     return ColorPalette(
-      primary: ColorParser.normalizeColorToHex(colors['primary'] ?? Colors.blue),
-      secondary: ColorParser.normalizeColorToHex(colors['secondary'] ?? Colors.purple),
-      tertiary: ColorParser.normalizeColorToHex(colors['tertiary'] ?? Colors.red),
-      background: ColorParser.normalizeColorToHex(colors['background'] ?? Colors.white),
-      surface: ColorParser.normalizeColorToHex(colors['surface'] ?? Colors.grey.shade50),
-      onPrimary: ColorParser.normalizeColorToHex(onColors['onPrimary'] ?? Colors.white),
-      onSecondary: ColorParser.normalizeColorToHex(onColors['onSecondary'] ?? Colors.white),
-      onBackground: ColorParser.normalizeColorToHex(onColors['onBackground'] ?? Colors.black),
-      onSurface: ColorParser.normalizeColorToHex(onColors['onSurface'] ?? Colors.black),
+      primary:
+          ColorParser.normalizeColorToHex(colors['primary'] ?? Colors.blue),
+      secondary:
+          ColorParser.normalizeColorToHex(colors['secondary'] ?? Colors.purple),
+      tertiary:
+          ColorParser.normalizeColorToHex(colors['tertiary'] ?? Colors.red),
+      background:
+          ColorParser.normalizeColorToHex(colors['background'] ?? Colors.white),
+      surface: ColorParser.normalizeColorToHex(
+          colors['surface'] ?? Colors.grey.shade50),
+      onPrimary: ColorParser.normalizeColorToHex(
+          onColors['onPrimary'] ?? Colors.white),
+      onSecondary: ColorParser.normalizeColorToHex(
+          onColors['onSecondary'] ?? Colors.white),
+      onBackground: ColorParser.normalizeColorToHex(
+          onColors['onBackground'] ?? Colors.black),
+      onSurface: ColorParser.normalizeColorToHex(
+          onColors['onSurface'] ?? Colors.black),
     );
   }
 }
@@ -101,7 +111,8 @@ class GeminiError implements Exception {
   });
 
   @override
-  String toString() => 'GeminiError: $message${statusCode != null ? ' (Status: $statusCode)' : ''}';
+  String toString() =>
+      'GeminiError: $message${statusCode != null ? ' (Status: $statusCode)' : ''}';
 }
 
 /// A service that provides an interface to the Gemini API for generating custom color themes.
@@ -165,7 +176,8 @@ class GeminiService {
         final envFile = File(envFilePath);
         if (await envFile.exists()) {
           await dotenv.load(fileName: envFilePath);
-          apiKey = dotenv.get('GEMINI_API_KEY', fallback: dotenv.env['GEMINI_API_KEY']);
+          apiKey = dotenv.get('GEMINI_API_KEY',
+              fallback: dotenv.env['GEMINI_API_KEY']);
           AppLogger.info('.env file loaded successfully from: $envFilePath');
         } else {
           AppLogger.warning('.env file not found at: $envFilePath');
@@ -173,9 +185,11 @@ class GeminiService {
         }
       } catch (e) {
         if (e is FileSystemException) {
-          AppLogger.warning('File system error loading .env file: ${e.message}');
+          AppLogger.warning(
+              'File system error loading .env file: ${e.message}');
         } else if (e is PathNotFoundException) {
-          AppLogger.warning('Path not found error loading .env file: ${e.message}');
+          AppLogger.warning(
+              'Path not found error loading .env file: ${e.message}');
         } else {
           AppLogger.warning('Unexpected error loading .env file: $e');
         }
@@ -190,23 +204,27 @@ class GeminiService {
       // If still no API key, try Platform.environment (for desktop platforms)
       if (apiKey.isEmpty) {
         try {
-          const platform = MethodChannel('com.example.bijbelquiz/env');
-          apiKey = await platform.invokeMethod('getEnv', {'key': 'GEMINI_API_KEY'});
+          const platform = MethodChannel('app.bijbelquiz.app/env');
+          apiKey =
+              await platform.invokeMethod('getEnv', {'key': 'GEMINI_API_KEY'});
           AppLogger.info('API key loaded from system environment');
         } catch (e) {
-          AppLogger.warning('Could not load API key from system environment: $e');
+          AppLogger.warning(
+              'Could not load API key from system environment: $e');
         }
       }
 
       if (apiKey == null || apiKey.isEmpty) {
         throw const GeminiError(
-          message: 'GEMINI_API_KEY not found in environment variables. Please ensure your .env file contains GEMINI_API_KEY=your_api_key_here or set it as a system environment variable.',
+          message:
+              'GEMINI_API_KEY not found in environment variables. Please ensure your .env file contains GEMINI_API_KEY=your_api_key_here or set it as a system environment variable.',
         );
       }
 
       // Validate API key format (basic check)
       if (apiKey.length < 20) {
-        AppLogger.warning('GEMINI_API_KEY appears to be too short - please verify it is correct');
+        AppLogger.warning(
+            'GEMINI_API_KEY appears to be too short - please verify it is correct');
       }
 
       _apiKey = apiKey;
@@ -235,13 +253,15 @@ class GeminiService {
       AppLogger.error('Gemini service initialization failed', e);
       if (e is GeminiError) {
         throw GeminiError(
-          message: 'Failed to initialize Gemini API service: ${e.message}. Please check your API key configuration.',
+          message:
+              'Failed to initialize Gemini API service: ${e.message}. Please check your API key configuration.',
           statusCode: e.statusCode,
           errorCode: e.errorCode,
         );
       } else {
         throw const GeminiError(
-          message: 'Failed to initialize Gemini API service. Please check your API key configuration.',
+          message:
+              'Failed to initialize Gemini API service. Please check your API key configuration.',
         );
       }
     }
@@ -249,7 +269,8 @@ class GeminiService {
     // Double-check that we're properly initialized
     if (!_initialized || _apiKey.isEmpty) {
       throw const GeminiError(
-        message: 'Gemini API service is not properly configured. Please check your GEMINI_API_KEY in the .env file.',
+        message:
+            'Gemini API service is not properly configured. Please check your GEMINI_API_KEY in the .env file.',
       );
     }
 
@@ -288,7 +309,8 @@ class GeminiService {
 
   /// Makes the HTTP request to the Gemini API
   Future<http.Response> _makeApiRequest(String description) async {
-    final url = Uri.parse('${GeminiConfig.baseUrl}/models/gemini-flash-latest:generateContent?key=$_apiKey');
+    final url = Uri.parse(
+        '${GeminiConfig.baseUrl}/models/gemini-flash-latest:generateContent?key=$_apiKey');
 
     final prompt = _buildPrompt(description);
     final requestBody = json.encode({
@@ -321,10 +343,12 @@ class GeminiService {
 
         if (response.statusCode == 200) {
           return response;
-        } else if (response.statusCode == 429 && attempt < GeminiConfig.maxRetries) {
+        } else if (response.statusCode == 429 &&
+            attempt < GeminiConfig.maxRetries) {
           // Rate limited, wait and retry
           final delay = GeminiConfig.retryDelay * attempt;
-          AppLogger.warning('Rate limited, retrying in ${delay.inSeconds}s (attempt $attempt)');
+          AppLogger.warning(
+              'Rate limited, retrying in ${delay.inSeconds}s (attempt $attempt)');
           await Future.delayed(delay);
           continue;
         } else {
@@ -408,7 +432,8 @@ Example response format:
       }
 
       // Use ColorParser to extract and validate colors from the response
-      final extractedColors = ColorParser.extractColorsFromGeminiResponse(generatedText);
+      final extractedColors =
+          ColorParser.extractColorsFromGeminiResponse(generatedText);
 
       // Validate accessibility compliance
       final validation = ColorParser.validateColorPalette(extractedColors);
@@ -428,7 +453,8 @@ Example response format:
     } catch (e) {
       if (e is GeminiError) rethrow;
 
-      AppLogger.error('Failed to parse API response, using fallback colors: $e');
+      AppLogger.error(
+          'Failed to parse API response, using fallback colors: $e');
 
       // Return a palette with fallback colors if parsing fails
       final fallbackColors = ColorParser.getFallbackColorPalette();

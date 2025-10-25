@@ -5,7 +5,7 @@ description: "Test je Bijbelkennis"
 # publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 # Package name configuration - Update this when licensing to third parties
-package_name: com.thomasnowproductions.bijbelquiz
+package_name: app.bijbelquiz.play
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43

@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.thomasnowproductions.bijbelquiz"> <!-- Update package name when licensing -->
+    package="app.bijbelquiz.play"> <!-- Update package name when licensing -->
     <!-- Required permissions -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.INTERNET" />

@@ -20,12 +20,12 @@ apply plugin: 'kotlin-android'
 apply plugin: 'dev.flutter.flutter-gradle-plugin'
 
 android {
-    namespace "com.thomasnowproductions.bijbelquiz"
+    namespace "app.bijbelquiz.play"
     compileSdkVersion 36
     ndkVersion "27.0.12077973"
 
     defaultConfig {
-        applicationId "com.thomasnowproductions.bijbelquiz"
+        applicationId "app.bijbelquiz.play"
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion 36
         multiDexEnabled true
