@@ -1,13 +1,17 @@
 import java.util.Properties
 
+// Load signing key properties
 def keyProperties = new Properties()
 def keyPropertiesFile = rootProject.file('key.properties')
 if (keyPropertiesFile.exists()) {
     keyProperties.load(new FileInputStream(keyPropertiesFile))
-    println "[DEBUG] All keyProperties: ${keyProperties}"
-    println "[DEBUG] Store file path: ${keyProperties['storeFile']}"
+    println "[DEBUG] Signing key loaded. Store file path: ${keyProperties['storeFile']}"
 } else {
     println "[ERROR] key.properties file not found at: ${keyPropertiesFile.absolutePath}"
+    // Fail build for release if missing
+    if (gradle.startParameter.taskNames.any { it.toLowerCase().contains('release') }) {
+        throw new GradleException("Missing key.properties file. Cannot build release APK/AAB.")
+    }
 }
 
 apply plugin: 'com.android.application'
@@ -26,7 +30,7 @@ android {
         versionCode 1
         versionName "1.0.0"
         multiDexEnabled true
-        
+
         manifestPlaceholders = [
             applicationName: 'io.flutter.app.FlutterApplication'
         ]
@@ -39,6 +43,8 @@ android {
                 storePassword keyProperties['storePassword']
                 keyAlias keyProperties['keyAlias']
                 keyPassword keyProperties['keyPassword']
+            } else {
+                println "[WARN] key.properties exists but storeFile is empty."
             }
         }
     }
@@ -46,8 +52,8 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false // safer for Flutter
+            shrinkResources false // safer for Flutter
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
@@ -64,6 +70,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
     }
@@ -74,8 +81,7 @@ dependencies {
 }
 
 tasks.withType(JavaCompile) {
-    // Suppress javac notes/warnings like:
-    // "Note: ... uses or overrides a deprecated API."
+    // Suppress warnings and deprecated API notes
     options.deprecation = false
     options.warnings = false
     options.compilerArgs << "-Xlint:none"
