@@ -77,6 +77,9 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
   late PlatformFeedbackService _platformFeedbackService;
   final SoundService _soundService = SoundService();
 
+  // Keyboard focus for desktop key handling
+  late FocusNode _keyboardFocusNode;
+
   // Managers
   late QuizTimerManager _timerManager;
   late QuizAnimationController _animationController;
@@ -103,6 +106,9 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
 
     WidgetsBinding.instance.addObserver(this);
     AppLogger.info('MultiplayerQuizScreen loaded');
+
+    // Initialize keyboard focus node
+    _keyboardFocusNode = FocusNode();
 
     // Initialize game timer
     _gameTimeRemaining = widget.gameDurationMinutes * 60;
@@ -500,6 +506,9 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
     _gameTimer.cancel();
     WidgetsBinding.instance.removeObserver(this);
 
+    // Dispose keyboard focus node
+    _keyboardFocusNode.dispose();
+
     // Reset orientation preferences
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
@@ -549,43 +558,71 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
     return Scaffold(
       backgroundColor: colorScheme.surface,
       body: SafeArea(
-        child: Column(
-          children: [
-            // Split screen layout - full screen
-            Expanded(
-              child: Row(
-                children: [
-                  // Left half - Player 1 (normal orientation)
-                  Expanded(
-                    child: _buildScrollablePlayerArea(
-                      context,
-                      isPlayer1: true,
-                      playerName: 'Speler 1',
+        child: RawKeyboardListener(
+          focusNode: _keyboardFocusNode..requestFocus(),
+          onKey: (RawKeyEvent event) {
+            // Only handle on desktop platforms
+            if (defaultTargetPlatform == TargetPlatform.windows ||
+                defaultTargetPlatform == TargetPlatform.macOS ||
+                defaultTargetPlatform == TargetPlatform.linux) {
+              if (event is RawKeyDownEvent) {
+                final key = event.logicalKey;
+                int? answerIndex;
+                bool? isPlayer1;
+                if ([LogicalKeyboardKey.keyA, LogicalKeyboardKey.keyS, LogicalKeyboardKey.keyD, LogicalKeyboardKey.keyF].contains(key)) {
+                  isPlayer1 = true;
+                  if (key == LogicalKeyboardKey.keyA) answerIndex = 0;
+                  else if (key == LogicalKeyboardKey.keyS) answerIndex = 1;
+                  else if (key == LogicalKeyboardKey.keyD) answerIndex = 2;
+                  else if (key == LogicalKeyboardKey.keyF) answerIndex = 3;
+                } else if ([LogicalKeyboardKey.keyH, LogicalKeyboardKey.keyJ, LogicalKeyboardKey.keyK, LogicalKeyboardKey.keyL].contains(key)) {
+                  isPlayer1 = false;
+                  if (key == LogicalKeyboardKey.keyH) answerIndex = 0;
+                  else if (key == LogicalKeyboardKey.keyJ) answerIndex = 1;
+                  else if (key == LogicalKeyboardKey.keyK) answerIndex = 2;
+                  else if (key == LogicalKeyboardKey.keyL) answerIndex = 3;
+                }
+                if (answerIndex != null && isPlayer1 != null) {
+                  _handleAnswer(answerIndex, isPlayer1);
+                }
+              }
+            }
+          },
+          child: Column(
+            children: [
+              // Split screen layout - full screen
+              Expanded(
+                child: Row(
+                  children: [
+                    // Left half - Player 1 (normal orientation)
+                    Expanded(
+                      child: _buildScrollablePlayerArea(
+                        context,
+                        isPlayer1: true,
+                        playerName: 'Speler 1',
+                      ),
                     ),
-                  ),
 
-                  // Divider - subtle and full height
-                  Container(
-                    width: 1,
-                    color: colorScheme.outline,
-                    margin: EdgeInsets.zero,
-                  ),
+                    // Divider - subtle and full height
+                    Container(
+                      width: 1,
+                      color: colorScheme.outline,
+                      margin: EdgeInsets.zero,
+                    ),
 
-                  // Right half - Player 2 (rotated 180 degrees)
-                  Expanded(
-                    child: Transform.rotate(
-                      angle: 3.14159, // 180 degrees in radians
+                    // Right half - Player 2 (normal orientation)
+                    Expanded(
                       child: _buildScrollablePlayerArea(
                         context,
                         isPlayer1: false,
                         playerName: 'Speler 2',
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -633,6 +670,7 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
                         language: settings.language,
                         performanceService: _performanceService,
                         isCompact: true,
+                        customLetters: isPlayer1 ? ['A', 'S', 'D', 'F'] : ['H', 'J', 'K', 'L'],
                       ),
               ),
             ),

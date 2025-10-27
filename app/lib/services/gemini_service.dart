@@ -204,7 +204,7 @@ class GeminiService {
       // If still no API key, try Platform.environment (for desktop platforms)
       if (apiKey.isEmpty) {
         try {
-          const platform = MethodChannel('app.bijbelquiz.app/env');
+          const platform = MethodChannel('app.bijbelquiz.play/env');
           apiKey =
               await platform.invokeMethod('getEnv', {'key': 'GEMINI_API_KEY'});
           AppLogger.info('API key loaded from system environment');

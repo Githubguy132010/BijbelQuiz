@@ -13,6 +13,7 @@ class QuestionWidget extends StatelessWidget {
   final String language;
   final PerformanceService? performanceService;
   final bool isCompact; // New parameter for compact multiplayer layout
+  final List<String>? customLetters; // Custom letters for answer buttons
 
   const QuestionWidget({
     super.key,
@@ -24,6 +25,7 @@ class QuestionWidget extends StatelessWidget {
     required this.language,
     this.performanceService,
     this.isCompact = false,
+    this.customLetters,
   });
 
   @override
@@ -37,6 +39,7 @@ class QuestionWidget extends StatelessWidget {
       language: language,
       performanceService: performanceService,
       isCompact: isCompact,
+      customLetters: customLetters,
     );
   }
 }

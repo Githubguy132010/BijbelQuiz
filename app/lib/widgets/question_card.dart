@@ -86,6 +86,7 @@ class QuestionCard extends StatefulWidget {
   final String language;
   final PerformanceService? performanceService;
   final bool isCompact; // New parameter for compact multiplayer layout
+  final List<String>? customLetters; // Custom letters for answer buttons
 
   const QuestionCard({
     super.key,
@@ -97,6 +98,7 @@ class QuestionCard extends StatefulWidget {
     required this.language,
     this.performanceService,
     this.isCompact = false,
+    this.customLetters,
   });
 
   @override
@@ -257,7 +259,7 @@ class _QuestionCardState extends State<QuestionCard> with SingleTickerProviderSt
                                     feedback: feedback,
                                     label: options[index],
                                     colorScheme: colorScheme,
-                                    letter: String.fromCharCode(65 + index),
+                                    letter: widget.customLetters?[index] ?? String.fromCharCode(65 + index),
                                     isDisabled: widget.isAnswering || widget.selectedAnswerIndex != null,
                                     isCompact: widget.isCompact,
                                     externalScaleAnimation: _animationController.answerButtonScaleAnimation,
@@ -360,7 +362,7 @@ class _QuestionCardState extends State<QuestionCard> with SingleTickerProviderSt
                                     feedback: feedback,
                                     label: options[index],
                                     colorScheme: colorScheme,
-                                    letter: String.fromCharCode(65 + index),
+                                    letter: widget.customLetters?[index] ?? String.fromCharCode(65 + index),
                                     isDisabled: widget.isAnswering || widget.selectedAnswerIndex != null,
                                     isCompact: widget.isCompact,
                                     externalScaleAnimation: _animationController.answerButtonScaleAnimation,
@@ -469,7 +471,7 @@ class _QuestionCardState extends State<QuestionCard> with SingleTickerProviderSt
                                     feedback: feedback,
                                     label: tfOptions[index],
                                     colorScheme: colorScheme,
-                                    letter: String.fromCharCode(65 + index),
+                                    letter: widget.customLetters?[index] ?? String.fromCharCode(65 + index),
                                     isLarge: true,
                                     isDisabled: widget.isAnswering || widget.selectedAnswerIndex != null,
                                     isCompact: widget.isCompact,
@@ -492,8 +494,8 @@ class _QuestionCardState extends State<QuestionCard> with SingleTickerProviderSt
       // Add more cases for other question types here
     }
 
-    if (isDesktop) {
-      // All question types support keyboard shortcuts
+    if (isDesktop && !widget.isCompact) {
+      // All question types support keyboard shortcuts (except in compact multiplayer mode)
       if (widget.question.type == QuestionType.mc || widget.question.type == QuestionType.fitb || widget.question.type == QuestionType.tf) {
         final options = widget.question.allOptions;
         content = Focus(

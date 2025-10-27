@@ -141,22 +141,22 @@ class _AnswerButtonState extends State<AnswerButton>
     final size = MediaQuery.of(context).size;
     final isDesktop = size.width > 800;
     final double verticalPadding = widget.isCompact
-        ? 8 // Compact vertical padding for multiplayer
+        ? (isDesktop ? 16 : 8) // Less cramped on desktop for multiplayer
         : widget.isLarge
             ? (isDesktop ? 36 : 28)
             : (isDesktop ? 18 : 16);
     final double fontSize = widget.isCompact
-        ? 12 // Compact font size for multiplayer
+        ? (isDesktop ? 16 : 12) // Less cramped font size on desktop for multiplayer
         : widget.isLarge
             ? (isDesktop ? 32 : 24)
             : getResponsiveFontSize(context, 16);
     final double iconSize = widget.isCompact
-        ? 14 // Compact icon size for multiplayer
+        ? (isDesktop ? 20 : 14) // Less cramped icon size on desktop for multiplayer
         : widget.isLarge
             ? (isDesktop ? 48 : 36)
             : getResponsiveFontSize(context, 16);
     final double indicatorSize = widget.isCompact
-        ? 24 // Compact indicator size for multiplayer
+        ? (isDesktop ? 32 : 24) // Less cramped indicator size on desktop for multiplayer
         : widget.isLarge
             ? (isDesktop ? 56 : 48)
             : (isDesktop ? 40 : 36);
@@ -228,7 +228,7 @@ class _AnswerButtonState extends State<AnswerButton>
                   child: Container(
                     width: double.infinity,
                     padding: EdgeInsets.symmetric(
-                      horizontal: widget.isCompact ? 8 : (isDesktop ? 24 : 20),
+                      horizontal: widget.isCompact ? (isDesktop ? 16 : 8) : (isDesktop ? 24 : 20),
                       vertical: verticalPadding,
                     ),
                     decoration: BoxDecoration(
@@ -275,7 +275,7 @@ class _AnswerButtonState extends State<AnswerButton>
                             ),
                           ),
                         if (widget.letter != null)
-                          SizedBox(width: widget.isCompact ? 8 : (isDesktop ? 18 : 16)),
+                          SizedBox(width: widget.isCompact ? (isDesktop ? 12 : 8) : (isDesktop ? 18 : 16)),
                         Expanded(
                           child: Text(
                             widget.label,

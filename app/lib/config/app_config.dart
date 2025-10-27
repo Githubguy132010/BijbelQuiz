@@ -4,6 +4,6 @@ class AppConfig {
   // App Identity
   static const String appName = AppStrings.appName;
   static const String appDescription = AppStrings.appDescription;
-  static const String packageName = 'app.bijbelquiz.app';
-  static const String iosBundleId = 'app.bijbelquiz.app';
+  static const String packageName = 'app.bijbelquiz.play';
+  static const String iosBundleId = 'app.bijbelquiz.play';
 }
