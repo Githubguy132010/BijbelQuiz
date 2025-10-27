@@ -23,7 +23,6 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'services/logger.dart';
 import 'package:archive/archive.dart';
-import 'screens/sync_screen.dart';
 
 /// The settings screen that allows users to customize app preferences
 class SettingsScreen extends StatefulWidget {
@@ -860,6 +859,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               subtitle: strings.AppStrings.copyStatsLinkToClipboard,
               icon: Icons.bar_chart,
             ),
+            // Temporarily disabled sync feature
+            /*
             _buildActionButton(
               context,
               settings,
@@ -878,6 +879,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               subtitle: 'Sync data between devices using a code',
               icon: Icons.sync,
             ),
+            */
           ],
         ),
         const SizedBox(height: 32),
