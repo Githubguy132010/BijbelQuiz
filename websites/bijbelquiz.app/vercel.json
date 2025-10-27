@@ -83,6 +83,10 @@
     {
       "source": "/wachtlijst",
       "destination": "https://app.formbricks.com/s/cmdwy2s6adbojvr01nk4j3lvbp"
+    },
+    {
+      "source": "/playstore",
+      "destination": "https://play.google.com/apps/internaltest/4701600259565279707"
     }
   ],
   "headers": [
