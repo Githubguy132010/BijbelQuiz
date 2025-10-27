@@ -1282,7 +1282,7 @@ footer {
   height: 100%;
   background: #000;
   border-radius: 25px;
-  padding: 8px;
+  padding: 0;
   position: relative;
   border: none;
 }
