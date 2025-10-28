@@ -168,50 +168,37 @@ class GeminiService {
       String? apiKey;
 
       try {
-        // Try to load .env file from the app directory
-        final String currentDir = Directory.current.path;
-        final String envFilePath = path.join(currentDir, '.env');
-
-        // Check if .env file exists before loading
-        final envFile = File(envFilePath);
-        if (await envFile.exists()) {
-          await dotenv.load(fileName: envFilePath);
-          apiKey = dotenv.get('GEMINI_API_KEY',
-              fallback: dotenv.env['GEMINI_API_KEY']);
-          AppLogger.info('.env file loaded successfully from: $envFilePath');
+        // Try to get API key from environment variables loaded by main app
+        apiKey = dotenv.env['GEMINI_API_KEY'];
+        
+        if (apiKey != null && apiKey.isNotEmpty) {
+          AppLogger.info('API key loaded from environment variables');
         } else {
-          AppLogger.warning('.env file not found at: $envFilePath');
-          throw FileSystemException('.env file not found');
+          AppLogger.warning('GEMINI_API_KEY not found in environment variables');
+          
+          // Fallback to compile-time environment variables (for web builds)
+          try {
+            apiKey = const String.fromEnvironment('GEMINI_API_KEY');
+            if (apiKey.isNotEmpty) {
+              AppLogger.info('API key loaded from compile-time environment');
+            }
+          } catch (e) {
+            AppLogger.warning('Could not load API key from compile-time environment: $e');
+          }
+
+          // If still no API key, try Platform.environment (for desktop platforms)
+          if (apiKey == null || apiKey.isEmpty) {
+            try {
+              const platform = MethodChannel('app.bijbelquiz.play/env');
+              apiKey = await platform.invokeMethod('getEnv', {'key': 'GEMINI_API_KEY'});
+              AppLogger.info('API key loaded from system environment');
+            } catch (e) {
+              AppLogger.warning('Could not load API key from system environment: $e');
+            }
+          }
         }
       } catch (e) {
-        if (e is FileSystemException) {
-          AppLogger.warning(
-              'File system error loading .env file: ${e.message}');
-        } else if (e is PathNotFoundException) {
-          AppLogger.warning(
-              'Path not found error loading .env file: ${e.message}');
-        } else {
-          AppLogger.warning('Unexpected error loading .env file: $e');
-        }
-        AppLogger.info('Falling back to system environment variables');
-      }
-
-      // If .env didn't work, try system environment variables
-      if (apiKey == null || apiKey.isEmpty) {
-        apiKey = const String.fromEnvironment('GEMINI_API_KEY');
-      }
-
-      // If still no API key, try Platform.environment (for desktop platforms)
-      if (apiKey.isEmpty) {
-        try {
-          const platform = MethodChannel('app.bijbelquiz.play/env');
-          apiKey =
-              await platform.invokeMethod('getEnv', {'key': 'GEMINI_API_KEY'});
-          AppLogger.info('API key loaded from system environment');
-        } catch (e) {
-          AppLogger.warning(
-              'Could not load API key from system environment: $e');
-        }
+        AppLogger.warning('Unexpected error loading API key: $e');
       }
 
       if (apiKey == null || apiKey.isEmpty) {
