@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bijbelquiz/services/analytics_service.dart';
+import 'package:bijbelquiz/providers/settings_provider.dart';
 
 import '../screens/lesson_select_screen.dart';
 import '../screens/store_screen.dart';
@@ -51,6 +52,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final screens = _getScreens();
+    final settings = Provider.of<SettingsProvider>(context);
 
     return Scaffold(
       body: screens[_currentIndex],
@@ -65,22 +67,22 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           NavigationDestination(
             icon: const Icon(Icons.menu_book_outlined),
             selectedIcon: const Icon(Icons.menu_book),
-            label: strings.AppStrings.lessons,
+            label: settings.showNavigationLabels ? strings.AppStrings.lessons : '',
           ),
           NavigationDestination(
             icon: const Icon(Icons.store_outlined),
             selectedIcon: const Icon(Icons.store),
-            label: strings.AppStrings.store,
+            label: settings.showNavigationLabels ? strings.AppStrings.store : '',
           ),
           NavigationDestination(
             icon: const Icon(Icons.groups_outlined),
             selectedIcon: const Icon(Icons.groups),
-            label: strings.AppStrings.social,
+            label: settings.showNavigationLabels ? strings.AppStrings.social : '',
           ),
           NavigationDestination(
             icon: const Icon(Icons.settings_outlined),
             selectedIcon: const Icon(Icons.settings),
-            label: strings.AppStrings.settings,
+            label: settings.showNavigationLabels ? strings.AppStrings.settings : '',
           ),
         ],
 

@@ -298,7 +298,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 );
               })(),
             ),
+            _buildSettingItem(
+              context,
+              settings,
+              colorScheme,
+              isSmallScreen,
+              isDesktop,
+              title: strings.AppStrings.showNavigationLabels,
+              subtitle: strings.AppStrings.showNavigationLabelsDesc,
+              icon: Icons.label,
+              child: Switch(
+                value: settings.showNavigationLabels,
+                onChanged: (bool value) {
+                  final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
 
+                  final analytics = Provider.of<AnalyticsService>(context, listen: false);
+                  analytics.capture(context, 'toggle_navigation_labels', properties: {'show_labels': value});
+                  analytics.trackFeatureSuccess(context, AnalyticsService.FEATURE_SETTINGS, additionalProperties: {
+                    'setting': 'show_navigation_labels',
+                    'value': value,
+                  });
+                  settings.setShowNavigationLabels(value);
+                },
+                activeThumbColor: colorScheme.primary,
+              ),
+            ),
           ],
         ),
 

@@ -29,6 +29,7 @@ class SettingsProvider extends ChangeNotifier {
   static const String _apiEnabledKey = 'api_enabled';
   static const String _apiKeyKey = 'api_key';
   static const String _apiPortKey = 'api_port';
+  static const String _showNavigationLabelsKey = 'show_navigation_labels';
 
   SharedPreferences? _prefs;
   String _language = 'nl';
@@ -59,6 +60,10 @@ class SettingsProvider extends ChangeNotifier {
   bool _apiEnabled = false;
   String _apiKey = '';
   int _apiPort = 7777;
+  
+  // Navigation settings
+  bool _showNavigationLabels = true;
+  
   late SyncService syncService;
 
 
@@ -123,6 +128,9 @@ class SettingsProvider extends ChangeNotifier {
 
   /// The port for the local API server
   int get apiPort => _apiPort;
+
+  /// Whether to show labels in the navigation bar
+  bool get showNavigationLabels => _showNavigationLabels;
 
   String? get selectedCustomThemeKey => _selectedCustomThemeKey;
   Set<String> get unlockedThemes => _unlockedThemes;
@@ -351,6 +359,9 @@ class SettingsProvider extends ChangeNotifier {
       _apiEnabled = _getBoolSetting(_apiEnabledKey, defaultValue: false);
       _apiKey = _prefs?.getString(_apiKeyKey) ?? '';
       _apiPort = _prefs?.getInt(_apiPortKey) ?? 7777;
+
+      // Load navigation settings
+      _showNavigationLabels = _getBoolSetting(_showNavigationLabelsKey, defaultValue: true);
 
       final unlocked = _prefs?.getStringList(_unlockedThemesKey);
       if (unlocked != null) {
@@ -678,6 +689,17 @@ class SettingsProvider extends ChangeNotifier {
     await setApiKey(key);
   }
 
+  /// Updates the show navigation labels setting
+  Future<void> setShowNavigationLabels(bool show) async {
+    await _saveSetting(
+      action: () async {
+        _showNavigationLabels = show;
+        await _prefs?.setBool(_showNavigationLabelsKey, show);
+      },
+      errorMessage: 'Failed to save show navigation labels setting',
+    );
+  }
+
 
   // Helper method to safely get a boolean setting with type checking
   bool _getBoolSetting(String key, {required bool defaultValue}) {
@@ -724,6 +746,7 @@ class SettingsProvider extends ChangeNotifier {
       'apiEnabled': _apiEnabled,
       'apiKey': _apiKey,
       'apiPort': _apiPort,
+      'showNavigationLabels': _showNavigationLabels,
       'aiThemes': _aiThemes.map((key, value) => MapEntry(key, value.toJson())),
     };
   }
@@ -761,6 +784,9 @@ class SettingsProvider extends ChangeNotifier {
     _apiEnabled = data['apiEnabled'] ?? false;
     _apiKey = data['apiKey'] ?? '';
     _apiPort = data['apiPort'] ?? 7777;
+
+    // Load navigation settings
+    _showNavigationLabels = data['showNavigationLabels'] ?? true;
 
     final lastDifficultyPopupMs = data['lastDifficultyPopup'];
     _lastDifficultyPopup = lastDifficultyPopupMs != null ? DateTime.fromMillisecondsSinceEpoch(lastDifficultyPopupMs) : null;
@@ -821,6 +847,9 @@ class SettingsProvider extends ChangeNotifier {
     await _prefs?.setBool(_apiEnabledKey, _apiEnabled);
     await _prefs?.setString(_apiKeyKey, _apiKey);
     await _prefs?.setInt(_apiPortKey, _apiPort);
+
+    // Save navigation settings
+    await _prefs?.setBool(_showNavigationLabelsKey, _showNavigationLabels);
 
     // Save difficulty popup tracking data
     if (_lastDifficultyPopup != null) {

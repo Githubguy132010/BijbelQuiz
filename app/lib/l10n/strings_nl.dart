@@ -90,6 +90,8 @@ class AppStrings {
   static const String oledTheme = 'OLED';
   static const String greenTheme = 'Groen';
   static const String orangeTheme = 'Oranje';
+  static const String showNavigationLabels = 'Toon navigatielabels';
+  static const String showNavigationLabelsDesc = 'Toon of verberg tekstlabels onder de navigatie-iconen';
   static const String tryAgain = 'Opnieuw proberen';
   static const String couldNotOpenStatusPage = 'Kon de statuspagina niet openen.';
   
