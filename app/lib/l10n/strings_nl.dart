@@ -229,6 +229,10 @@ class AppStrings {
   static const String social = 'Sociaal';
   static const String comingSoon = 'Binnenkort beschikbaar!';
   static const String socialComingSoonMessage = 'De sociale functies van BijbelQuiz zijn binnenkort beschikbaar. Blijf op de hoogte voor updates!';
+  static const String manageYourBqid = 'Beheer je BQID';
+  static const String manageYourBqidSubtitle = 'Beheer je BQID, geregistreerde apparaten en meer';
+  static const String moreSocialFeaturesComingSoon = 'Meer sociale functies binnenkort beschikbaar';
+  static const String connectWithOtherUsers = 'Verbind met andere BijbelQuiz-gebruikers, deel prestaties en strijd op de scoreborden!';
 
   // Bible Bot
   static const String bibleBot = 'Bijbel Bot';

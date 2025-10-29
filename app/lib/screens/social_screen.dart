@@ -81,11 +81,90 @@ class _SocialScreenState extends State<SocialScreen> {
               physics: const BouncingScrollPhysics(),
               padding: EdgeInsets.symmetric(
                 horizontal: isDesktop ? 32 : (isTablet ? 24 : 16),
-                vertical: 24,
+                vertical: 0,
               ),
-              child: _socialFeaturesEnabled
-                ? _buildSocialFeaturesContent(colorScheme, isDesktop, isTablet)
-                : _buildComingSoonContent(colorScheme, isDesktop, isTablet),
+              child: Column(
+                children: [
+                  // BQID Management Card at the top of the page
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: colorScheme.surface,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: colorScheme.shadow.withValues(alpha: 0.04),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          Provider.of<AnalyticsService>(context, listen: false).capture(context, 'open_sync_screen');
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const SyncScreen(),
+                            ),
+                          );
+                        },
+                        borderRadius: BorderRadius.circular(16),
+                        child: Padding(
+                          padding: EdgeInsets.all(isDesktop ? 16 : 12),
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: colorScheme.primary.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Icon(
+                                  Icons.person_add,
+                                  size: 20,
+                                  color: colorScheme.primary,
+                                ),
+                              ),
+                              SizedBox(width: isDesktop ? 12 : 8),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      strings.AppStrings.manageYourBqid,
+                                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        color: colorScheme.onSurface,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      strings.AppStrings.manageYourBqidSubtitle,
+                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        color: colorScheme.onSurface.withValues(alpha: 0.7),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                size: 16,
+                                color: colorScheme.onSurface.withValues(alpha: 0.5),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  _socialFeaturesEnabled
+                    ? _buildSocialFeaturesContent(colorScheme, isDesktop, isTablet)
+                    : _buildComingSoonContent(colorScheme, isDesktop, isTablet),
+                ],
+              ),
             ),
           ),
         ),
@@ -104,7 +183,7 @@ class _SocialScreenState extends State<SocialScreen> {
         ),
         SizedBox(height: isDesktop ? 32 : 24),
         Text(
-          'Social Features',
+          strings.AppStrings.moreSocialFeaturesComingSoon,
           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
             fontWeight: FontWeight.w700,
             color: colorScheme.onSurface,
@@ -113,90 +192,13 @@ class _SocialScreenState extends State<SocialScreen> {
         ),
         SizedBox(height: isDesktop ? 16 : 12),
         Text(
-          'Connect with other Bible Quiz users, share achievements, and compete on leaderboards!',
+          strings.AppStrings.connectWithOtherUsers,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             color: colorScheme.onSurface.withValues(alpha: 0.7),
             fontWeight: FontWeight.w500,
           ),
           textAlign: TextAlign.center,
         ),
-        SizedBox(height: isDesktop ? 32 : 24),
-        // User ID functionality
-        Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: colorScheme.surface,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: colorScheme.shadow.withValues(alpha: 0.04),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () {
-                Provider.of<AnalyticsService>(context, listen: false).capture(context, 'open_sync_screen');
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const SyncScreen(),
-                  ),
-                );
-              },
-              borderRadius: BorderRadius.circular(16),
-              child: Padding(
-                padding: EdgeInsets.all(isDesktop ? 16 : 12),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: colorScheme.primary.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(
-                        Icons.person_add,
-                        size: 20,
-                        color: colorScheme.primary,
-                      ),
-                    ),
-                    SizedBox(width: isDesktop ? 12 : 8),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            strings.AppStrings.userIdButton,
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: colorScheme.onSurface,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            strings.AppStrings.userIdDescriptionSetting,
-                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: colorScheme.onSurface.withValues(alpha: 0.7),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      size: 16,
-                      color: colorScheme.onSurface.withValues(alpha: 0.5),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-        SizedBox(height: isDesktop ? 24 : 16),
       ],
     );
   }
@@ -212,7 +214,7 @@ class _SocialScreenState extends State<SocialScreen> {
         ),
         SizedBox(height: isDesktop ? 32 : 24),
         Text(
-          strings.AppStrings.comingSoon,
+          strings.AppStrings.moreSocialFeaturesComingSoon,
           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
             fontWeight: FontWeight.w700,
             color: colorScheme.onSurface.withValues(alpha: 0.7),
@@ -221,7 +223,7 @@ class _SocialScreenState extends State<SocialScreen> {
         ),
         SizedBox(height: isDesktop ? 16 : 12),
         Text(
-          strings.AppStrings.socialComingSoonMessage,
+          strings.AppStrings.moreSocialFeaturesComingSoon,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             color: colorScheme.onSurface.withValues(alpha: 0.5),
             fontWeight: FontWeight.w500,
