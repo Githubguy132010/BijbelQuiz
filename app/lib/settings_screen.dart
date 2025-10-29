@@ -506,6 +506,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 tooltip: strings.AppStrings.openStatusPage,
               ),
             ),
+            if (!(kIsWeb || Platform.isAndroid))
             _buildSettingItem(
               context,
               settings,
