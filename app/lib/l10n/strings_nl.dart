@@ -447,7 +447,7 @@ class AppStrings {
   static const String userId = 'BQID';
   static const String enterUserId = 'Voer een BQID in om verbinding te maken met een ander apparaat';
   static const String userIdCode = 'BQID';
-  static const String connectToUser = 'Verbinden met Gebruiker';
+  static const String connectToUser = 'Verbdinden met BQID';
   static const String createUserId = 'Maak een nieuwe BQID';
   static const String createUserIdDescription = 'Maak een nieuwe BQID en deel de code met anderen om verbinding te maken.';
   static const String currentlyConnectedToUser = 'Je bent momenteel verbonden met een BQID. Gegevens worden gedeeld tussen apparaten.';
