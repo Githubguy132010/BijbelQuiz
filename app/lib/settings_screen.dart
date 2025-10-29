@@ -6,7 +6,6 @@ import 'providers/game_stats_provider.dart';
 import 'providers/lesson_progress_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'screens/guide_screen.dart';
-import 'screens/sync_screen.dart';
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'services/notification_service.dart';
@@ -961,24 +960,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               subtitle: strings.AppStrings.copyStatsLinkToClipboard,
               icon: Icons.bar_chart,
             ),
-            _buildActionButton(
-              context,
-              settings,
-              colorScheme,
-              isSmallScreen,
-              isDesktop,
-              onPressed: () {
-                Provider.of<AnalyticsService>(context, listen: false).capture(context, 'open_sync_screen');
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => SyncScreen(),
-                  ),
-                );
-              },
-              label: strings.AppStrings.multiDeviceSyncButton,
-              subtitle: strings.AppStrings.syncDataDescription,
-              icon: Icons.sync,
-            ),
+
           ],
         ),
         const SizedBox(height: 32),

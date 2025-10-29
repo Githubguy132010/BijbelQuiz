@@ -2,6 +2,7 @@ import 'package:bijbelquiz/services/analytics_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../l10n/strings_nl.dart' as strings;
+import 'sync_screen.dart';
 
 class SocialScreen extends StatefulWidget {
   const SocialScreen({super.key});
@@ -46,7 +47,7 @@ class _SocialScreenState extends State<SocialScreen> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: colorScheme.primary.withAlpha((0.1 * 255).round()),
+                color: colorScheme.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
@@ -60,7 +61,7 @@ class _SocialScreenState extends State<SocialScreen> {
               strings.AppStrings.social,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w700,
-                color: colorScheme.onSurface.withAlpha((0.7 * 255).round()),
+                color: colorScheme.onSurface.withValues(alpha: 0.7),
               ),
             ),
           ],
@@ -114,21 +115,88 @@ class _SocialScreenState extends State<SocialScreen> {
         Text(
           'Connect with other Bible Quiz users, share achievements, and compete on leaderboards!',
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            color: colorScheme.onSurface.withAlpha((0.7 * 255).round()),
+            color: colorScheme.onSurface.withValues(alpha: 0.7),
             fontWeight: FontWeight.w500,
           ),
           textAlign: TextAlign.center,
         ),
         SizedBox(height: isDesktop ? 32 : 24),
-        // Placeholder for actual social features
-        Text(
-          'Social features coming soon...',
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-            color: colorScheme.onSurface.withAlpha((0.5 * 255).round()),
-            fontStyle: FontStyle.italic,
+        // Sync functionality
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: colorScheme.surface,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: colorScheme.shadow.withValues(alpha: 0.04),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
-          textAlign: TextAlign.center,
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {
+                Provider.of<AnalyticsService>(context, listen: false).capture(context, 'open_sync_screen');
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const SyncScreen(),
+                  ),
+                );
+              },
+              borderRadius: BorderRadius.circular(16),
+              child: Padding(
+                padding: EdgeInsets.all(isDesktop ? 16 : 12),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: colorScheme.primary.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(
+                        Icons.sync,
+                        size: 20,
+                        color: colorScheme.primary,
+                      ),
+                    ),
+                    SizedBox(width: isDesktop ? 12 : 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            strings.AppStrings.multiDeviceSyncButton,
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: colorScheme.onSurface,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            strings.AppStrings.syncDataDescription,
+                            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: colorScheme.onSurface.withValues(alpha: 0.7),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 16,
+                      color: colorScheme.onSurface.withValues(alpha: 0.5),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ),
+        SizedBox(height: isDesktop ? 24 : 16),
       ],
     );
   }
@@ -140,14 +208,14 @@ class _SocialScreenState extends State<SocialScreen> {
         Icon(
           Icons.groups_rounded,
           size: isDesktop ? 120 : (isTablet ? 100 : 80),
-          color: colorScheme.primary.withAlpha((0.5 * 255).round()),
+          color: colorScheme.primary.withValues(alpha: 0.5),
         ),
         SizedBox(height: isDesktop ? 32 : 24),
         Text(
           strings.AppStrings.comingSoon,
           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
             fontWeight: FontWeight.w700,
-            color: colorScheme.onSurface.withAlpha((0.7 * 255).round()),
+            color: colorScheme.onSurface.withValues(alpha: 0.7),
           ),
           textAlign: TextAlign.center,
         ),
@@ -155,7 +223,7 @@ class _SocialScreenState extends State<SocialScreen> {
         Text(
           strings.AppStrings.socialComingSoonMessage,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            color: colorScheme.onSurface.withAlpha((0.5 * 255).round()),
+            color: colorScheme.onSurface.withValues(alpha: 0.5),
             fontWeight: FontWeight.w500,
           ),
           textAlign: TextAlign.center,
