@@ -60,29 +60,32 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         selectedIndex: _currentIndex,
         onDestinationSelected: _onItemTapped,
         elevation: 10,
-        height: 80,
+        height: settings.showNavigationLabels ? 80 : 60, // Reduce height when labels are hidden
         backgroundColor: colorScheme.surface,
         indicatorColor: colorScheme.primary.withValues(alpha: 0.1),
+        labelBehavior: settings.showNavigationLabels 
+            ? NavigationDestinationLabelBehavior.alwaysShow 
+            : NavigationDestinationLabelBehavior.alwaysHide, // Properly hide labels
         destinations: [
           NavigationDestination(
             icon: const Icon(Icons.menu_book_outlined),
             selectedIcon: const Icon(Icons.menu_book),
-            label: settings.showNavigationLabels ? strings.AppStrings.lessons : '',
+            label: strings.AppStrings.lessons,
           ),
           NavigationDestination(
             icon: const Icon(Icons.store_outlined),
             selectedIcon: const Icon(Icons.store),
-            label: settings.showNavigationLabels ? strings.AppStrings.store : '',
+            label: strings.AppStrings.store,
           ),
           NavigationDestination(
             icon: const Icon(Icons.groups_outlined),
             selectedIcon: const Icon(Icons.groups),
-            label: settings.showNavigationLabels ? strings.AppStrings.social : '',
+            label: strings.AppStrings.social,
           ),
           NavigationDestination(
             icon: const Icon(Icons.settings_outlined),
             selectedIcon: const Icon(Icons.settings),
-            label: settings.showNavigationLabels ? strings.AppStrings.settings : '',
+            label: strings.AppStrings.settings,
           ),
         ],
 
