@@ -214,21 +214,23 @@ class _QuestionCardState extends State<QuestionCard> with SingleTickerProviderSt
                           child: SingleChildScrollView(
                             child: Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                              child: Text(
-                                widget.question.question,
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                  color: colorScheme.onSurface,
-                                  height: 1.4,
-                                  letterSpacing: -0.1,
-                                  fontSize: isDesktop
-                                    ? 24
-                                    : MediaQuery.of(context).size.shortestSide < 360 ? 18 : 20,
+                              child: Semantics(
+                                label: 'Question: ${widget.question.question}',
+                                child: Text(
+                                  widget.question.question,
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: colorScheme.onSurface,
+                                    height: 1.4,
+                                    letterSpacing: -0.1,
+                                    fontSize: isDesktop
+                                      ? 24
+                                      : MediaQuery.of(context).size.shortestSide < 360 ? 18 : 20,
+                                  ),
+                                  overflow: TextOverflow.visible,
+                                  textScaler: TextScaler.linear(MediaQuery.of(context).textScaler.scale(1.0).clamp(0.8, 1.2)), // Limit text scaling
                                 ),
-                                overflow: TextOverflow.visible,
-                                textScaler: TextScaler.linear(MediaQuery.of(context).textScaler.scale(1.0).clamp(0.8, 1.2)), // Limit text scaling
-                                semanticsLabel: widget.question.question,
                               ),
                             ),
                           ),
@@ -433,17 +435,20 @@ class _QuestionCardState extends State<QuestionCard> with SingleTickerProviderSt
                       children: [
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: isDesktop ? 12 : 8),
-                          child: Text(
-                            widget.question.question,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: colorScheme.onSurface,
-                              height: 1.5,
-                              letterSpacing: -0.2,
-                              fontSize: getResponsiveFontSize(context, 28),
+                          child: Semantics(
+                            label: 'Question: ${widget.question.question}',
+                            child: Text(
+                              widget.question.question,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: colorScheme.onSurface,
+                                height: 1.5,
+                                letterSpacing: -0.2,
+                                fontSize: getResponsiveFontSize(context, 28),
+                              ),
+                              textScaler: TextScaler.linear(MediaQuery.of(context).textScaler.scale(1.0).clamp(0.8, 1.2)), // Limit text scaling
                             ),
-                            semanticsLabel: widget.question.question,
                           ),
                         ),
                         SizedBox(height: isDesktop ? 48 : 36),

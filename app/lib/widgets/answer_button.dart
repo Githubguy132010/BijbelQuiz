@@ -74,22 +74,22 @@ class _AnswerButtonState extends State<AnswerButton>
   void _setColors() {
     switch (widget.feedback) {
       case AnswerFeedback.correct:
-        _backgroundColor = const Color(0xFF10B981);
-        _borderColor = const Color(0xFF10B981);
+        _backgroundColor = const Color(0xFF059669); // Darker green for better contrast
+        _borderColor = const Color(0xFF059669);
         _textColor = Colors.white;
         _iconColor = Colors.white;
         break;
       case AnswerFeedback.incorrect:
-        _backgroundColor = const Color(0xFFEF4444);
-        _borderColor = const Color(0xFFEF4444);
+        _backgroundColor = const Color(0xDC2626); // Darker red for better contrast
+        _borderColor = const Color(0xDC2626);
         _textColor = Colors.white;
         _iconColor = Colors.white;
         break;
       case AnswerFeedback.revealedCorrect:
-        _backgroundColor = const Color(0xFF10B981).withAlpha((0.15 * 255).round());
-        _borderColor = const Color(0xFF10B981);
+        _backgroundColor = const Color(0xFF059669).withAlpha((0.15 * 255).round());
+        _borderColor = const Color(0xFF059669);
         _textColor = widget.colorScheme.onSurface;
-        _iconColor = const Color(0xFF10B981);
+        _iconColor = const Color(0xFF059669);
         break;
       case AnswerFeedback.none:
         _backgroundColor = widget.colorScheme.surface;
@@ -316,7 +316,7 @@ class _AnswerButtonState extends State<AnswerButton>
                                   ? Colors.white
                                   : widget.colorScheme.primary,
                               size: iconSize,
-                              semanticLabel: 'Correct answer',
+                              semanticLabel: 'Correct answer indicator',
                             ),
                           ),
                         if (widget.feedback == AnswerFeedback.incorrect)
@@ -330,7 +330,7 @@ class _AnswerButtonState extends State<AnswerButton>
                               Icons.close_rounded,
                               color: Colors.white,
                               size: iconSize,
-                              semanticLabel: 'Incorrect answer',
+                              semanticLabel: 'Incorrect answer indicator',
                             ),
                           ),
                       ],

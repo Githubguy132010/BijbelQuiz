@@ -83,6 +83,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             label: strings.AppStrings.settings,
           ),
         ],
+
       ),
     );
   }

@@ -301,7 +301,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
           ],
         ),
-        const SizedBox(height: 24),
+
         _buildSettingsGroup(
           context,
           settings,
