@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../models/lesson.dart';
+import '../providers/settings_provider.dart';
 
 class LessonTile extends StatefulWidget {
   final Lesson lesson;
@@ -80,7 +82,8 @@ class _LessonTileState extends State<LessonTile>
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final gradient = _tileGradientForIndex(cs, widget.index);
+    final settings = Provider.of<SettingsProvider>(context, listen: false);
+    final gradient = settings.colorfulMode ? _tileGradientForIndex(cs, widget.index) : _singleColorGradient(cs);
 
     String semanticLabel = 'Lesson ${widget.lesson.index + 1}: ${widget.lesson.title}';
     String hint = '';
@@ -226,6 +229,19 @@ class _LessonTileState extends State<LessonTile>
     final colors = palettes[i % palettes.length];
     return LinearGradient(
       colors: colors,
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    );
+  }
+
+  LinearGradient _singleColorGradient(ColorScheme cs) {
+    // Use a single, consistent gradient for all lesson tiles
+    // This creates a subtle blue gradient that matches the app's theme
+    return LinearGradient(
+      colors: [
+        cs.primaryContainer.withValues(alpha: 0.7),
+        cs.primary.withValues(alpha: 0.3)
+      ],
       begin: Alignment.topLeft,
       end: Alignment.bottomRight,
     );

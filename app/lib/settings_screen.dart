@@ -368,6 +368,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 dropdownColor: colorScheme.surfaceContainerHighest,
               ),
             ),
+            _buildSettingItem(
+              context,
+              settings,
+              colorScheme,
+              isSmallScreen,
+              isDesktop,
+              title: strings.AppStrings.colorfulMode,
+              subtitle: strings.AppStrings.colorfulModeDesc,
+              icon: Icons.color_lens,
+              child: Switch(
+                value: settings.colorfulMode,
+                onChanged: (bool value) {
+                  final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
+
+                  final analytics = Provider.of<AnalyticsService>(context, listen: false);
+                  analytics.capture(context, 'toggle_colorful_mode', properties: {'enabled': value});
+                  analytics.trackFeatureSuccess(context, AnalyticsService.FEATURE_SETTINGS, additionalProperties: {
+                    'setting': 'colorful_mode',
+                    'value': value,
+                  });
+                  settings.setColorfulMode(value);
+                },
+                activeThumbColor: colorScheme.primary,
+              ),
+            ),
           ],
         ),
 

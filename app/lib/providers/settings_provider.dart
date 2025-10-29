@@ -31,6 +31,7 @@ class SettingsProvider extends ChangeNotifier {
   static const String _apiPortKey = 'api_port';
   static const String _showNavigationLabelsKey = 'show_navigation_labels';
   static const String _layoutTypeKey = 'layout_type';
+  static const String _colorfulModeKey = 'colorful_mode';
 
   SharedPreferences? _prefs;
   String _language = 'nl';
@@ -73,6 +74,7 @@ class SettingsProvider extends ChangeNotifier {
   static const String layoutCompactGrid = 'compact_grid';
 
   String _layoutType = layoutGrid; // default to grid
+  bool _colorfulMode = false; // default to false (single color mode)
 
   SettingsProvider() {
     syncService = SyncService();
@@ -140,6 +142,9 @@ class SettingsProvider extends ChangeNotifier {
 
   /// The current lesson layout type
   String get layoutType => _layoutType;
+
+  /// Whether colorful mode is enabled for lesson cards
+  bool get colorfulMode => _colorfulMode;
 
   String? get selectedCustomThemeKey => _selectedCustomThemeKey;
   Set<String> get unlockedThemes => _unlockedThemes;
@@ -374,6 +379,9 @@ class SettingsProvider extends ChangeNotifier {
 
       // Load layout type setting
       _layoutType = _prefs?.getString(_layoutTypeKey) ?? layoutGrid;
+
+      // Load colorful mode setting
+      _colorfulMode = _getBoolSetting(_colorfulModeKey, defaultValue: false);
 
       final unlocked = _prefs?.getStringList(_unlockedThemesKey);
       if (unlocked != null) {
@@ -730,6 +738,19 @@ class SettingsProvider extends ChangeNotifier {
     );
   }
 
+  /// Updates the colorful mode setting for lesson cards
+  Future<void> setColorfulMode(bool enabled) async {
+    AppLogger.info('Changing colorful mode from $_colorfulMode to $enabled');
+    await _saveSetting(
+      action: () async {
+        _colorfulMode = enabled;
+        await _prefs?.setBool(_colorfulModeKey, enabled);
+        AppLogger.info('Colorful mode saved successfully: $enabled');
+      },
+      errorMessage: 'Failed to save colorful mode setting',
+    );
+  }
+
 
   // Helper method to safely get a boolean setting with type checking
   bool _getBoolSetting(String key, {required bool defaultValue}) {
@@ -778,6 +799,7 @@ class SettingsProvider extends ChangeNotifier {
       'apiPort': _apiPort,
       'showNavigationLabels': _showNavigationLabels,
       'layoutType': _layoutType,
+      'colorfulMode': _colorfulMode,
       'aiThemes': _aiThemes.map((key, value) => MapEntry(key, value.toJson())),
     };
   }
@@ -821,6 +843,8 @@ class SettingsProvider extends ChangeNotifier {
 
     // Load layout type
     _layoutType = data['layoutType'] ?? layoutGrid;
+
+    _colorfulMode = data['colorfulMode'] ?? false;
 
     final lastDifficultyPopupMs = data['lastDifficultyPopup'];
     _lastDifficultyPopup = lastDifficultyPopupMs != null ? DateTime.fromMillisecondsSinceEpoch(lastDifficultyPopupMs) : null;
@@ -887,6 +911,9 @@ class SettingsProvider extends ChangeNotifier {
 
     // Save layout type
     await _prefs?.setString(_layoutTypeKey, _layoutType);
+
+    // Save colorful mode setting
+    await _prefs?.setBool(_colorfulModeKey, _colorfulMode);
 
     // Save difficulty popup tracking data
     if (_lastDifficultyPopup != null) {
