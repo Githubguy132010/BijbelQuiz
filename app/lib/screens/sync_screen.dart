@@ -51,6 +51,72 @@ class _SyncScreenState extends State<SyncScreen> {
     }
   }
 
+  Future<void> _removeDevice(String deviceId) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(AppStrings.removeDevice),
+        content: Text(AppStrings.removeDeviceConfirmation),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(AppStrings.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(AppStrings.remove),
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      setState(() {
+        _isLoadingDevices = true;
+      });
+
+      try {
+        final gameStatsProvider = Provider.of<GameStatsProvider>(context, listen: false);
+        final success = await gameStatsProvider.removeDevice(deviceId);
+
+        if (success) {
+          AppLogger.info('Successfully removed device: $deviceId');
+          // Reload the device list
+          await _loadDevicesInRoom();
+        } else {
+          AppLogger.error('Failed to remove device: $deviceId');
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Failed to remove device'),
+                backgroundColor: Theme.of(context).colorScheme.error,
+              ),
+            );
+          }
+        }
+      } catch (e) {
+        AppLogger.error('Error removing device: $deviceId', e);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error removing device: ${e.toString()}'),
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isLoadingDevices = false;
+          });
+        }
+      }
+    }
+  }
+
   Future<void> _loadDevicesInRoom() async {
     if (!Provider.of<GameStatsProvider>(context, listen: false).syncService.isInRoom) {
       setState(() {
@@ -82,6 +148,13 @@ class _SyncScreenState extends State<SyncScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     // Reload devices when the screen is rebuilt
+    _loadDevicesInRoom();
+  }
+
+  @override
+  void didUpdateWidget(SyncScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Reload devices when the widget updates
     _loadDevicesInRoom();
   }
 
@@ -581,7 +654,13 @@ class _SyncScreenState extends State<SyncScreen> {
                                                     Icons.check_circle,
                                                     color: colorScheme.primary,
                                                   )
-                                                : null,
+                                                : IconButton(
+                                                    icon: Icon(
+                                                      Icons.remove_circle,
+                                                      color: colorScheme.error,
+                                                    ),
+                                                    onPressed: () => _removeDevice(device),
+                                                  ),
                                           );
                                         },
                                       )

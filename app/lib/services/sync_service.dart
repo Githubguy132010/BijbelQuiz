@@ -227,6 +227,34 @@ class SyncService {
     }
   }
 
+  /// Removes a specific device from the current room
+  Future<bool> removeDevice(String deviceId) async {
+    if (_currentRoomId == null) return false;
+
+    try {
+      final roomResponse = await _client
+          .from(_tableName)
+          .select()
+          .eq('room_id', _currentRoomId!)
+          .single();
+
+      final devices = List<String>.from(roomResponse['devices'] as List<dynamic> ?? []);
+      if (devices.contains(deviceId)) {
+        devices.remove(deviceId);
+        await _client
+            .from(_tableName)
+            .update({'devices': devices})
+            .eq('room_id', _currentRoomId!);
+        AppLogger.info('Removed device $deviceId from room ${_currentRoomId}');
+        return true;
+      }
+      return false;
+    } catch (e) {
+      AppLogger.error('Failed to remove device $deviceId from room', e);
+      return false;
+    }
+  }
+
   /// Loads the saved room ID from SharedPreferences and rejoins the room
   Future<void> _loadSavedRoomId() async {
     try {

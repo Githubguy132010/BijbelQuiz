@@ -443,6 +443,9 @@ class GameStatsProvider extends ChangeNotifier {
 
   /// Gets the current device ID
   Future<String> getCurrentDeviceId() => syncService.getCurrentDeviceId();
+
+  /// Removes a specific device from the current room
+  Future<bool> removeDevice(String deviceId) => syncService.removeDevice(deviceId);
 }
 
 // Powerup model

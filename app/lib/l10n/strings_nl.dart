@@ -435,5 +435,8 @@ class AppStrings {
   static const String connectedDevices = 'Verbonden Apparaten';
   static const String thisDevice = 'Dit Apparaat';
   static const String noDevicesConnected = 'Geen apparaten verbonden';
+  static const String removeDevice = 'Apparaat Verwijderen';
+  static const String removeDeviceConfirmation = 'Weet je zeker dat je dit apparaat wilt verwijderen uit de sync-ruimte? Dit apparaat zal niet langer toegang hebben tot de gedeelde data.';
+  static const String remove = 'Verwijderen';
   
 }
