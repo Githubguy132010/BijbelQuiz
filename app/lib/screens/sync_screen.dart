@@ -17,12 +17,16 @@ class SyncScreen extends StatefulWidget {
 
 class _SyncScreenState extends State<SyncScreen> {
   final TextEditingController _codeController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   bool _isLoading = false;
+  bool _isLoadingUsername = false;
   String? _error;
+  String? _usernameError;
   String? _currentCode;
   List<String>? _devicesInRoom;
   bool _isLoadingDevices = false;
   String? _currentDeviceId;
+  String? _currentUsername;
 
   @override
   void initState() {
@@ -30,6 +34,24 @@ class _SyncScreenState extends State<SyncScreen> {
     _setupSyncListeners();
     _getCurrentDeviceId();
     _loadDevicesInRoom();
+    _loadCurrentUsername();
+  }
+
+  Future<void> _loadCurrentUsername() async {
+    try {
+      final gameStatsProvider = Provider.of<GameStatsProvider>(context, listen: false);
+      final currentUsername = await gameStatsProvider.syncService.getUsername();
+      if (mounted) {
+        setState(() {
+          _currentUsername = currentUsername;
+          if (currentUsername != null) {
+            _usernameController.text = currentUsername;
+          }
+        });
+      }
+    } catch (e) {
+      AppLogger.error('Error loading current username', e);
+    }
   }
 
   void _setupSyncListeners() {
@@ -150,6 +172,66 @@ class _SyncScreenState extends State<SyncScreen> {
     super.didChangeDependencies();
     // Reload devices when the screen is rebuilt
     _loadDevicesInRoom();
+  }
+
+  Future<void> _saveUsername() async {
+    final username = _usernameController.text.trim();
+    if (username.isEmpty) {
+      setState(() {
+        _usernameError = strings.AppStrings.pleaseEnterUsername;
+      });
+      return;
+    }
+
+    if (username.length > 30) {
+      setState(() {
+        _usernameError = strings.AppStrings.usernameTooLong;
+      });
+      return;
+    }
+
+    setState(() {
+      _isLoadingUsername = true;
+      _usernameError = null;
+    });
+
+    try {
+      final gameStatsProvider = Provider.of<GameStatsProvider>(context, listen: false);
+      final success = await gameStatsProvider.syncService.setUsername(username);
+
+      if (success) {
+        if (mounted) {
+          setState(() {
+            _currentUsername = username;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(strings.AppStrings.usernameSaved),
+              backgroundColor: Theme.of(context).colorScheme.primary,
+            ),
+          );
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            _usernameError = strings.AppStrings.usernameAlreadyTaken;
+          });
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _usernameError = '${strings.AppStrings.errorGeneric}${e.toString()}';
+        });
+      }
+      AppLogger.error('Error saving username', e);
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoadingUsername = false;
+        });
+      }
+    }
   }
 
   @override
@@ -580,6 +662,144 @@ class _SyncScreenState extends State<SyncScreen> {
                           ],
                         ),
                       ),
+                      
+                      // Username section
+                      const SizedBox(height: 24),
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: colorScheme.surfaceVariant,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.person_rounded,
+                                  size: 24,
+                                  color: colorScheme.primary,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  strings.AppStrings.username,
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+                            TextField(
+                              controller: _usernameController,
+                              decoration: InputDecoration(
+                                labelText: strings.AppStrings.enterUsername,
+                                hintText: strings.AppStrings.usernameHint,
+                                prefixIcon: const Icon(Icons.person_outline),
+                                suffixIcon: _usernameController.text.isNotEmpty
+                                    ? FutureBuilder<bool>(
+                                        future: Provider.of<GameStatsProvider>(context, listen: false)
+                                            .syncService
+                                            .isUsernameTaken(_usernameController.text.trim()),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState == ConnectionState.waiting) {
+                                            return const Padding(
+                                              padding: EdgeInsets.all(12.0),
+                                              child: SizedBox(
+                                                width: 20,
+                                                height: 20,
+                                                child: CircularProgressIndicator(
+                                                  strokeWidth: 2,
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                          if (snapshot.hasData && snapshot.data == true) {
+                                            return const Icon(
+                                              Icons.close_rounded,
+                                              color: Colors.red,
+                                            );
+                                          }
+                                          return const Icon(
+                                            Icons.check_rounded,
+                                            color: Colors.green,
+                                          );
+                                        },
+                                      )
+                                    : null,
+                                filled: true,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide.none,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide.none,
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(color: colorScheme.primary, width: 2),
+                                ),
+                                errorText: _usernameError,
+                              ),
+                              keyboardType: TextInputType.text,
+                              textInputAction: TextInputAction.done,
+                              enabled: !_isLoadingUsername,
+                              onChanged: (value) {
+                                // Clear error when user starts typing
+                                if (_usernameError != null) {
+                                  setState(() {
+                                    _usernameError = null;
+                                  });
+                                }
+                              },
+                            ),
+                            if (_usernameError != null) ...[
+                              const SizedBox(height: 8),
+                              Text(
+                                _usernameError!,
+                                style: TextStyle(
+                                  color: colorScheme.error,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                            const SizedBox(height: 12),
+                            SizedBox(
+                              width: double.infinity,
+                              height: 45,
+                              child: ElevatedButton(
+                                onPressed: _isLoadingUsername ? null : _saveUsername,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: colorScheme.primary,
+                                  foregroundColor: colorScheme.onPrimary,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  elevation: 0,
+                                ),
+                                child: _isLoadingUsername
+                                    ? const SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                        ),
+                                      )
+                                    : Text(
+                                        strings.AppStrings.saveUsername,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                       const SizedBox(height: 24),
                       // Devices in room section
                       Container(
@@ -628,35 +848,47 @@ class _SyncScreenState extends State<SyncScreen> {
                                           final device = _devicesInRoom![index];
                                           final isCurrentDevice = _currentDeviceId != null && device == _currentDeviceId;
                                           
-                                          return ListTile(
-                                            leading: Icon(
-                                              Icons.phone_android,
-                                              color: isCurrentDevice 
-                                                  ? colorScheme.primary 
-                                                  : colorScheme.onSurfaceVariant,
-                                            ),
-                                            title: Text(
-                                              isCurrentDevice 
-                                                  ? '${strings.AppStrings.thisDevice} ($device)' 
-                                                  : device,
-                                              style: TextStyle(
-                                                fontWeight: isCurrentDevice 
-                                                    ? FontWeight.bold 
-                                                    : FontWeight.normal,
-                                              ),
-                                            ),
-                                            trailing: isCurrentDevice
-                                                ? Icon(
-                                                    Icons.check_circle,
-                                                    color: colorScheme.primary,
-                                                  )
-                                                : IconButton(
-                                                    icon: Icon(
-                                                      Icons.remove_circle,
-                                                      color: colorScheme.error,
-                                                    ),
-                                                    onPressed: () => _removeDevice(device),
+                                          return FutureBuilder<String?>(
+                                            future: gameStatsProvider.syncService.getUsernameForDevice(device),
+                                            builder: (context, snapshot) {
+                                              final username = snapshot.data;
+                                              final displayName = username != null && username.isNotEmpty
+                                                  ? '$username ($device)'
+                                                  : (isCurrentDevice 
+                                                      ? '${strings.AppStrings.thisDevice} ($device)' 
+                                                      : device);
+                                              
+                                              return ListTile(
+                                                leading: Icon(
+                                                  username != null && username.isNotEmpty
+                                                      ? Icons.person_rounded
+                                                      : Icons.phone_android,
+                                                  color: isCurrentDevice 
+                                                      ? colorScheme.primary 
+                                                      : colorScheme.onSurfaceVariant,
+                                                ),
+                                                title: Text(
+                                                  displayName,
+                                                  style: TextStyle(
+                                                    fontWeight: isCurrentDevice 
+                                                        ? FontWeight.bold 
+                                                        : FontWeight.normal,
                                                   ),
+                                                ),
+                                                trailing: isCurrentDevice
+                                                    ? Icon(
+                                                        Icons.check_circle,
+                                                        color: colorScheme.primary,
+                                                      )
+                                                    : IconButton(
+                                                        icon: Icon(
+                                                          Icons.remove_circle,
+                                                          color: colorScheme.error,
+                                                        ),
+                                                        onPressed: () => _removeDevice(device),
+                                                      ),
+                                              );
+                                            }
                                           );
                                         },
                                       )
@@ -728,6 +960,7 @@ class _SyncScreenState extends State<SyncScreen> {
   @override
   void dispose() {
     _codeController.dispose();
+    _usernameController.dispose();
     super.dispose();
   }
 }

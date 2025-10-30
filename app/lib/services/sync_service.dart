@@ -6,6 +6,7 @@ import 'logger.dart';
 
 class SyncService {
   static const String _tableName = 'sync_rooms';
+  static const String _usernameKey = 'username';
   late final SupabaseClient _client;
   String? _currentRoomId;
   RealtimeChannel? _channel;
@@ -265,6 +266,266 @@ class SyncService {
     } catch (e) {
       AppLogger.error('Failed to remove device $deviceId from room', e);
       return false;
+    }
+  }
+
+  /// Sets the username for the current device
+  Future<bool> setUsername(String username) async {
+    if (_currentRoomId == null) return false;
+
+    try {
+      final deviceId = await _getOrCreateDeviceId();
+      
+      // Get the user's current username to see if they're just updating the same one
+      final currentUsername = await getUsername(deviceId);
+      
+      // Only check for duplicates if the username is actually changing
+      if (currentUsername != username) {
+        // Check if the new username is already taken globally by a different device
+        final existingUsernameData = await _getUsernameRecord(username);
+        if (existingUsernameData != null) {
+          // Check if it's taken by a different device
+          final existingDeviceId = existingUsernameData['device_id'] as String?;
+          if (existingDeviceId != null && existingDeviceId != deviceId) {
+            AppLogger.warning('Username "$username" is already taken by device: $existingDeviceId');
+            return false;
+          }
+        }
+      }
+
+      // Get current data to merge with the new username
+      final roomResponse = await _client
+          .from(_tableName)
+          .select('data')
+          .eq('room_id', _currentRoomId!)
+          .single();
+      
+      final currentData = Map<String, dynamic>.from(roomResponse['data'] as Map<String, dynamic>? ?? {});
+      
+      // Update the username data
+      currentData[_usernameKey] = {
+        'value': username,
+        'device_id': deviceId,
+        'timestamp': DateTime.now().toIso8601String(),
+      };
+
+      await _client
+          .from(_tableName)
+          .update({'data': currentData})
+          .eq('room_id', _currentRoomId!);
+      
+      AppLogger.debug('Set username: $username for device: $deviceId');
+      return true;
+    } catch (e) {
+      AppLogger.error('Failed to set username', e);
+      return false;
+    }
+  }
+
+  /// Helper method to find if a username exists anywhere and return its record
+  Future<Map<String, dynamic>?> _getUsernameRecord(String username) async {
+    try {
+      // Get all rooms that have username data
+      final response = await _client
+          .from(_tableName)
+          .select('data')
+          .not('data', 'is', null);
+
+      for (final row in response) {
+        final data = row['data'] as Map<String, dynamic>?;
+        if (data != null) {
+          final usernameData = data[_usernameKey] as Map<String, dynamic>?;
+          if (usernameData != null) {
+            final storedUsername = usernameData['value'] as String?;
+            if (storedUsername != null && storedUsername.toLowerCase() == username.toLowerCase()) {
+              return usernameData; // Return the full username data record
+            }
+          }
+        }
+      }
+      return null; // Username doesn't exist
+    } catch (e) {
+      AppLogger.error('Failed to get username record', e);
+      return null;
+    }
+  }
+
+  /// Gets the username for a specific device or current device if not specified
+  Future<String?> getUsername([String? deviceId]) async {
+    if (_currentRoomId == null) return null;
+
+    try {
+      final roomData = await getRoomData();
+      if (roomData == null) return null;
+
+      final usernameData = roomData[_usernameKey] as Map<String, dynamic>?;
+      if (usernameData == null) return null;
+
+      // If no specific device ID requested, get current device's username
+      if (deviceId == null) {
+        final currentDeviceId = await _getOrCreateDeviceId();
+        final storedDeviceId = usernameData['device_id'] as String?;
+        if (storedDeviceId == currentDeviceId) {
+          return usernameData['value'] as String?;
+        }
+      } else {
+        final storedDeviceId = usernameData['device_id'] as String?;
+        if (storedDeviceId == deviceId) {
+          return usernameData['value'] as String?;
+        }
+      }
+
+      return usernameData['value'] as String?;
+    } catch (e) {
+      AppLogger.error('Failed to get username', e);
+      return null;
+    }
+  }
+
+  /// Gets username for a specific device only (more precise than the general method)
+  Future<String?> getUsernameForDevice(String deviceId) async {
+    if (_currentRoomId == null) return null;
+
+    try {
+      final roomData = await getRoomData();
+      if (roomData == null) return null;
+
+      final usernameData = roomData[_usernameKey] as Map<String, dynamic>?;
+      if (usernameData == null) return null;
+
+      final storedDeviceId = usernameData['device_id'] as String?;
+      if (storedDeviceId == deviceId) {
+        return usernameData['value'] as String?;
+      }
+
+      return null;
+    } catch (e) {
+      AppLogger.error('Failed to get username for device: $deviceId', e);
+      return null;
+    }
+  }
+
+  /// Gets all usernames in the current room mapped by device ID
+  Future<Map<String, String>?> getAllUsernames() async {
+    if (_currentRoomId == null) return null;
+
+    try {
+      final roomData = await getRoomData();
+      if (roomData == null) return null;
+
+      // For now, we store username per device, so we have one entry
+      final usernameData = roomData[_usernameKey] as Map<String, dynamic>?;
+      if (usernameData == null) return null;
+
+      final deviceUsername = <String, String>{};
+      final deviceId = usernameData['device_id'] as String?;
+      final username = usernameData['value'] as String?;
+
+      if (deviceId != null && username != null) {
+        deviceUsername[deviceId] = username;
+      }
+
+      return deviceUsername;
+    } catch (e) {
+      AppLogger.error('Failed to get all usernames', e);
+      return null;
+    }
+  }
+
+  /// Updates the data structure to store multiple usernames per room (for future expansion)
+  Future<void> _updateUsernameStorage(String username) async {
+    if (_currentRoomId == null) return;
+
+    try {
+      final deviceId = await _getOrCreateDeviceId();
+      
+      // Get current data to merge with the new username
+      final roomResponse = await _client
+          .from(_tableName)
+          .select('data')
+          .eq('room_id', _currentRoomId!)
+          .single();
+      
+      final currentData = Map<String, dynamic>.from(roomResponse['data'] as Map<String, dynamic>? ?? {});
+      
+      // Update the username data
+      currentData[_usernameKey] = {
+        'value': username,
+        'device_id': deviceId,
+        'timestamp': DateTime.now().toIso8601String(),
+      };
+
+      await _client
+          .from(_tableName)
+          .update({'data': currentData})
+          .eq('room_id', _currentRoomId!);
+    } catch (e) {
+      AppLogger.error('Failed to update username storage', e);
+    }
+  }
+
+  /// Adds a username listener
+  void addUsernameListener(Function(String?) callback) {
+    addListener(_usernameKey, (data) {
+      callback(data['value'] as String?);
+    });
+  }
+
+  /// Checks if a username already exists across all rooms
+  Future<bool> isUsernameTaken(String username) async {
+    try {
+      // Get all rooms that have username data
+      final response = await _client
+          .from(_tableName)
+          .select('data')
+          .not('data', 'is', null);
+
+      for (final row in response) {
+        final data = row['data'] as Map<String, dynamic>?;
+        if (data != null) {
+          final usernameData = data[_usernameKey] as Map<String, dynamic>?;
+          if (usernameData != null) {
+            final storedUsername = usernameData['value'] as String?;
+            if (storedUsername != null && storedUsername.toLowerCase() == username.toLowerCase()) {
+              return true; // Username is already taken
+            }
+          }
+        }
+      }
+      return false; // Username is available
+    } catch (e) {
+      AppLogger.error('Failed to check if username is taken', e);
+      return true; // Assume it's taken if there's an error to be safe
+    }
+  }
+
+  /// Gets all usernames across all rooms
+  Future<Map<String, String>?> getAllUsernamesGlobally() async {
+    try {
+      final response = await _client
+          .from(_tableName)
+          .select('data')
+          .not('data', 'is', null);
+
+      final globalUsernames = <String, String>{};
+
+      for (final row in response) {
+        final data = row['data'] as Map<String, dynamic>?;
+        if (data != null) {
+          final usernameData = data[_usernameKey] as Map<String, dynamic>?;
+          if (usernameData != null) {
+            final storedUsername = usernameData['value'] as String?;
+            final deviceId = usernameData['device_id'] as String?;
+            if (storedUsername != null && deviceId != null) {
+              globalUsernames[deviceId] = storedUsername;
+            }
+          }
+        }
+      }
+      return globalUsernames;
+    } catch (e) {
+      AppLogger.error('Failed to get all usernames globally', e);
+      return null;
     }
   }
 

@@ -494,4 +494,14 @@ class AppStrings {
   static const String bijbelquizGenDonateButton = 'Doneer aan ons om je voortgezette steun te tonen voor onze ontwikkeling, zodat we de app blijven kunnen verbeteren en dat je volgend jaar weer kan terugkijken op een leerzaam jaar.';
   static const String done = 'Klaar';
   static const String bijbelquizGenSkip = 'Overslaan';
+  
+  // Username
+  static const String username = 'Gebruikersnaam';
+  static const String enterUsername = 'Voer gebruikersnaam in';
+  static const String usernameHint = 'Bijv. Jan2025';
+  static const String saveUsername = 'Bewaar gebruikersnaam';
+  static const String pleaseEnterUsername = 'Voer een gebruikersnaam in';
+  static const String usernameTooLong = 'Gebruikersnaam mag maximaal 30 tekens bevatten';
+  static const String usernameAlreadyTaken = 'Gebruikersnaam is al in gebruik';
+  static const String usernameSaved = 'Gebruikersnaam opgeslagen!';
 }
