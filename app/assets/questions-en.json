@@ -1,0 +1,2007 @@
+[
+  {
+    "question": "How many books does the New Testament have?",
+    "correctAnswer": "27",
+    "incorrectAnswers": [
+      "26",
+      "66",
+      "39"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [],
+    "biblicalReference": null,
+    "id": "000001"
+  },
+  {
+    "question": "What did Hannah name her child?",
+    "correctAnswer": "Samuel",
+    "incorrectAnswers": [
+      "Saul",
+      "Samson",
+      "Gideon"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [],
+    "biblicalReference": "1 Samuel 1:20",
+    "id": "000002"
+  },
+  {
+    "question": "Who was responsible for the massacre of children in Bethlehem shortly after Jesus's birth?",
+    "correctAnswer": "Herod",
+    "incorrectAnswers": [
+      "Pilate",
+      "The High Priest",
+      "Quirinius"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Matthew"
+    ],
+    "biblicalReference": "Matthew 1",
+    "id": "000003"
+  },
+  {
+    "question": "Jesus healed Peter's mother-in-law. What was wrong with her?",
+    "correctAnswer": "Fever",
+    "incorrectAnswers": [
+      "Paralysis",
+      "Blind in one eye",
+      "Bleeding"
+    ],
+    "difficulty": 4,
+    "type": "mc",
+    "categories": [],
+    "biblicalReference": "Mark 1",
+    "id": "000004"
+  },
+  {
+    "question": "What promise do the meek receive from the Lord Jesus in the Beatitudes?",
+    "correctAnswer": "They shall inherit the earth",
+    "incorrectAnswers": [
+      "For them is the kingdom of heaven",
+      "They shall be called children of God",
+      "They shall see God"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [
+      "Matthew"
+    ],
+    "biblicalReference": "Matthew 5:5",
+    "id": "000005"
+  },
+  {
+    "question": "What promise follows the Beatitude 'blessed are the pure in heart'?",
+    "correctAnswer": "they shall see God",
+    "incorrectAnswers": [
+      "For them is the kingdom of heaven",
+      "They shall be called children of God",
+      "They shall inherit the earth"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [],
+    "biblicalReference": "Matthew 5:8",
+    "id": "000006"
+  },
+  {
+    "question": "Which prophet was not allowed to marry by the Lord?",
+    "correctAnswer": "Jeremiah",
+    "incorrectAnswers": [
+      "Isaiah",
+      "Ezekiel",
+      "Hosea"
+    ],
+    "difficulty": 5,
+    "type": "mc",
+    "categories": [
+      "Jeremiah"
+    ],
+    "biblicalReference": "Jeremiah 16:2",
+    "id": "000007"
+  },
+  {
+    "question": "Which prophet was commanded to marry by the Lord?",
+    "correctAnswer": "Hosea",
+    "incorrectAnswers": [
+      "Isaiah",
+      "Jeremiah",
+      "Ezekiel"
+    ],
+    "difficulty": 5,
+    "type": "mc",
+    "categories": [
+      "Hosea"
+    ],
+    "biblicalReference": "Hosea 1:2",
+    "id": "000008"
+  },
+  {
+    "question": "Which prophet and his children were a symbol for Israel?",
+    "correctAnswer": "Isaiah",
+    "incorrectAnswers": [
+      "Jeremiah",
+      "Ezekiel",
+      "Hosea"
+    ],
+    "difficulty": 5,
+    "type": "mc",
+    "categories": [
+      "Isaiah"
+    ],
+    "biblicalReference": null,
+    "id": "000009"
+  },
+  {
+    "question": "Which prophet lost his wife during his time as a prophet?",
+    "correctAnswer": "Ezekiel",
+    "incorrectAnswers": [
+      "Isaiah",
+      "Jeremiah",
+      "Hosea"
+    ],
+    "difficulty": 5,
+    "type": "mc",
+    "categories": [
+      "Ezekiel"
+    ],
+    "biblicalReference": "Ezekiel 24:16-24",
+    "id": "000010"
+  },
+  {
+    "question": "On the 1st day God created...",
+    "correctAnswer": "the light",
+    "incorrectAnswers": [
+      "man",
+      "plants",
+      "fish"
+    ],
+    "difficulty": 1,
+    "type": "fitb",
+    "categories": [
+      "Genesis"
+    ],
+    "biblicalReference": "Genesis 1:4",
+    "id": "000011"
+  },
+  {
+    "question": "On the 2nd day there was separation between...",
+    "correctAnswer": "sea and sky",
+    "incorrectAnswers": [
+      "sea and land",
+      "light and darkness",
+      "light and land"
+    ],
+    "difficulty": 1,
+    "type": "fitb",
+    "categories": [
+      "Genesis"
+    ],
+    "biblicalReference": "Genesis 1:6-8",
+    "id": "000012"
+  },
+  {
+    "question": "God rested on the...",
+    "correctAnswer": "7th day",
+    "incorrectAnswers": [
+      "1st day",
+      "5th day",
+      "6th day"
+    ],
+    "difficulty": 1,
+    "type": "fitb",
+    "categories": [
+      "Genesis"
+    ],
+    "biblicalReference": "Genesis 2:2",
+    "id": "000013"
+  },
+  {
+    "question": "Where was the tree of the knowledge of good and evil?",
+    "correctAnswer": "In the garden of Eden",
+    "incorrectAnswers": [
+      "In the garden of Aden",
+      "Just outside the garden of Eden",
+      "In Shinar"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Genesis"
+    ],
+    "biblicalReference": "Genesis 2 and 3",
+    "id": "000014"
+  },
+  {
+    "question": "Who was murdered by Cain?",
+    "correctAnswer": "Abel",
+    "incorrectAnswers": [
+      "His mother",
+      "His father",
+      "Esau"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Genesis"
+    ],
+    "biblicalReference": null,
+    "id": "000015"
+  },
+  {
+    "question": "How old was Methuselah when he died?",
+    "correctAnswer": "969",
+    "incorrectAnswers": [
+      "996",
+      "966",
+      "669"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Genesis"
+    ],
+    "biblicalReference": "Genesis 5:27",
+    "id": "000016"
+  },
+  {
+    "question": "How long did Noah stay in the ark with his family?",
+    "correctAnswer": "Just over a year",
+    "incorrectAnswers": [
+      "40 days",
+      "7 months",
+      "1.5 years"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [
+      "Genesis"
+    ],
+    "biblicalReference": "Genesis 8",
+    "id": "000017"
+  },
+  {
+    "question": "The top of the tower of Babel was meant to reach into ...",
+    "correctAnswer": "the heavens",
+    "incorrectAnswers": [
+      "the clouds",
+      "great height",
+      "an invisible height"
+    ],
+    "difficulty": 1,
+    "type": "fitb",
+    "categories": [
+      "Genesis"
+    ],
+    "biblicalReference": "Genesis 11:4",
+    "id": "000018"
+  },
+  {
+    "question": "What does the word 'Babel' mean?",
+    "correctAnswer": "Confusion",
+    "incorrectAnswers": [
+      "Great city",
+      "Great tower",
+      "Destruction"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [
+      "Genesis"
+    ],
+    "biblicalReference": "Genesis 11",
+    "id": "000019"
+  },
+  {
+    "question": "Where was Abram born?",
+    "correctAnswer": "Ur of the Chaldeans",
+    "incorrectAnswers": [
+      "Canaan",
+      "Egypt",
+      "Shinar"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Genesis"
+    ],
+    "biblicalReference": "Genesis 11:26",
+    "id": "000020"
+  },
+  {
+    "question": "What was the name of Abram's father?",
+    "correctAnswer": "Terah",
+    "incorrectAnswers": [
+      "Lot",
+      "Isaac",
+      "Noah"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [
+      "Genesis"
+    ],
+    "biblicalReference": "Genesis 11:26",
+    "id": "000021"
+  },
+  {
+    "question": "Why did Abram go to Canaan?",
+    "correctAnswer": "God asked him to",
+    "incorrectAnswers": [
+      "There was plenty of work",
+      "Family already lived there",
+      "There was enough to eat"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Genesis"
+    ],
+    "biblicalReference": "Genesis 12",
+    "id": "000022"
+  },
+  {
+    "question": "Who was Abram's wife?",
+    "correctAnswer": "Sarai",
+    "incorrectAnswers": [
+      "Rebekah",
+      "Rachel",
+      "Zilpah"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Genesis"
+    ],
+    "biblicalReference": "Genesis 11",
+    "id": "000023"
+  },
+  {
+    "question": "Why did Abram and Sarai go to Egypt?",
+    "correctAnswer": "There was a famine in Canaan",
+    "incorrectAnswers": [
+      "There was much money to earn",
+      "They went to visit relatives",
+      "It was a command from the Lord"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Genesis"
+    ],
+    "biblicalReference": "Genesis 12:10",
+    "id": "000024"
+  },
+  {
+    "question": "Abram and Lot return to Canaan. Where does Lot live?",
+    "correctAnswer": "In the Jordan region",
+    "incorrectAnswers": [
+      "On the coast",
+      "In the mountains",
+      "In Sodom"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [
+      "Genesis"
+    ],
+    "biblicalReference": "Genesis 19",
+    "id": "000025"
+  },
+  {
+    "question": "Sarai remains barren. Who becomes Abram's second wife?",
+    "correctAnswer": "Hagar",
+    "incorrectAnswers": [
+      "Rachel",
+      "Zilpah",
+      "Bilhah"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Genesis"
+    ],
+    "biblicalReference": "Genesis 16:3",
+    "id": "000026"
+  },
+  {
+    "question": "Abram and Hagar have a son, his name is...",
+    "correctAnswer": "Ishmael",
+    "incorrectAnswers": [
+      "Lot",
+      "Isaac",
+      "Jacob"
+    ],
+    "difficulty": 1,
+    "type": "fitb",
+    "categories": [
+      "Genesis"
+    ],
+    "biblicalReference": "Genesis 16:11",
+    "id": "000027"
+  },
+  {
+    "question": "What did Lot's wife do?",
+    "correctAnswer": "She looked back while leaving Sodom",
+    "incorrectAnswers": [
+      "She warned her husband Lot",
+      "She stayed in Sodom",
+      "She did what God asked her to do"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Genesis"
+    ],
+    "biblicalReference": "Genesis 19:26",
+    "id": "000028"
+  },
+  {
+    "question": "Abraham and Sarah finally have a son. How old was Abraham then?",
+    "correctAnswer": "100",
+    "incorrectAnswers": [
+      "80",
+      "90",
+      "120"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [
+      "Genesis"
+    ],
+    "biblicalReference": "Genesis 21:5",
+    "id": "000029"
+  },
+  {
+    "question": "Where should Abraham sacrifice Isaac?",
+    "correctAnswer": "On Mount Moriah",
+    "incorrectAnswers": [
+      "On Mount Sinai",
+      "On Mount Carmel",
+      "On Mount Horeb"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [
+      "Genesis"
+    ],
+    "biblicalReference": "Genesis 22:2",
+    "id": "000030"
+  },
+  {
+    "question": "Who does Isaac marry?",
+    "correctAnswer": "Rebekah",
+    "incorrectAnswers": [
+      "Rachel",
+      "Bilhah",
+      "Sarah"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Genesis"
+    ],
+    "biblicalReference": "Genesis 24:67",
+    "id": "000031"
+  },
+  {
+    "question": "Who succeeds Moses?",
+    "correctAnswer": "Joshua",
+    "incorrectAnswers": [
+      "Aaron",
+      "Caleb",
+      "Elijah"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Joshua"
+    ],
+    "biblicalReference": "Joshua 1:1",
+    "id": "000032"
+  },
+  {
+    "question": "Where did Moses strike the rock?",
+    "correctAnswer": "at Meribah",
+    "incorrectAnswers": [
+      "at Edom",
+      "at Mara",
+      "at Elim"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [
+      "Exodus"
+    ],
+    "biblicalReference": "Exodus 17:7",
+    "id": "000033"
+  },
+  {
+    "question": "After ... much of Canaan is conquered",
+    "correctAnswer": "7 years",
+    "incorrectAnswers": [
+      "4 years",
+      "6 years",
+      "9 years"
+    ],
+    "difficulty": 5,
+    "type": "fitb",
+    "categories": [
+      "Joshua"
+    ],
+    "biblicalReference": "Joshua",
+    "id": "000034"
+  },
+  {
+    "question": "After Joshua's death...",
+    "correctAnswer": "there is no leader anymore",
+    "incorrectAnswers": [
+      "his son succeeds him",
+      "Judah succeeds him",
+      "Eleazar succeeds him"
+    ],
+    "difficulty": 3,
+    "type": "fitb",
+    "categories": [
+      "Joshua"
+    ],
+    "biblicalReference": "Joshua 24",
+    "id": "000035"
+  },
+  {
+    "question": "What was Israel's first task after Joshua's death?",
+    "correctAnswer": "Fight against the remaining Canaanites",
+    "incorrectAnswers": [
+      "Finding a new leader",
+      "The people got a period of rest",
+      "Finding water sources"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [
+      "Judges"
+    ],
+    "biblicalReference": "Judges 1:1",
+    "id": "000036"
+  },
+  {
+    "question": "After a long period following Joshua's death comes...",
+    "correctAnswer": "a judge",
+    "incorrectAnswers": [
+      "a king",
+      "an emperor",
+      "a prophet"
+    ],
+    "difficulty": 3,
+    "type": "fitb",
+    "categories": [
+      "Judges"
+    ],
+    "biblicalReference": "Judges 3:9",
+    "id": "000037"
+  },
+  {
+    "question": "Who was the first judge?",
+    "correctAnswer": "Othniel",
+    "incorrectAnswers": [
+      "Ehud",
+      "Samgar",
+      "Barak"
+    ],
+    "difficulty": 2,
+    "type": "mc",
+    "categories": [
+      "Genesis"
+    ],
+    "biblicalReference": "Judges 3:9",
+    "id": "000038"
+  },
+  {
+    "question": "Under the leadership of the first judge...",
+    "correctAnswer": "people serve God again",
+    "incorrectAnswers": [
+      "people serve the idols again",
+      "the enemy is driven away",
+      "the people become rebellious again"
+    ],
+    "difficulty": 3,
+    "type": "fitb",
+    "categories": [
+      "Judges"
+    ],
+    "biblicalReference": "Judges 3: 9, 10",
+    "id": "000039"
+  },
+  {
+    "question": "Who are the most well-known judges?",
+    "correctAnswer": "Gideon, Samson and Samuel",
+    "incorrectAnswers": [
+      "Saul, David and Solomon",
+      "Jephthah, Deborah and Barak",
+      "Othniel, Ehud and Samgar"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Judges"
+    ],
+    "biblicalReference": "Judges",
+    "id": "000040"
+  },
+  {
+    "question": "With how many men did Gideon drive away a large army of Midianites?",
+    "correctAnswer": "300 men",
+    "incorrectAnswers": [
+      "1000 men",
+      "100 men",
+      "500 men"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [
+      "Judges"
+    ],
+    "biblicalReference": "Judges 7:6",
+    "id": "000041"
+  },
+  {
+    "question": "Who was the last judge?",
+    "correctAnswer": "Samuel",
+    "incorrectAnswers": [
+      "Eli",
+      "Samson",
+      "Jephthah"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Judges"
+    ],
+    "biblicalReference": "1 Samuel",
+    "id": "000042"
+  },
+  {
+    "question": "Which answer does not belong. Samson may NOT ... ",
+    "correctAnswer": "not marry",
+    "incorrectAnswers": [
+      "not drink wine or beer",
+      "not cut his hair",
+      "not touch dead bodies"
+    ],
+    "difficulty": 1,
+    "type": "fitb",
+    "categories": [
+      "Judges"
+    ],
+    "biblicalReference": "Judges 13",
+    "id": "000043"
+  },
+  {
+    "question": "Deborah defeated the ... ",
+    "correctAnswer": "Canaanites",
+    "incorrectAnswers": [
+      "Midianites",
+      "Ammonites",
+      "Philistines"
+    ],
+    "difficulty": 5,
+    "type": "fitb",
+    "categories": [
+      "Judges"
+    ],
+    "biblicalReference": "Judges 4",
+    "id": "000044"
+  },
+  {
+    "question": "Several judges are mentioned as heroes of faith in the Epistle to the Hebrews. Which judge is NOT mentioned in it?",
+    "correctAnswer": "Deborah",
+    "incorrectAnswers": [
+      "Gideon",
+      "Samson",
+      "Samuel"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [],
+    "biblicalReference": "Hebrews 11",
+    "id": "000045"
+  },
+  {
+    "question": "Who leads the people after Samuel?",
+    "correctAnswer": "King Saul",
+    "incorrectAnswers": [
+      "King David",
+      "High Priest Eli",
+      "Judge Samson"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [],
+    "biblicalReference": "1 Samuel 10:1",
+    "id": "000046"
+  },
+  {
+    "question": "Who was the first king of Israel?",
+    "correctAnswer": "Saul",
+    "incorrectAnswers": [
+      "David",
+      "Solomon",
+      "Herod"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [],
+    "biblicalReference": "1 Samuel 10:1",
+    "id": "000047"
+  },
+  {
+    "question": "Saul is anointed by Samuel ... ",
+    "correctAnswer": "anointed",
+    "incorrectAnswers": [
+      "crowned",
+      "consecrated",
+      "baptized"
+    ],
+    "difficulty": 1,
+    "type": "fitb",
+    "categories": [
+      "1 Samuel"
+    ],
+    "biblicalReference": "1 Samuel 10:1",
+    "id": "000048"
+  },
+  {
+    "question": "But I hate him, because he prophesies nothing good about me, but evil. Who said that?",
+    "correctAnswer": "Ahab",
+    "incorrectAnswers": [
+      "Micaiah",
+      "Jezebel",
+      "Baasha"
+    ],
+    "difficulty": 5,
+    "type": "mc",
+    "categories": [
+      "1 Kings"
+    ],
+    "biblicalReference": "1 Kings 22:8",
+    "id": "000049"
+  },
+  {
+    "question": "In which time period does the story of Ruth take place?",
+    "correctAnswer": "Time of Judges",
+    "incorrectAnswers": [
+      "Time of Kings",
+      "Exile",
+      "Time of Prophets"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [
+      "Genesis",
+      "Ruth"
+    ],
+    "biblicalReference": null,
+    "id": "000050"
+  },
+  {
+    "question": "From which place did Elimelech and Naomi come?",
+    "correctAnswer": "Bethlehem",
+    "incorrectAnswers": [
+      "Jerusalem",
+      "Cana",
+      "Moab"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [
+      "Ruth"
+    ],
+    "biblicalReference": "Ruth 1:1",
+    "id": "000051"
+  },
+  {
+    "question": "What were the names of the women whom Naomi's sons married?",
+    "correctAnswer": "Orpah and Ruth",
+    "incorrectAnswers": [
+      "Orpah and Rebekah",
+      "Ruth and Rachel",
+      "Ruth and Rebekah"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Ruth"
+    ],
+    "biblicalReference": "Ruth 1:4",
+    "id": "000052"
+  },
+  {
+    "question": "How did Naomi want to be called?",
+    "correctAnswer": "Mara",
+    "incorrectAnswers": [
+      "Martha",
+      "Mary",
+      "Miriam"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Ruth"
+    ],
+    "biblicalReference": "Ruth 1:20",
+    "id": "000053"
+  },
+  {
+    "question": "Why was Boaz kind to Ruth?",
+    "correctAnswer": "Ruth's devotion to Naomi touched him",
+    "incorrectAnswers": [
+      "He was in love with Ruth",
+      "Because he was related to Naomi",
+      "God asked this of him"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [
+      "Ruth"
+    ],
+    "biblicalReference": "Ruth 2:11",
+    "id": "000054"
+  },
+  {
+    "question": "What is a kinsman-redeemer?",
+    "correctAnswer": "A close relative who has the duty to help another family member",
+    "incorrectAnswers": [
+      "A close relative",
+      "A close relative who has much money",
+      "A close relative who lives in the same place"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [],
+    "biblicalReference": "Ruth 3:9",
+    "id": "000055"
+  },
+  {
+    "question": "What did Boaz give as proof of his redemption?",
+    "correctAnswer": "His sandal",
+    "incorrectAnswers": [
+      "A clay tablet",
+      "His ring",
+      "His coat"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [
+      "Ruth"
+    ],
+    "biblicalReference": "Ruth 4:7",
+    "id": "000056"
+  },
+  {
+    "question": "What is the name of Boaz and Ruth's son?",
+    "correctAnswer": "Obed",
+    "incorrectAnswers": [
+      "Judah",
+      "Machlon",
+      "Chilion"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Ruth"
+    ],
+    "biblicalReference": "Ruth 4:17",
+    "id": "000057"
+  },
+  {
+    "question": "Of whom did Obed become father?",
+    "correctAnswer": "Jesse",
+    "incorrectAnswers": [
+      "Isaac",
+      "Ishmael",
+      "Issachar"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Ruth"
+    ],
+    "biblicalReference": "Ruth 4:17",
+    "id": "000058"
+  },
+  {
+    "question": "Of whom did Jesse become father?",
+    "correctAnswer": "Of King David",
+    "incorrectAnswers": [
+      "Of King Solomon",
+      "Of King Saul",
+      "Of King Abijah"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [],
+    "biblicalReference": "1 Samuel 17:12",
+    "id": "000059"
+  },
+  {
+    "question": "How many wives did Elkanah have?",
+    "correctAnswer": "Two",
+    "incorrectAnswers": [
+      "One",
+      "Three",
+      "Four"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Genesis"
+    ],
+    "biblicalReference": "1 Samuel 1:2",
+    "id": "000060"
+  },
+  {
+    "question": "What did the old priest think when Hannah prayed in the temple?",
+    "correctAnswer": "That she was drunk",
+    "incorrectAnswers": [
+      "That she was praying earnestly",
+      "That she was sad",
+      "That she was tired"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [],
+    "biblicalReference": "1 Samuel 1:14",
+    "id": "000061"
+  },
+  {
+    "question": "What did Hannah name her son?",
+    "correctAnswer": "Samuel",
+    "incorrectAnswers": [
+      "Samson",
+      "Gideon",
+      "Judah"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Genesis"
+    ],
+    "biblicalReference": "1 Samuel 1:20",
+    "id": "000062"
+  },
+  {
+    "question": "What does Samuel mean?",
+    "correctAnswer": "Asked of God",
+    "incorrectAnswers": [
+      "Man of God",
+      "Comforter",
+      "God gives"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [
+      "1 Samuel",
+      "2 Samuel"
+    ],
+    "biblicalReference": "1 Samuel 1:17",
+    "id": "000063"
+  },
+  {
+    "question": "Where did Hannah bring Samuel?",
+    "correctAnswer": "To Eli",
+    "incorrectAnswers": [
+      "To Jerusalem",
+      "To Elijah",
+      "To the temple in Jerusalem"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [
+      "1 Samuel"
+    ],
+    "biblicalReference": "1 Samuel 1: 25",
+    "id": "000064"
+  },
+  {
+    "question": "What did Hannah NOT bring with her when she brought Samuel to Eli?",
+    "correctAnswer": "2 measures of barley",
+    "incorrectAnswers": [
+      "3 bulls",
+      "an ephah of flour",
+      "a flask of wine"
+    ],
+    "difficulty": 5,
+    "type": "mc",
+    "categories": [
+      "1 Samuel"
+    ],
+    "biblicalReference": "1 Samuel 1:24",
+    "id": "000065"
+  },
+  {
+    "question": "Who thought that Samuel called him?",
+    "correctAnswer": "Eli",
+    "incorrectAnswers": [
+      "Hophni",
+      "Phinehas",
+      "the Lord"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "1 Samuel"
+    ],
+    "biblicalReference": "1 Samuel 3",
+    "id": "000066"
+  },
+  {
+    "question": "Which position did Samuel NOT hold in his life?",
+    "correctAnswer": "King",
+    "incorrectAnswers": [
+      "Prophet",
+      "Priest",
+      "Judge"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [],
+    "biblicalReference": "1 Samuel",
+    "id": "000067"
+  },
+  {
+    "question": "How is the holy city called in Ezekiel 48?",
+    "correctAnswer": "The Lord is there",
+    "incorrectAnswers": [
+      "Zion",
+      "Jerusalem",
+      "City of God"
+    ],
+    "difficulty": 5,
+    "type": "mc",
+    "categories": [
+      "Ezekiel"
+    ],
+    "biblicalReference": "Ezekiel 48:35",
+    "id": "000068"
+  },
+  {
+    "question": "Which psalm is often called the Shepherd's Psalm?",
+    "correctAnswer": "Psalm 23",
+    "incorrectAnswers": [
+      "Psalm 1",
+      "Psalm 25",
+      "Psalm 42"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Psalms"
+    ],
+    "biblicalReference": "Psalm 23",
+    "id": "000069"
+  },
+  {
+    "question": "What do you call a male sheep?",
+    "correctAnswer": "A ram",
+    "incorrectAnswers": [
+      "A buck",
+      "A lamb",
+      "An ewe"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Genesis"
+    ],
+    "biblicalReference": "Genesis 22",
+    "id": "000070"
+  },
+  {
+    "question": "On which instrument did David often play?",
+    "correctAnswer": "Harp",
+    "incorrectAnswers": [
+      "Harp",
+      "Flute",
+      "Cymbal"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [
+      "1 Samuel"
+    ],
+    "biblicalReference": "1 and 2 Samuel",
+    "id": "000071"
+  },
+  {
+    "question": "Who wrote the biblical book of Proverbs?",
+    "correctAnswer": "Solomon",
+    "incorrectAnswers": [
+      "David",
+      "Asaph",
+      "Jehoshaphat"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Proverbs"
+    ],
+    "biblicalReference": "Proverbs",
+    "id": "000072"
+  },
+  {
+    "question": "What is the beginning of wisdom?",
+    "correctAnswer": "The fear of the Lord",
+    "incorrectAnswers": [
+      "The knowledge of the Lord",
+      "The instruction of the Lord",
+      "The thoughtfulness of the Lord"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [
+      "Proverbs"
+    ],
+    "biblicalReference": "Proverbs 1:7",
+    "id": "000073"
+  },
+  {
+    "question": "What is God to those who walk uprightly?",
+    "correctAnswer": "A Shield",
+    "incorrectAnswers": [
+      "A Fortress",
+      "A Refuge",
+      "A High Tower"
+    ],
+    "difficulty": 5,
+    "type": "mc",
+    "categories": [
+      "Proverbs"
+    ],
+    "biblicalReference": "Proverbs 2:7",
+    "id": "000074"
+  },
+  {
+    "question": "With what must one honor the Lord",
+    "correctAnswer": "With possessions",
+    "incorrectAnswers": [
+      "With prayer",
+      "With wisdom",
+      "With sincerity"
+    ],
+    "difficulty": 5,
+    "type": "mc",
+    "categories": [
+      "Proverbs"
+    ],
+    "biblicalReference": "Proverbs 3:9",
+    "id": "000075"
+  },
+  {
+    "question": "What is more precious than rubies?",
+    "correctAnswer": "Wisdom",
+    "incorrectAnswers": [
+      "Love",
+      "Virtue",
+      "Knowledge"
+    ],
+    "difficulty": 5,
+    "type": "mc",
+    "categories": [
+      "Proverbs"
+    ],
+    "biblicalReference": "Proverbs 3: 13-15",
+    "id": "000076"
+  },
+  {
+    "question": "Who must be saved?",
+    "correctAnswer": "Those in danger of death",
+    "incorrectAnswers": [
+      "Those who waver",
+      "Those who wander",
+      "Those who live godlessly"
+    ],
+    "difficulty": 5,
+    "type": "mc",
+    "categories": [
+      "Proverbs"
+    ],
+    "biblicalReference": "Proverbs 24:11",
+    "id": "000077"
+  },
+  {
+    "question": "Wisdom is like ... ?",
+    "correctAnswer": "a beautiful crown on the head",
+    "incorrectAnswers": [
+      "a golden necklace around the neck",
+      "an ornament of knowledge",
+      "a band of insight"
+    ],
+    "difficulty": 3,
+    "type": "fitb",
+    "categories": [
+      "Proverbs"
+    ],
+    "biblicalReference": "Proverbs 4:9",
+    "id": "000078"
+  },
+  {
+    "question": "From where must our foot remain distant?",
+    "correctAnswer": "From evil",
+    "incorrectAnswers": [
+      "From the path of the wicked",
+      "From uneven paths",
+      "From paths of death"
+    ],
+    "difficulty": 5,
+    "type": "mc",
+    "categories": [
+      "Proverbs"
+    ],
+    "biblicalReference": "Proverbs 4:14",
+    "id": "000079"
+  },
+  {
+    "question": "How many things are an abomination to the Lord?",
+    "correctAnswer": "Seven",
+    "incorrectAnswers": [
+      "Five",
+      "Six",
+      "Three"
+    ],
+    "difficulty": 5,
+    "type": "mc",
+    "categories": [
+      "Proverbs"
+    ],
+    "biblicalReference": "Proverbs 6:16",
+    "id": "000080"
+  },
+  {
+    "question": "What covers love?",
+    "correctAnswer": "All transgressions",
+    "incorrectAnswers": [
+      "All greed",
+      "All unkindness",
+      "All hatred"
+    ],
+    "difficulty": 5,
+    "type": "mc",
+    "categories": [
+      "Proverbs"
+    ],
+    "biblicalReference": "Proverbs 10:12",
+    "id": "000081"
+  },
+  {
+    "question": "What is in the house of a righteous man?",
+    "correctAnswer": "A great treasure",
+    "incorrectAnswers": [
+      "Love and faithfulness",
+      "Understanding",
+      "Knowledge"
+    ],
+    "difficulty": 5,
+    "type": "mc",
+    "categories": [
+      "Proverbs"
+    ],
+    "biblicalReference": "Proverbs 15:6",
+    "id": "000082"
+  },
+  {
+    "question": "Who will fall into a pit?",
+    "correctAnswer": "He who digs a pit",
+    "incorrectAnswers": [
+      "Who shoots burning arrows",
+      "Who is wise in his own eyes",
+      "Who honors a fool"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [
+      "Proverbs"
+    ],
+    "biblicalReference": "Proverbs 26:27",
+    "id": "000083"
+  },
+  {
+    "question": "When does one find mercy?",
+    "correctAnswer": "When one confesses and forsakes sins",
+    "incorrectAnswers": [
+      "When one is a man of understanding",
+      "When one loves in secret",
+      "When one does not harden his heart"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [
+      "Proverbs"
+    ],
+    "biblicalReference": "Proverbs 28:13",
+    "id": "000084"
+  },
+  {
+    "question": "Where did Jesus grow up?",
+    "correctAnswer": "Nazareth",
+    "incorrectAnswers": [
+      "Jerusalem",
+      "Bethlehem",
+      "Capernaum"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Matthew"
+    ],
+    "biblicalReference": "Matthew 2:23",
+    "id": "000085"
+  },
+  {
+    "question": "How many days was Jesus tempted by the devil:",
+    "correctAnswer": "40 days",
+    "incorrectAnswers": [
+      "3 days",
+      "10 days",
+      "7 weeks"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [],
+    "biblicalReference": "Mark 1:13",
+    "id": "000086"
+  },
+  {
+    "question": "On what should one build their life's house?",
+    "correctAnswer": "Rock",
+    "incorrectAnswers": [
+      "Sand",
+      "A mountain",
+      "Clay ground"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [],
+    "biblicalReference": "Matthew 7:25",
+    "id": "000087"
+  },
+  {
+    "question": "Of whom did Jesus say: I have not found such great faith even in Israel?",
+    "correctAnswer": "The centurion",
+    "incorrectAnswers": [
+      "Peter",
+      "The leper",
+      "The blind man"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Matthew"
+    ],
+    "biblicalReference": "Matthew 8:10",
+    "id": "000088"
+  },
+  {
+    "question": "Where was Matthew when Jesus called him?",
+    "correctAnswer": "In the tax office",
+    "incorrectAnswers": [
+      "On the temple grounds",
+      "In a tree",
+      "In front of his house"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [
+      "Matthew"
+    ],
+    "biblicalReference": "Matthew 9:9",
+    "id": "000089"
+  },
+  {
+    "question": "How big must our faith be according to Jesus?",
+    "correctAnswer": "Like a mustard seed",
+    "incorrectAnswers": [
+      "Like a mountain",
+      "Like a rock",
+      "Like a cedar of Lebanon"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Matthew"
+    ],
+    "biblicalReference": "Matthew 17:20",
+    "id": "000090"
+  },
+  {
+    "question": "How many times must we forgive each other?",
+    "correctAnswer": "70 x 7 times",
+    "incorrectAnswers": [
+      "7 times",
+      "3 times",
+      "always"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [],
+    "biblicalReference": "Matthew 18:22",
+    "id": "000091"
+  },
+  {
+    "question": "Who cried out: Lord, Son of David, have mercy on us",
+    "correctAnswer": "2 blind men",
+    "incorrectAnswers": [
+      "10 lepers",
+      "the children",
+      "the lame"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [],
+    "biblicalReference": "Matthew 20:30",
+    "id": "000092"
+  },
+  {
+    "question": "Which tree was cursed by Jesus?",
+    "correctAnswer": "The fig tree",
+    "incorrectAnswers": [
+      "The olive tree",
+      "The cedar",
+      "The date palm"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [],
+    "biblicalReference": "Mark 11:21",
+    "id": "000093"
+  },
+  {
+    "question": "Who wrote the book of Revelation?",
+    "correctAnswer": "John",
+    "incorrectAnswers": [
+      "Paul",
+      "Peter",
+      "Matthew"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Revelation"
+    ],
+    "biblicalReference": "Revelation 1:1",
+    "id": "000094"
+  },
+  {
+    "question": "To how many churches did John write a letter?",
+    "correctAnswer": "7",
+    "incorrectAnswers": [
+      "6",
+      "8",
+      "5"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Revelation"
+    ],
+    "biblicalReference": "Revelation",
+    "id": "000095"
+  },
+  {
+    "question": "What was John told to write to Ephesus?",
+    "correctAnswer": "You have left your first love",
+    "incorrectAnswers": [
+      "Be faithful unto death",
+      "I have given you an open door",
+      "And I will give you each according to your works"
+    ],
+    "difficulty": 5,
+    "type": "mc",
+    "categories": [
+      "Ephesians"
+    ],
+    "biblicalReference": "Revelation 2:4",
+    "id": "000096"
+  },
+  {
+    "question": "What will Jesus give the church in Smyrna if they remain faithful?",
+    "correctAnswer": "The crown of life",
+    "incorrectAnswers": [
+      "A white stone",
+      "A new name",
+      "Hidden manna"
+    ],
+    "difficulty": 5,
+    "type": "mc",
+    "categories": [
+      "Revelation"
+    ],
+    "biblicalReference": "Revelation 2:10",
+    "id": "000097"
+  },
+  {
+    "question": "To which teaching did they in Pergamum cling?",
+    "correctAnswer": "The teaching of Balaam",
+    "incorrectAnswers": [
+      "The teaching of the Pharisees",
+      "There is no resurrection",
+      "The teaching of Paul"
+    ],
+    "difficulty": 5,
+    "type": "mc",
+    "categories": [
+      "Revelation"
+    ],
+    "biblicalReference": "Revelation 2:14",
+    "id": "000098"
+  },
+  {
+    "question": "What woman did they allow in Thyatira?",
+    "correctAnswer": "Jezebel",
+    "incorrectAnswers": [
+      "the wife of Herod",
+      "The wife of Potiphar",
+      "Salome"
+    ],
+    "difficulty": 5,
+    "type": "mc",
+    "categories": [
+      "Revelation"
+    ],
+    "biblicalReference": "Revelation 2: 20-23",
+    "id": "000099"
+  },
+  {
+    "question": "For what will Jesus keep the church of Philadelphia?",
+    "correctAnswer": "The hour of trial",
+    "incorrectAnswers": [
+      "From poverty",
+      "From diseases",
+      "From spiritual decline"
+    ],
+    "difficulty": 5,
+    "type": "mc",
+    "categories": [
+      "Revelation"
+    ],
+    "biblicalReference": "Revelation 3:10",
+    "id": "000100"
+  },
+  {
+    "question": "Why will Jesus spew Laodicea out of His mouth?",
+    "correctAnswer": "Because they are lukewarm",
+    "incorrectAnswers": [
+      "Because they are hot",
+      "Because they are cold",
+      "Because they are hard"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [
+      "Revelation"
+    ],
+    "biblicalReference": "Revelation 3: 15, 16",
+    "id": "000101"
+  },
+  {
+    "question": "What was around God's throne in Revelation?",
+    "correctAnswer": "A rainbow",
+    "incorrectAnswers": [
+      "A light",
+      "Golden rays",
+      "A cloud"
+    ],
+    "difficulty": 5,
+    "type": "mc",
+    "categories": [
+      "Revelation"
+    ],
+    "biblicalReference": "Revelation 4:3",
+    "id": "000102"
+  },
+  {
+    "question": "And around the throne were thrones; and on the thrones I saw ... elders sitting, clothed in white robes, and they had golden crowns on their heads. ",
+    "correctAnswer": "24",
+    "incorrectAnswers": [
+      "7",
+      "7 x 7",
+      "3"
+    ],
+    "difficulty": 3,
+    "type": "fitb",
+    "categories": [
+      "Revelation"
+    ],
+    "biblicalReference": "Revelation 4:4",
+    "id": "000103"
+  },
+  {
+    "question": "What did the great multitude that no one could count have in their hands?",
+    "correctAnswer": "Palm branches",
+    "incorrectAnswers": [
+      "Torches",
+      "Trumpets",
+      "Bowls of incense"
+    ],
+    "difficulty": 5,
+    "type": "mc",
+    "categories": [
+      "Revelation"
+    ],
+    "biblicalReference": "Revelation 7:9",
+    "id": "000104"
+  },
+  {
+    "question": "What does God do with the people who come out of the great tribulation?",
+    "correctAnswer": "God will wipe away every tear from their eyes",
+    "incorrectAnswers": [
+      "God will give them a new name",
+      "God will seal their foreheads",
+      "God will dwell among them"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [
+      "Revelation"
+    ],
+    "biblicalReference": "Revelation 21:4",
+    "id": "000105"
+  },
+  {
+    "question": "What happened when the third angel sounded?",
+    "correctAnswer": "A great star, blazing like a torch, fell from the sky",
+    "incorrectAnswers": [
+      "The smoke of incense with the prayers of the saints ascended",
+      "There became hail and fire mixed with blood",
+      "Something like a great mountain, burning with fire, was thrown into the sea"
+    ],
+    "difficulty": 5,
+    "type": "mc",
+    "categories": [
+      "Revelation"
+    ],
+    "biblicalReference": "Revelation 8:10",
+    "id": "000106"
+  },
+  {
+    "question": "What is the name of the angel of the bottomless pit in Revelation?",
+    "correctAnswer": "Abaddon",
+    "incorrectAnswers": [
+      "Lucifer",
+      "The dragon",
+      "The beast"
+    ],
+    "difficulty": 5,
+    "type": "mc",
+    "categories": [
+      "Revelation"
+    ],
+    "biblicalReference": "Revelation 9:11",
+    "id": "000107"
+  },
+  {
+    "question": "What was John told to eat in Revelation?",
+    "correctAnswer": "A little book",
+    "incorrectAnswers": [
+      "A honey cake",
+      "Bread",
+      "Figs"
+    ],
+    "difficulty": 5,
+    "type": "mc",
+    "categories": [
+      "Revelation"
+    ],
+    "biblicalReference": "Revelation 10:9",
+    "id": "000108"
+  },
+  {
+    "question": "How many witnesses will prophesy for 1260 days?",
+    "correctAnswer": "2",
+    "incorrectAnswers": [
+      "3",
+      "7",
+      "12"
+    ],
+    "difficulty": 5,
+    "type": "mc",
+    "categories": [
+      "Revelation"
+    ],
+    "biblicalReference": "Revelation 11: 3-12",
+    "id": "000109"
+  },
+  {
+    "question": "And the woman fled to the ... , where she had a place prepared by God",
+    "correctAnswer": "wilderness",
+    "incorrectAnswers": [
+      "temple",
+      "mountains",
+      "city"
+    ],
+    "difficulty": 3,
+    "type": "fitb",
+    "categories": [
+      "Revelation"
+    ],
+    "biblicalReference": "Revelation 12:6",
+    "id": "000110"
+  },
+  {
+    "question": "How many bowls of wrath are there?",
+    "correctAnswer": "Seven",
+    "incorrectAnswers": [
+      "Three",
+      "Five",
+      "Four"
+    ],
+    "difficulty": 5,
+    "type": "mc",
+    "categories": [
+      "Revelation"
+    ],
+    "biblicalReference": "Revelation 16",
+    "id": "000111"
+  },
+  {
+    "question": "Which city comes down from heaven?",
+    "correctAnswer": "The new Jerusalem",
+    "incorrectAnswers": [
+      "The city of God",
+      "The city with many dwellings",
+      "That city which has foundations"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Revelation"
+    ],
+    "biblicalReference": "Revelation 21: 1-4",
+    "id": "000112"
+  },
+  {
+    "question": "What do the Spirit and the Bride say?",
+    "correctAnswer": "Come",
+    "incorrectAnswers": [
+      "Amen",
+      "Hallelujah",
+      "I am the Alpha and the Omega"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Revelation"
+    ],
+    "biblicalReference": "Revelation 22:17",
+    "id": "000113"
+  },
+  {
+    "question": "How many letters are there from Paul to the Corinthians?",
+    "correctAnswer": "Two",
+    "incorrectAnswers": [
+      "One",
+      "Three",
+      "Four"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "1 Corinthians",
+      "2 Corinthians"
+    ],
+    "biblicalReference": " 1 and 2 Corinthians",
+    "id": "000114"
+  },
+  {
+    "question": "How many people did Jesus raise from the dead?",
+    "correctAnswer": "Three",
+    "incorrectAnswers": [
+      "Two",
+      "One",
+      "Four"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [],
+    "biblicalReference": "Gospels",
+    "id": "000115"
+  },
+  {
+    "question": "For approximately how many years did Jesus preach?",
+    "correctAnswer": "Three",
+    "incorrectAnswers": [
+      "Two",
+      "One",
+      "Four"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [],
+    "biblicalReference": "In the Gospels",
+    "id": "000116"
+  },
+  {
+    "question": "In which city did they drive Jesus out of town, to the edge of the mountain, to throw Him into the abyss?",
+    "correctAnswer": "Nazareth",
+    "incorrectAnswers": [
+      "Jerusalem",
+      "Bethlehem",
+      "Samaria"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [],
+    "biblicalReference": "Luke 4:29",
+    "id": "000117"
+  },
+  {
+    "question": "In which city was Bartimaeus sitting by the gate begging?",
+    "correctAnswer": "Jericho",
+    "incorrectAnswers": [
+      "Jerusalem",
+      "Samaria",
+      "Capernaum"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [],
+    "biblicalReference": "Mark 10:46",
+    "id": "000118"
+  },
+  {
+    "question": "To whom was it asked: Do you also understand what you are reading?",
+    "correctAnswer": "The Ethiopian eunuch",
+    "incorrectAnswers": [
+      "Philip",
+      "Peter",
+      "Saul"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Acts"
+    ],
+    "biblicalReference": "Acts 8:30",
+    "id": "000119"
+  },
+  {
+    "question": "Which island did Paul and Barnabas visit on their first missionary journey?",
+    "correctAnswer": "Cyprus",
+    "incorrectAnswers": [
+      "Crete",
+      "Malta",
+      "Sicily"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [
+      "Acts"
+    ],
+    "biblicalReference": "Acts 13:4",
+    "id": "000120"
+  },
+  {
+    "question": "Which king became severely ill, a terminal illness?",
+    "correctAnswer": "Hezekiah",
+    "incorrectAnswers": [
+      "Ahaz",
+      "Manasseh",
+      "Jehudah"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [],
+    "biblicalReference": "Hezekiah 20:1",
+    "id": "000121"
+  },
+  {
+    "question": "After fleeing from Queen Jezebel, where did Elijah flee to the cave? Which one?",
+    "correctAnswer": "The cave on Mount Horeb",
+    "incorrectAnswers": [
+      "The cave of Machpelah",
+      "The cave of Adullam",
+      "The caves of Zephaniah"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [
+      "1 Kings"
+    ],
+    "biblicalReference": "1 Kings 19",
+    "id": "000122"
+  },
+  {
+    "question": "What did the Israelites NOT take with them from the Egyptians when they left Egypt?",
+    "correctAnswer": "Food",
+    "incorrectAnswers": [
+      "Gold",
+      "Silver",
+      "Clothing"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [
+      "Exodus"
+    ],
+    "biblicalReference": "Exodus 3:22",
+    "id": "000123"
+  },
+  {
+    "question": "How long was Paul imprisoned in Caesarea during the time of Felix and Festus?",
+    "correctAnswer": "2 years",
+    "incorrectAnswers": [
+      "1.5 years",
+      "2.5 years",
+      "3 years"
+    ],
+    "difficulty": 3,
+    "type": "mc",
+    "categories": [
+      "Acts"
+    ],
+    "biblicalReference": "Acts",
+    "id": "000124"
+  },
+  {
+    "question": "Which deacon was stoned in Jerusalem?",
+    "correctAnswer": "Stephen",
+    "incorrectAnswers": [
+      "Philip",
+      "Timon",
+      "Nicholas"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "Acts"
+    ],
+    "biblicalReference": "Acts 7: 54 - 60",
+    "id": "000125"
+  },
+  {
+    "question": "Which son wanted to push David from the throne?",
+    "correctAnswer": "Absalom",
+    "incorrectAnswers": [
+      "Joab",
+      "Amnon",
+      "Adonijah"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [
+      "2 Samuel"
+    ],
+    "biblicalReference": "2 Samuel 15",
+    "id": "000126"
+  },
+  {
+    "question": "Who were the first to visit Jesus after His birth?",
+    "correctAnswer": "The shepherds",
+    "incorrectAnswers": [
+      "The wise men",
+      "King Herod",
+      "Zacharias and Elizabeth"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [],
+    "biblicalReference": "Luke 2: 8-20",
+    "id": "000127"
+  },
+  {
+    "question": "10 lepers were healed by Jesus. Who came back to thank Him?",
+    "correctAnswer": "A Samaritan",
+    "incorrectAnswers": [
+      "An Israelite",
+      "A Jew",
+      "A Tax Collector"
+    ],
+    "difficulty": 1,
+    "type": "mc",
+    "categories": [],
+    "biblicalReference": "Luke 17:11-19",
+    "id": "000128"
+  }
+]
