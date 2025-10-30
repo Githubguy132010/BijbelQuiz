@@ -57,6 +57,11 @@ class AppStrings {
   static const String errorNoQuestions = 'Geen geldige vragen gevonden';
   static const String errorLoadQuestions = 'Fout bij het laden van de vragen';
   static const String couldNotOpenDonationPage = 'Kon de donatiepagina niet openen';
+  static const String aiError = 'AI-service fout opgetreden';
+  static const String apiError = 'API-service fout opgetreden';
+  static const String storageError = 'Opslagfout opgetreden';
+  static const String syncError = 'Synchronisatie mislukt';
+  static const String permissionDenied = 'Toestemming vereist voor deze functie';
   
   // Quiz metrics
   static const String streak = 'Reeks';

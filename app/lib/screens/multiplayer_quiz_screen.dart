@@ -19,6 +19,8 @@ import '../services/quiz_animation_controller.dart';
 import '../services/progressive_question_selector.dart';
 import '../services/quiz_answer_handler.dart';
 import '../widgets/quiz_error_display.dart';
+import '../error/error_handler.dart';
+import '../error/error_types.dart';
 import '../widgets/quiz_bottom_bar.dart';
 import '../widgets/question_widget.dart';
 import '../widgets/metrics_widget.dart';
@@ -285,8 +287,19 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
 
     } catch (e) {
       if (!mounted) return;
+      
+      // Use the new error handling system
+      final appError = ErrorHandler().fromException(
+        e,
+        type: AppErrorType.dataLoading,
+        userMessage: strings.AppStrings.errorLoadQuestions,
+        context: {
+          'error_type': e.runtimeType.toString(),
+        },
+      );
+      
       setState(() {
-        _error = '${strings.AppStrings.errorLoadQuestions}: ${e.toString()}';
+        _error = appError.userMessage;
       });
 
       final analytics = Provider.of<AnalyticsService>(context, listen: false);
@@ -295,6 +308,7 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
         'error_message': e.toString(),
       });
 
+      // The error is now logged by the ErrorHandler, but we can add additional logging if needed
       AppLogger.error('Failed to load questions in MultiplayerQuizScreen', e);
     } finally {
       if (mounted) {

@@ -19,6 +19,8 @@ import 'lesson_complete_screen.dart';
 
 import '../widgets/biblical_reference_dialog.dart';
 import '../widgets/quiz_error_display.dart';
+import '../error/error_handler.dart';
+import '../error/error_types.dart';
 import '../widgets/quiz_bottom_bar.dart';
 import '../widgets/question_widget.dart';
 import '../widgets/metrics_widget.dart';
@@ -609,8 +611,20 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
 
     } catch (e) {
       if (!mounted) return;
+      
+      // Use the new error handling system
+      final appError = ErrorHandler().fromException(
+        e,
+        type: AppErrorType.dataLoading,
+        userMessage: strings.AppStrings.errorLoadQuestions,
+        context: {
+          'lesson_mode': _lessonMode,
+          'error_type': e.runtimeType.toString(),
+        },
+      );
+      
       setState(() {
-        _error = '${strings.AppStrings.errorLoadQuestions}: ${e.toString()}';
+        _error = appError.userMessage;
       });
 
       // Track quiz loading errors
@@ -621,6 +635,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
         'lesson_mode': _lessonMode,
       });
 
+      // The error is now logged by the ErrorHandler, but we can add additional logging if needed
       AppLogger.error('Failed to load questions in QuizScreen', e);
     } finally {
       if (mounted) {

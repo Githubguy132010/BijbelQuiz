@@ -57,6 +57,11 @@ class AppStrings {
   static const String errorNoQuestions = 'No valid questions found';
   static const String errorLoadQuestions = 'Error loading questions';
   static const String couldNotOpenDonationPage = 'Could not open donation page';
+  static const String aiError = 'AI service error occurred';
+  static const String apiError = 'API service error occurred';
+  static const String storageError = 'Storage error occurred';
+  static const String syncError = 'Synchronization failed';
+  static const String permissionDenied = 'Permission required for this feature';
   
   // Quiz metrics
   static const String streak = 'Streak';

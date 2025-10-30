@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import '../l10n/strings_nl.dart' as strings;
-import '../error/error_handler.dart';
-import '../error/error_types.dart';
 
-/// A widget that displays error states in the quiz screen
-/// with a consistent design and retry functionality.
+import 'error_types.dart';
+import 'error_handler.dart';
+
+/// A compatibility wrapper that adapts the legacy error display functionality
+/// to work with the new centralized error handling system
 class QuizErrorDisplay extends StatelessWidget {
+  /// Legacy error string parameter
   final String error;
+
+  /// Legacy retry callback
   final VoidCallback onRetry;
 
   const QuizErrorDisplay({
@@ -19,7 +22,7 @@ class QuizErrorDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    // Convert the legacy string error to AppError for consistency
+    // Create an AppError from the legacy string
     final appError = ErrorHandler().fromException(
       error,
       type: AppErrorType.unknown,
@@ -77,7 +80,7 @@ class QuizErrorDisplay extends StatelessWidget {
                     ElevatedButton.icon(
                       onPressed: onRetry,
                       icon: const Icon(Icons.refresh_rounded),
-                      label: Text(strings.AppStrings.tryAgain),
+                      label: Text('Try Again'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: colorScheme.onErrorContainer.withOpacity(0.2),
                         foregroundColor: colorScheme.onErrorContainer,
@@ -92,5 +95,17 @@ class QuizErrorDisplay extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// Extension to provide a convenient way to show errors from the new error system
+/// using the legacy format
+extension LegacyErrorDisplay on BuildContext {
+  /// Shows a legacy-style error display with retry functionality
+  Widget buildLegacyErrorDisplay({
+    required String error,
+    required VoidCallback onRetry,
+  }) {
+    return QuizErrorDisplay(error: error, onRetry: onRetry);
   }
 }

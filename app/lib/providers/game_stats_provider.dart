@@ -6,6 +6,8 @@ import './settings_provider.dart';
 import '../services/logger.dart';
 import '../services/star_transaction_service.dart';
 import '../services/sync_service.dart';
+import '../error/error_handler.dart';
+import '../error/error_types.dart';
 
 /// Manages the app's game statistics including score and streaks
 class GameStatsProvider extends ChangeNotifier {
@@ -122,8 +124,16 @@ class GameStatsProvider extends ChangeNotifier {
       _incorrectAnswers = _prefs?.getInt(_incorrectAnswersKey) ?? 0;
       AppLogger.info('Game stats loaded: score=$_score, streak=$_currentStreak, longest=$_longestStreak, incorrect=$_incorrectAnswers');
     } catch (e) {
-      _error = 'Failed to load game stats: ${e.toString()}';
+      // Use the new error handling system
+      final appError = ErrorHandler().fromException(
+        e,
+        type: AppErrorType.storage,
+        userMessage: 'Failed to load game stats',
+        context: {'operation': 'load_stats'},
+      );
+      _error = appError.userMessage;
       onError?.call(_error!);
+      // The error is now logged by the ErrorHandler, but we can add additional logging if needed
       AppLogger.error(_error!, e);
     } finally {
       _isLoading = false;
@@ -181,7 +191,14 @@ class GameStatsProvider extends ChangeNotifier {
         await syncService.syncData('game_stats', getExportData());
       }
     } catch (e) {
-      _error = 'Failed to save game stats: ${e.toString()}';
+      // Use the new error handling system
+      final appError = ErrorHandler().fromException(
+        e,
+        type: AppErrorType.storage,
+        userMessage: 'Failed to save game stats',
+        context: {'operation': 'save_stats'},
+      );
+      _error = appError.userMessage;
       notifyListeners();
       AppLogger.error(_error!, e);
       rethrow;
@@ -203,7 +220,14 @@ class GameStatsProvider extends ChangeNotifier {
       notifyListeners();
       AppLogger.info('Game stats reset');
     } catch (e) {
-      _error = 'Failed to reset game stats: ${e.toString()}';
+      // Use the new error handling system
+      final appError = ErrorHandler().fromException(
+        e,
+        type: AppErrorType.storage,
+        userMessage: 'Failed to reset game stats',
+        context: {'operation': 'reset_stats'},
+      );
+      _error = appError.userMessage;
       onError?.call(_error!);
       notifyListeners();
       AppLogger.error(_error!, e);
@@ -305,7 +329,14 @@ class GameStatsProvider extends ChangeNotifier {
       }
       return false;
     } catch (e) {
-      _error = 'Failed to spend points: ${e.toString()}';
+      // Use the new error handling system
+      final appError = ErrorHandler().fromException(
+        e,
+        type: AppErrorType.storage,
+        userMessage: 'Failed to spend points',
+        context: {'operation': 'spend_points', 'required_points': 50},
+      );
+      _error = appError.userMessage;
       notifyListeners();
       return false;
     }
@@ -331,7 +362,14 @@ class GameStatsProvider extends ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
-      _error = 'Failed to add stars: ${e.toString()}';
+      // Use the new error handling system
+      final appError = ErrorHandler().fromException(
+        e,
+        type: AppErrorType.storage,
+        userMessage: 'Failed to add stars',
+        context: {'operation': 'add_stars', 'amount': amount},
+      );
+      _error = appError.userMessage;
       notifyListeners();
       return false;
     }

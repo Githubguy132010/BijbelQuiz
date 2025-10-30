@@ -3,6 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../services/logger.dart';
 import '../providers/game_stats_provider.dart';
 import '../providers/lesson_progress_provider.dart';
+import '../error/error_handler.dart';
+import '../error/error_types.dart';
 
 /// Represents a star transaction record
 class StarTransaction {
@@ -80,6 +82,14 @@ class StarTransactionService {
       await _loadTransactionHistory();
       AppLogger.info('StarTransactionService initialized with ${_transactions.length} transactions');
     } catch (e) {
+      // Use the new error handling system
+      final appError = ErrorHandler().fromException(
+        e,
+        type: AppErrorType.storage,
+        userMessage: 'Failed to initialize transaction service',
+        context: {'operation': 'initialize'},
+      );
+      
       AppLogger.error('Failed to initialize StarTransactionService: $e');
       throw Exception('Failed to initialize star transaction service: $e');
     }
@@ -204,6 +214,14 @@ class StarTransactionService {
       AppLogger.info('Added $amount stars: $reason');
       return true;
     } catch (e) {
+      // Use the new error handling system
+      final appError = ErrorHandler().fromException(
+        e,
+        type: AppErrorType.storage,
+        userMessage: 'Failed to add stars',
+        context: {'operation': 'add_stars', 'amount': amount, 'reason': reason},
+      );
+      
       AppLogger.error('Error adding stars: $e');
       return false;
     }
@@ -250,6 +268,14 @@ class StarTransactionService {
       AppLogger.info('Spent $amount stars: $reason');
       return true;
     } catch (e) {
+      // Use the new error handling system
+      final appError = ErrorHandler().fromException(
+        e,
+        type: AppErrorType.storage,
+        userMessage: 'Failed to spend stars',
+        context: {'operation': 'spend_stars', 'amount': amount, 'reason': reason},
+      );
+      
       AppLogger.error('Error spending stars: $e');
       return false;
     }

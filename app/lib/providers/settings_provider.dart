@@ -3,6 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../services/logger.dart';
 import '../models/ai_theme.dart';
 import '../services/sync_service.dart';
+import '../error/error_handler.dart';
+import '../error/error_types.dart';
 
 /// Manages the app's settings including language and theme preferences
 class SettingsProvider extends ChangeNotifier {
@@ -309,7 +311,14 @@ class SettingsProvider extends ChangeNotifier {
       await action();
       notifyListeners();
     } catch (e) {
-      _error = '$errorMessage: ${e.toString()}';
+      // Use the new error handling system
+      final appError = ErrorHandler().fromException(
+        e,
+        type: AppErrorType.storage,
+        userMessage: errorMessage,
+        context: {'setting_type': 'save_setting'},
+      );
+      _error = appError.userMessage;
       notifyListeners();
       rethrow;
     }
