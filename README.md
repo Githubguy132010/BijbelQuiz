@@ -48,7 +48,7 @@ Documentation for the project.
 
 Web applications:
 
-- `backend.bijbelquiz.app/`: Backend API and services
+- `backend.bijbelquiz.app/`: Backend API and services. Is hosted on that domain.
   - `api/`: API endpoints
   - `question-editor/`: Question editing interface
 - `bijbelquiz.app/`: Main website
