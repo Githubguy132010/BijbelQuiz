@@ -400,6 +400,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 activeThumbColor: colorScheme.primary,
               ),
             ),
+            _buildSettingItem(
+              context,
+              settings,
+              colorScheme,
+              isSmallScreen,
+              isDesktop,
+              title: strings.AppStrings.hidePopup,
+              subtitle: strings.AppStrings.hidePopupDesc,
+              icon: Icons.visibility_off,
+              child: Switch(
+                value: settings.hidePromoCard,
+                onChanged: (bool value) {
+                  final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
+
+                  final analytics = Provider.of<AnalyticsService>(context, listen: false);
+                  analytics.capture(context, 'toggle_hide_promo_card', properties: {'hide': value});
+                  analytics.trackFeatureSuccess(context, AnalyticsService.FEATURE_SETTINGS, additionalProperties: {
+                    'setting': 'hide_promo_card',
+                    'value': value,
+                  });
+                  settings.setHidePromoCard(value);
+                },
+                activeThumbColor: colorScheme.primary,
+              ),
+            ),
           ],
         ),
 

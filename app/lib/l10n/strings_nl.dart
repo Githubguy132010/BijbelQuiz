@@ -94,6 +94,8 @@ class AppStrings {
   static const String showNavigationLabelsDesc = 'Toon of verberg tekstlabels onder de navigatie-iconen';
   static const String colorfulMode = 'Kleurrijke modus';
   static const String colorfulModeDesc = 'Zet verschillende kleuren aan voor leskaarten';
+  static const String hidePopup = 'Verberg promotie pop-up';
+  static const String hidePopupDesc = 'Wil je deze instelling alleen aanzetten als u aan ons heeft gedoneerd? We hebben geen manier om het te verifieren, maar we vertrouwen erop dat je eerlijk bent.';
   static const String tryAgain = 'Opnieuw proberen';
   static const String couldNotOpenStatusPage = 'Kon de statuspagina niet openen.';
   

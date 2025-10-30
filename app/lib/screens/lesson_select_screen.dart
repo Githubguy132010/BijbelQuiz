@@ -260,6 +260,11 @@ class _LessonSelectScreenState extends State<LessonSelectScreen> {
 
   /// Determines whether to show a promo card based on probability and user interaction history
   bool _shouldShowPromoCard(SettingsProvider settings) {
+    // Check if user has enabled hiding promo cards
+    if (settings.hidePromoCard) {
+      return false;
+    }
+
     // 20% chance to show a popup
     if (Random().nextInt(5) != 0) {
       return false;

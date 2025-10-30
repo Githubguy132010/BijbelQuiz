@@ -32,6 +32,7 @@ class SettingsProvider extends ChangeNotifier {
   static const String _showNavigationLabelsKey = 'show_navigation_labels';
   static const String _layoutTypeKey = 'layout_type';
   static const String _colorfulModeKey = 'colorful_mode';
+  static const String _hidePromoCardKey = 'hide_promo_card';
 
   SharedPreferences? _prefs;
   String _language = 'nl';
@@ -75,6 +76,9 @@ class SettingsProvider extends ChangeNotifier {
 
   String _layoutType = layoutGrid; // default to grid
   bool _colorfulMode = false; // default to false (single color mode)
+  
+  // Promo card settings
+  bool _hidePromoCard = false; // default to false (don't hide the promo card, so show it)
 
   SettingsProvider() {
     syncService = SyncService();
@@ -145,6 +149,12 @@ class SettingsProvider extends ChangeNotifier {
 
   /// Whether colorful mode is enabled for lesson cards
   bool get colorfulMode => _colorfulMode;
+
+  /// Whether to hide the promo card popup on lesson select screen
+  bool get hidePromoCard => _hidePromoCard;
+
+  /// Whether to show the promo card popup on lesson select screen (opposite of hidePromoCard)
+  bool get showPromoCard => !_hidePromoCard;
 
   String? get selectedCustomThemeKey => _selectedCustomThemeKey;
   Set<String> get unlockedThemes => _unlockedThemes;
@@ -382,6 +392,9 @@ class SettingsProvider extends ChangeNotifier {
 
       // Load colorful mode setting
       _colorfulMode = _getBoolSetting(_colorfulModeKey, defaultValue: false);
+
+      // Load hide promo card setting
+      _hidePromoCard = _getBoolSetting(_hidePromoCardKey, defaultValue: false);
 
       final unlocked = _prefs?.getStringList(_unlockedThemesKey);
       if (unlocked != null) {
@@ -751,6 +764,19 @@ class SettingsProvider extends ChangeNotifier {
     );
   }
 
+  /// Updates the hide promo card setting
+  Future<void> setHidePromoCard(bool hide) async {
+    AppLogger.info('Changing hide promo card setting from $_hidePromoCard to $hide');
+    await _saveSetting(
+      action: () async {
+        _hidePromoCard = hide;
+        await _prefs?.setBool(_hidePromoCardKey, hide);
+        AppLogger.info('Hide promo card setting saved successfully: $hide');
+      },
+      errorMessage: 'Failed to save hide promo card setting',
+    );
+  }
+
 
   // Helper method to safely get a boolean setting with type checking
   bool _getBoolSetting(String key, {required bool defaultValue}) {
@@ -800,6 +826,7 @@ class SettingsProvider extends ChangeNotifier {
       'showNavigationLabels': _showNavigationLabels,
       'layoutType': _layoutType,
       'colorfulMode': _colorfulMode,
+      'hidePromoCard': _hidePromoCard,
       'aiThemes': _aiThemes.map((key, value) => MapEntry(key, value.toJson())),
     };
   }
@@ -845,6 +872,7 @@ class SettingsProvider extends ChangeNotifier {
     _layoutType = data['layoutType'] ?? layoutGrid;
 
     _colorfulMode = data['colorfulMode'] ?? false;
+    _hidePromoCard = data['hidePromoCard'] ?? false;
 
     final lastDifficultyPopupMs = data['lastDifficultyPopup'];
     _lastDifficultyPopup = lastDifficultyPopupMs != null ? DateTime.fromMillisecondsSinceEpoch(lastDifficultyPopupMs) : null;
@@ -914,6 +942,9 @@ class SettingsProvider extends ChangeNotifier {
 
     // Save colorful mode setting
     await _prefs?.setBool(_colorfulModeKey, _colorfulMode);
+
+    // Save hide promo card setting
+    await _prefs?.setBool(_hidePromoCardKey, _hidePromoCard);
 
     // Save difficulty popup tracking data
     if (_lastDifficultyPopup != null) {
