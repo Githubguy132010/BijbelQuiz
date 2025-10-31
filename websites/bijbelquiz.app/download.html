@@ -48,8 +48,8 @@
             'android': {
                 name: 'Android',
                 icon: 'android',
-                description: 'Android App',
-                downloadUrl: 'https://bijbelquiz.app/downloads/android.apk',
+                description: 'Schrijf u in voor de Google Play Store',
+                downloadUrl: 'https://bijbelquiz.app/wachtijst',
                 currentVersion: '1.2.3'
             },
             'windows': {
@@ -153,13 +153,14 @@
                     return;
                 }
 
-                // Check if platform is available (Android and Linux are available, others are coming soon)
-                const isAvailable = platformKey === 'android' || platformKey === 'linux';
-                const buttonClass = isAvailable ? 'btn primary' : 'btn secondary disabled';
-                const buttonText = isAvailable ? 'Download' : 'Komt later';
-                const icon = isAvailable ? 'download' : 'hourglass_empty';
-                const targetAttr = isAvailable ? 'target="_blank"' : '';
-                const relAttr = isAvailable ? 'rel="noopener"' : '';
+                // Check if platform is available (Linux is available, others are waitlist or coming soon)
+                const isAvailable = platformKey === 'linux';
+                const isWaitlist = platformKey === 'android';
+                const buttonClass = isAvailable ? 'btn primary' : (isWaitlist ? 'btn primary' : 'btn secondary disabled');
+                const buttonText = isAvailable ? 'Download' : (isWaitlist ? 'Meld je aan' : 'Komt later');
+                const icon = isAvailable ? 'download' : (isWaitlist ? 'list_alt' : 'hourglass_empty');
+                const targetAttr = isAvailable || isWaitlist ? 'target="_blank"' : '';
+                const relAttr = isAvailable || isWaitlist ? 'rel="noopener"' : '';
 
                 platformCard.innerHTML = `
                     <div class="platform-header">
@@ -172,11 +173,11 @@
                         </div>
                     </div>
                     <div class="platform-actions">
-                        <a href="${isAvailable ? platformInfo.downloadUrl : '#'}" class="${buttonClass}" ${targetAttr} ${relAttr}>
+                        <a href="${isAvailable || isWaitlist ? platformInfo.downloadUrl : '#'}" class="${buttonClass}" ${targetAttr} ${relAttr}>
                             <i class="material-icons" style="font-size: 18px; margin-right: 4px;">${icon}</i>
                             ${buttonText}
                         </a>
-                        ${isAvailable ? `<a href="https://bijbelquiz.app/instructie/${platformKey}.html" class="btn secondary" target="_blank" rel="noopener">
+                        ${isAvailable && !isWaitlist ? `<a href="https://bijbelquiz.app/instructie/${platformKey}.html" class="btn secondary" target="_blank" rel="noopener">
                             <i class="material-icons" style="font-size: 18px; margin-right: 4px;">help</i>
                             Installatiehulp
                         </a>` : ''}
