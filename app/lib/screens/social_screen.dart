@@ -244,37 +244,29 @@ class _SocialScreenState extends State<SocialScreen> {
         },
       );
     } else {
-      // For smaller screens, arrange buttons in a column
-      final features = [
-        {'icon': Icons.search, 'label': 'Zoeken', 'onPressed': _navigateToUserSearchScreen},
-        {'icon': Icons.people_alt_rounded, 'label': 'Volgend', 'onPressed': _navigateToFollowingList},
-        {'icon': Icons.person_add_rounded, 'label': 'Volgers', 'onPressed': _navigateToFollowersList},
-      ];
-      
+      // For smaller screens, arrange all buttons as smaller, full-width buttons
       return Column(
         children: [
-          for (int i = 0; i < features.length; i++)
-            if (i < features.length - 1)
-              Column(
-                children: [
-                  _buildFeatureButton(
-                    colorScheme: colorScheme,
-                    icon: features[i]['icon'] as IconData,
-                    label: features[i]['label'] as String,
-                    onPressed: features[i]['onPressed'] as VoidCallback,
-                    isLargeScreen: isLargeScreen,
-                  ),
-                  const SizedBox(height: 16),
-                ],
-              )
-            else
-              _buildFeatureButton(
-                colorScheme: colorScheme,
-                icon: features[i]['icon'] as IconData,
-                label: features[i]['label'] as String,
-                onPressed: features[i]['onPressed'] as VoidCallback,
-                isLargeScreen: isLargeScreen,
-              ),
+          _buildSmallerFullWidthButton(
+            colorScheme: colorScheme,
+            icon: Icons.search,
+            label: 'Zoeken',
+            onPressed: _navigateToUserSearchScreen,
+          ),
+          const SizedBox(height: 16),
+          _buildSmallerFullWidthButton(
+            colorScheme: colorScheme,
+            icon: Icons.people_alt_rounded,
+            label: 'Volgend',
+            onPressed: _navigateToFollowingList,
+          ),
+          const SizedBox(height: 16),
+          _buildSmallerFullWidthButton(
+            colorScheme: colorScheme,
+            icon: Icons.person_add_rounded,
+            label: 'Volgers',
+            onPressed: _navigateToFollowersList,
+          ),
         ],
       );
     }
@@ -440,6 +432,47 @@ class _SocialScreenState extends State<SocialScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  /// Builds a smaller, full-width button for following/followers
+  Widget _buildSmallerFullWidthButton({
+    required ColorScheme colorScheme,
+    required IconData icon,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    return SizedBox(
+      width: double.infinity, // Full width
+      child: OutlinedButton(
+        onPressed: onPressed,
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0), // Increased padding
+          side: BorderSide(color: colorScheme.outline),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          backgroundColor: colorScheme.surface,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 24.0, // Increased icon size
+              color: colorScheme.primary,
+            ),
+            const SizedBox(width: 12), // Increased spacing
+            Text(
+              label,
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: colorScheme.onSurface,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
