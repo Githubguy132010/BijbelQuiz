@@ -20,6 +20,7 @@ class SocialScreen extends StatefulWidget {
 class _SocialScreenState extends State<SocialScreen> {
   bool _socialFeaturesEnabled = false;
   late AnalyticsService _analyticsService;
+  Map<String, Map<String, dynamic>>? _cachedUserScores;
 
   @override
   void initState() {
@@ -78,6 +79,11 @@ class _SocialScreenState extends State<SocialScreen> {
         ),
       ),
     );
+  }
+
+  /// Clears the cached user scores - call this when stats are updated
+  void _clearCachedUserScores() {
+    _cachedUserScores = null;
   }
 
   /// Builds the app bar with consistent styling.
@@ -274,89 +280,106 @@ class _SocialScreenState extends State<SocialScreen> {
 
   /// Builds the followed users scores section
   Widget _buildFollowedUsersScores(ColorScheme colorScheme, bool isLargeScreen) {
-    return FutureBuilder<List<Map<String, dynamic>>>(
-      future: _getFollowedUsersScores(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        }
-        
-        if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
-          return Container();
-        }
-        
-        final followedUsers = snapshot.data!;
-        
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: Text(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
                 strings.AppStrings.followedUsersScores,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w600,
                   color: colorScheme.onSurface,
                 ),
               ),
-            ),
-            ...followedUsers.map((user) => 
-              Card(
-                color: colorScheme.surface,
-                elevation: 1,
-                margin: const EdgeInsets.only(bottom: 8),
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              user['username'] ?? strings.AppStrings.unknownUser,
-                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w500,
-                                color: colorScheme.onSurface,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              '${strings.AppStrings.lastScore} ${user['score'] ?? strings.AppStrings.notAvailable}',
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: colorScheme.primaryContainer,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          '${user['streak'] ?? 0}${strings.AppStrings.streakLabel}',
-                          style: TextStyle(
-                            color: colorScheme.onPrimaryContainer,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: () {
+                  // Clear the cache to force a refresh
+                  _clearCachedUserScores();
+                  setState(() {}); // Trigger a rebuild
+                },
               ),
-            ).toList(),
-          ],
-        );
-      },
+            ],
+          ),
+        ),
+        FutureBuilder<List<Map<String, dynamic>>>(
+          future: _getFollowedUsersScores(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
+            
+            if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
+              return Container();
+            }
+            
+            final followedUsers = snapshot.data!;
+            
+            return Column(
+              children: [
+                ...followedUsers.map((user) => 
+                  Card(
+                    color: colorScheme.surface,
+                    elevation: 1,
+                    margin: const EdgeInsets.only(bottom: 8),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  user['username'] ?? strings.AppStrings.unknownUser,
+                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    color: colorScheme.onSurface,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  '${strings.AppStrings.lastScore} ${user['score'] ?? strings.AppStrings.notAvailable}',
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: colorScheme.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: colorScheme.primaryContainer,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              '${user['streak'] ?? 0}${strings.AppStrings.streakLabel}',
+                              style: TextStyle(
+                                color: colorScheme.onPrimaryContainer,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ).toList(),
+              ],
+            );
+          },
+        ),
+      ],
     );
   }
 
@@ -371,19 +394,61 @@ class _SocialScreenState extends State<SocialScreen> {
         return [];
       }
       
+      // Use cached scores if available, otherwise fetch fresh data
+      Map<String, Map<String, dynamic>> userScores;
+      if (_cachedUserScores != null) {
+        userScores = _cachedUserScores!;
+      } else {
+        userScores = <String, Map<String, dynamic>>{};
+      }
+      
       final usersWithScores = <Map<String, dynamic>>[];
       
       for (final deviceId in followingList) {
-        final username = await syncService.getUsernameByDeviceId(deviceId);
-        if (username != null) {
-          usersWithScores.add({
-            'username': username,
-            'deviceId': deviceId,
-            'score': strings.AppStrings.notAvailable,
-            'streak': 0,
-          });
+        // Get username
+        String? username;
+        try {
+          username = await syncService.getUsernameByDeviceId(deviceId);
+        } catch (e) {
+          AppLogger.error('Error getting username for device $deviceId', e);
+          username = null;
         }
+        
+        if (username == null) {
+          continue; // Skip users without usernames
+        }
+        
+        // Check if we have cached data for this user
+        Map<String, dynamic>? stats;
+        if (userScores.containsKey(deviceId)) {
+          stats = userScores[deviceId];
+        } else {
+          // Fetch fresh stats from the database
+          try {
+            stats = await syncService.getGameStatsForDevice(deviceId);
+            // Cache the result
+            userScores[deviceId] = stats ?? <String, dynamic>{};
+          } catch (e) {
+            AppLogger.error('Error fetching game stats for device $deviceId', e);
+            // Use empty stats on error
+            stats = <String, dynamic>{};
+          }
+        }
+        
+        // Extract score and streak from fetched stats
+        final score = stats?['score'] ?? 0;
+        final currentStreak = stats?['currentStreak'] ?? 0;
+        
+        usersWithScores.add({
+          'username': username,
+          'deviceId': deviceId,
+          'score': score,
+          'streak': currentStreak,
+        });
       }
+      
+      // Update cache with the latest fetched data
+      _cachedUserScores = userScores;
       
       return usersWithScores;
     } catch (e) {

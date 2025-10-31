@@ -108,16 +108,40 @@ class SyncService {
 
     try {
       final deviceId = await _getOrCreateDeviceId();
-      await _client.from(_tableName).update({
-        'data': {
-          key: {
-            'value': data,
-            'device_id': deviceId,
-            'timestamp': DateTime.now().toIso8601String(),
-          }
-        },
-        'updated_at': DateTime.now().toIso8601String(),
-      }).eq('room_id', _currentRoomId!);
+      
+      // Get current data to merge with the new data
+      final roomResponse = await _client
+          .from(_tableName)
+          .select('data')
+          .eq('room_id', _currentRoomId!)
+          .single();
+      
+      final currentData = Map<String, dynamic>.from(roomResponse['data'] as Map<String, dynamic>? ?? {});
+      
+      // Handle game stats differently - store for each device separately
+      if (key == 'game_stats') {
+        final gameStatsMap = Map<String, dynamic>.from(currentData[key] as Map<String, dynamic>? ?? {});
+        
+        // Update the stats for this specific device
+        gameStatsMap[deviceId] = {
+          'value': data,
+          'timestamp': DateTime.now().toIso8601String(),
+        };
+        
+        currentData[key] = gameStatsMap;
+      } else {
+        // For other keys, use the original approach
+        currentData[key] = {
+          'value': data,
+          'device_id': deviceId,
+          'timestamp': DateTime.now().toIso8601String(),
+        };
+      }
+
+      await _client
+          .from(_tableName)
+          .update({'data': currentData})
+          .eq('room_id', _currentRoomId!);
       AppLogger.debug('Synced data for key: $key');
     } catch (e) {
       AppLogger.error('Failed to sync data for key: $key', e);
@@ -852,5 +876,65 @@ class SyncService {
       final followersList = List<String>.from(data['value'] as List<dynamic>? ?? []);
       callback(followersList);
     });
+  }
+
+  /// Gets game stats for a specific device from the room
+  Future<Map<String, dynamic>?> getGameStatsForDevice(String deviceId) async {
+    if (_currentRoomId == null) return null;
+
+    try {
+      final roomData = await getRoomData();
+      if (roomData == null) return null;
+
+      final gameStatsMap = roomData['game_stats'] as Map<String, dynamic>?;
+      if (gameStatsMap != null) {
+        // Check if this specific device has stats
+        final deviceStats = gameStatsMap[deviceId] as Map<String, dynamic>?;
+        if (deviceStats != null) {
+          return deviceStats['value'] as Map<String, dynamic>?;
+        }
+      }
+
+      return null;
+    } catch (e) {
+      AppLogger.error('Failed to get game stats for device: $deviceId', e);
+      return null;
+    }
+  }
+
+  /// Gets all game stats from the room
+  Future<List<Map<String, dynamic>>?> getAllGameStats() async {
+    if (_currentRoomId == null) return null;
+
+    try {
+      final roomData = await getRoomData();
+      if (roomData == null) return null;
+
+      final gameStatsMap = roomData['game_stats'] as Map<String, dynamic>?;
+      if (gameStatsMap != null) {
+        final statsList = <Map<String, dynamic>>[];
+        
+        // Iterate through all devices' stats
+        for (final entry in gameStatsMap.entries) {
+          final deviceId = entry.key;
+          final deviceStats = entry.value as Map<String, dynamic>?;
+          
+          if (deviceStats != null) {
+            statsList.add({
+              'device_id': deviceId,
+              'stats': deviceStats['value'] as Map<String, dynamic>?,
+              'timestamp': deviceStats['timestamp'],
+            });
+          }
+        }
+        
+        return statsList;
+      }
+
+      return [];
+    } catch (e) {
+      AppLogger.error('Failed to get all game stats', e);
+      return null;
+    }
   }
 }
