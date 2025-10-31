@@ -495,8 +495,8 @@ class AppStrings {
   static const String accuracy = 'Nauwkeurigheid';
   static const String currentStreak = 'Huidige reeks';
   static const String thankYouForUsingBijbelQuiz = 'Bedankt voor het gebruik van BijbelQuiz!';
-  static const String bijbelquizGenThankYouText = 'We hopen dat onze app het afgelopen jaar tot Zegen mocht zijn.';
-  static const String bijbelquizGenDonateButton = 'Doneer aan ons om je voortgezette steun te tonen voor onze ontwikkeling, zodat we de app blijven kunnen verbeteren en dat je volgend jaar weer kan terugkijken op een leerzaam jaar.';
+  static const String bijbelquizGenThankYouText = 'We hopen dat onze app het afgelopen jaar tot Zegen mocht zijn. Bedankt voor je steun en betrokkenheid!';
+  static const String bijbelquizGenDonateButton = 'Doneer aan ons om te zorgen dat we BijbelQuiz kunnen blijven verbeteren en onderhouden, en dat je volgend jaar weer zo\'n overzicht kunt krijgen!';
   static const String done = 'Klaar';
   static const String bijbelquizGenSkip = 'Overslaan';
   
