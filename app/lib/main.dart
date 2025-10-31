@@ -417,17 +417,20 @@ class _AppLifecycleObserver extends WidgetsBindingObserver {
     switch (state) {
       case AppLifecycleState.resumed:
         AppLogger.info('App lifecycle: resumed');
-        // Start a new session when app is resumed
+        // Start a new session when app is resumed (brought to foreground)
         _parent._timeTrackingService.startSession();
         break;
       case AppLifecycleState.paused:
-        _parent._lastPausedTime = DateTime.now();
         AppLogger.info('App lifecycle: paused');
-        // End the current session when app is paused
+        // End the current session when app is paused (sent to background)
         _parent._timeTrackingService.endSession();
         break;
       case AppLifecycleState.inactive:
         AppLogger.info('App lifecycle: inactive');
+        // End session when app becomes inactive (e.g., phone call, notification overlay)
+        if (_parent._timeTrackingService.hasOngoingSession()) {
+          _parent._timeTrackingService.endSession();
+        }
         break;
       case AppLifecycleState.detached:
         AppLogger.info('App lifecycle: detached');
@@ -436,6 +439,10 @@ class _AppLifecycleObserver extends WidgetsBindingObserver {
         break;
       case AppLifecycleState.hidden:
         AppLogger.info('App lifecycle: hidden');
+        // End session when app is hidden (e.g., app moved to background)
+        if (_parent._timeTrackingService.hasOngoingSession()) {
+          _parent._timeTrackingService.endSession();
+        }
         break;
     }
   }

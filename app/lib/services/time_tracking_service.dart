@@ -47,8 +47,14 @@ class TimeTrackingService {
     }
   }
 
-  /// Start a new session
+  /// Start a new session, but only if not already in a session
   void startSession() {
+    // Prevent starting a new session if one is already active
+    if (_sessionStartTime != null) {
+      AppLogger.info('Session already active, not starting a new one');
+      return;
+    }
+    
     _sessionStartTime = DateTime.now();
     _prefs?.setInt(_sessionStartTimeKey, _sessionStartTime!.millisecondsSinceEpoch);
     
@@ -56,22 +62,29 @@ class TimeTrackingService {
     _prefs?.setString(_lastSessionDateKey, DateTime.now().toIso8601String().split('T')[0]);
     
     _startTracking();
-    AppLogger.info('Time tracking session started');
+    AppLogger.info('Time tracking session started at ${_sessionStartTime}');
   }
 
   /// End the current session and save the time
   void endSession() {
     if (_sessionStartTime != null) {
       final sessionDuration = DateTime.now().difference(_sessionStartTime!);
-      _totalTimeSpent += sessionDuration.inSeconds;
-      _prefs?.setInt(_totalTimeKey, _totalTimeSpent);
+      final sessionDurationSeconds = sessionDuration.inSeconds;
+      
+      // Only add significant session time (ignore sessions less than 10 seconds)
+      if (sessionDurationSeconds >= 10) {
+        _totalTimeSpent += sessionDurationSeconds;
+        _prefs?.setInt(_totalTimeKey, _totalTimeSpent);
+        AppLogger.info('Valid session ended. Added ${sessionDurationSeconds}s. Total time now: $_totalTimeSpent seconds');
+      } else {
+        AppLogger.info('Short session (${sessionDurationSeconds}s) ignored to prevent noise in tracking');
+      }
       
       // Clear session start time
       _prefs?.remove(_sessionStartTimeKey);
       _sessionStartTime = null;
       
       _stopTracking();
-      AppLogger.info('Time tracking session ended. Total time now: $_totalTimeSpent seconds');
     }
   }
 
