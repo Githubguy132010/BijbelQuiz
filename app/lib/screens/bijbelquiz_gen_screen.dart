@@ -125,22 +125,19 @@ class _BijbelQuizGenScreenState extends State<BijbelQuizGenScreen> {
                     child: const Icon(Icons.arrow_back),
                   ),
                 const Spacer(),
-                if (_currentPage < pages.length - 1)
-                  ElevatedButton(
-                    onPressed: () {
+                ElevatedButton(
+                  onPressed: () {
+                    if (_currentPage < pages.length - 1) {
                       _pageController.nextPage(
                         duration: const Duration(milliseconds: 300),
                         curve: Curves.easeInOut,
                       );
-                    },
-                    child: const Icon(Icons.arrow_forward),
-                  ) else
-                  ElevatedButton(
-                    onPressed: () {
+                    } else {
                       Navigator.of(context).pop();
-                    },
-                    child: Text(strings.AppStrings.bijbelquizGenSkip),
-                  ),
+                    }
+                  },
+                  child: const Icon(Icons.arrow_forward),
+                ),
               ],
             ),
           ),
