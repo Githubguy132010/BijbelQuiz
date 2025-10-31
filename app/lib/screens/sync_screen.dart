@@ -140,6 +140,31 @@ class _SyncScreenState extends State<SyncScreen> {
     }
   }
 
+  Future<bool> _isUsernameTakenByOtherDevices(String username) async {
+    if (username.isEmpty) return false;
+    
+    try {
+      final gameStatsProvider = Provider.of<GameStatsProvider>(context, listen: false);
+      final devicesInRoom = await gameStatsProvider.getDevicesInRoom();
+      
+      if (devicesInRoom == null || devicesInRoom.isEmpty) return false;
+      
+      for (final deviceId in devicesInRoom) {
+        // Skip the current device when checking if username is taken
+        if (deviceId != _currentDeviceId) {
+          final deviceUsername = await gameStatsProvider.syncService.getUsernameForDevice(deviceId);
+          if (deviceUsername != null && deviceUsername == username) {
+            return true; // Username is taken by another device
+          }
+        }
+      }
+      return false; // Username is not taken by any other device
+    } catch (e) {
+      AppLogger.error('Error checking if username is taken by other devices', e);
+      return false; // Assume it's not taken on error to avoid false positives
+    }
+  }
+
   Future<void> _loadDevicesInRoom() async {
     if (!Provider.of<GameStatsProvider>(context, listen: false).syncService.isInRoom) {
       setState(() {
@@ -699,9 +724,7 @@ class _SyncScreenState extends State<SyncScreen> {
                                 prefixIcon: const Icon(Icons.person_outline),
                                 suffixIcon: _usernameController.text.isNotEmpty
                                     ? FutureBuilder<bool>(
-                                        future: Provider.of<GameStatsProvider>(context, listen: false)
-                                            .syncService
-                                            .isUsernameTaken(_usernameController.text.trim()),
+                                        future: _isUsernameTakenByOtherDevices(_usernameController.text.trim()),
                                         builder: (context, snapshot) {
                                           if (snapshot.connectionState == ConnectionState.waiting) {
                                             return const Padding(
