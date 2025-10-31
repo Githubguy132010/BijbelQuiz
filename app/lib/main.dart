@@ -13,6 +13,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'providers/settings_provider.dart';
 import 'providers/game_stats_provider.dart';
 import 'utils/theme_utils.dart';
+import 'theme/theme_manager.dart';
 import 'services/logger.dart';
 import 'services/notification_service.dart';
 import 'services/performance_service.dart';
@@ -58,6 +59,11 @@ void main() async {
   AppLogger.info('Initializing Supabase...');
   await SupabaseConfig.initialize();
   AppLogger.info('Supabase initialized successfully');
+  
+  // Initialize theme manager
+  AppLogger.info('Initializing theme manager...');
+  await ThemeManager().initialize();
+  AppLogger.info('Theme manager initialized successfully');
   
   // Set preferred screen orientations. On web, this helps maintain a consistent layout.
   if (kIsWeb) {

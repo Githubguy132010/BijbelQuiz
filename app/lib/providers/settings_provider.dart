@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/logger.dart';
@@ -232,17 +233,17 @@ class SettingsProvider extends ChangeNotifier {
 
         _aiThemes.clear();
         for (final entry in themesData.entries) {
-          final themeId = entry.key;
-          final themeData = Map<String, dynamic>.from(entry.value as Map);
+          final themeId = entry.key as String;
+          final themeData = entry.value as Map<String, dynamic>;
 
           // Reconstruct the ThemeData objects from stored color palette
           final lightTheme = AIThemeBuilder.createLightThemeFromPalette(
-            Map<String, dynamic>.from(themeData['colorPalette'] as Map? ?? {})
+            Map<String, dynamic>.from(themeData['colorPalette'] as Map<String, dynamic>? ?? {})
           );
 
           final darkTheme = themeData['hasDarkTheme'] == true
             ? AIThemeBuilder.createDarkThemeFromPalette(
-                Map<String, dynamic>.from(themeData['colorPalette'] as Map? ?? {})
+                Map<String, dynamic>.from(themeData['colorPalette'] as Map<String, dynamic>? ?? {})
               )
             : null;
 
@@ -261,12 +262,13 @@ class SettingsProvider extends ChangeNotifier {
   /// Decodes JSON string safely
   Map<String, dynamic> _decodeJson(String jsonString) {
     try {
-      // For now, we'll use a simple parsing approach
-      // In a production app, you'd use json.decode()
-      if (jsonString == '{}') return {};
-
-      // This is a simplified parser - in production you'd use proper JSON parsing
-      return {};
+      final decoded = json.decode(jsonString);
+      if (decoded is Map<String, dynamic>) {
+        return decoded;
+      } else {
+        AppLogger.error('AI themes JSON decode result is not a Map: ${decoded.runtimeType}');
+        return {};
+      }
     } catch (e) {
       AppLogger.error('Failed to decode AI themes JSON: $e');
       return {};
@@ -293,9 +295,7 @@ class SettingsProvider extends ChangeNotifier {
   /// Encodes data to JSON string safely
   String _encodeJson(Map<String, dynamic> data) {
     try {
-      // For now, we'll use a simple string representation
-      // In a production app, you'd use json.encode()
-      return data.toString();
+      return json.encode(data);
     } catch (e) {
       AppLogger.error('Failed to encode AI themes JSON: $e');
       return '{}';
@@ -891,16 +891,16 @@ class SettingsProvider extends ChangeNotifier {
     if (aiThemesData != null) {
       _aiThemes.clear();
       for (final entry in aiThemesData.entries) {
-        final themeId = entry.key;
-        final themeData = Map<String, dynamic>.from(entry.value as Map);
+        final themeId = entry.key as String;
+        final themeData = entry.value as Map<String, dynamic>;
 
         final lightTheme = AIThemeBuilder.createLightThemeFromPalette(
-          Map<String, dynamic>.from(themeData['colorPalette'] as Map? ?? {})
+          Map<String, dynamic>.from(themeData['colorPalette'] as Map<String, dynamic>? ?? {})
         );
 
         final darkTheme = themeData['hasDarkTheme'] == true
           ? AIThemeBuilder.createDarkThemeFromPalette(
-              Map<String, dynamic>.from(themeData['colorPalette'] as Map? ?? {})
+              Map<String, dynamic>.from(themeData['colorPalette'] as Map<String, dynamic>? ?? {})
             )
           : null;
 

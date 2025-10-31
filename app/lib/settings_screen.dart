@@ -25,6 +25,7 @@ import 'services/logger.dart';
 import 'package:archive/archive.dart';
 import 'utils/bijbelquiz_gen_utils.dart';
 import 'screens/bijbelquiz_gen_screen.dart';
+import 'theme/theme_manager.dart';
 
 /// The settings screen that allows users to customize app preferences
 class SettingsScreen extends StatefulWidget {
@@ -206,63 +207,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
               subtitle: strings.AppStrings.chooseTheme,
               icon: Icons.palette,
               child: (() {
-                // Compute available values
-                final List<String> availableValues = [
-                  ThemeMode.light.name,
-                  ThemeMode.system.name,
-                  ThemeMode.dark.name,
-                  ...settings.unlockedThemes.where((t) => t == 'oled' || t == 'green' || t == 'orange'),
-                  'grey', // Grey theme is always available
-                  ...settings.getAIThemeIds(), // Add AI theme IDs
-                ];
-                String value = _getThemeDropdownValue(settings);
-                // Always default to the first available value if not present
-                if (!availableValues.contains(value) || value.isEmpty) {
-                  value = availableValues.first;
+                // Get available themes from the centralized theme manager
+                final Map<String, String> themeDisplayNames = <String, String>{};
+                
+                // Add system themes
+                themeDisplayNames[ThemeMode.light.name] = strings.AppStrings.lightTheme;
+                themeDisplayNames[ThemeMode.system.name] = strings.AppStrings.systemTheme;
+                themeDisplayNames[ThemeMode.dark.name] = strings.AppStrings.darkTheme;
+                
+                // Add themes from centralized theme manager
+                final availableThemes = ThemeManager().getAvailableThemes();
+                for (final entry in availableThemes.entries) {
+                  themeDisplayNames[entry.key] = entry.value.name;
                 }
+
+                // Add AI themes
+                for (final themeId in settings.getAIThemeIds()) {
+                  final aiTheme = settings.getAITheme(themeId);
+                  themeDisplayNames[themeId] = aiTheme?.name ?? strings.AppStrings.aiThemeFallback;
+                }
+
+                String value = _getThemeDropdownValue(settings);
+                
                 return DropdownButton<String>(
                   value: value,
-                  items: [
-                    DropdownMenuItem(
-                      value: ThemeMode.light.name,
-                      child: Text(strings.AppStrings.lightTheme),
-                    ),
-                    DropdownMenuItem(
-                      value: ThemeMode.system.name,
-                      child: Text(strings.AppStrings.systemTheme),
-                    ),
-                    DropdownMenuItem(
-                      value: ThemeMode.dark.name,
-                      child: Text(strings.AppStrings.darkTheme),
-                    ),
-                    if (settings.unlockedThemes.contains('oled'))
-                      DropdownMenuItem(
-                        value: 'oled',
-                        child: Text(strings.AppStrings.oledTheme),
-                      ),
-                    if (settings.unlockedThemes.contains('green'))
-                      DropdownMenuItem(
-                        value: 'green',
-                        child: Text(strings.AppStrings.greenTheme),
-                      ),
-                    if (settings.unlockedThemes.contains('orange'))
-                      DropdownMenuItem(
-                        value: 'orange',
-                        child: Text(strings.AppStrings.orangeTheme),
-                      ),
-                    DropdownMenuItem(
-                      value: 'grey',
-                      child: Text('Donkergrijs'),
-                    ),
-                    // Add AI themes
-                    ...settings.getAIThemeIds().map((themeId) {
-                      final aiTheme = settings.getAITheme(themeId);
-                      return DropdownMenuItem(
-                        value: themeId,
-                        child: Text(aiTheme?.name ?? strings.AppStrings.aiThemeFallback),
-                      );
-                    }),
-                  ],
+                  items: themeDisplayNames.entries.map((entry) {
+                    return DropdownMenuItem(
+                      value: entry.key,
+                      child: Text(entry.value),
+                    );
+                  }).toList(),
                   onChanged: (String? value) {
                     if (value != null) {
                       final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
@@ -289,10 +263,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           settings.setCustomTheme(value);
                           settings.setThemeMode(ThemeMode.light);
                         } else {
-                          // Handle other custom themes (oled, green, orange)
-                          settings.setCustomTheme(value);
-                          // For grey theme, use dark mode; for others use light mode
-                          settings.setThemeMode(value == 'grey' ? ThemeMode.dark : ThemeMode.light);
+                          // For other custom themes, determine if it's light or dark from the theme definition
+                          final themeDef = ThemeManager().getThemeDefinition(value);
+                          if (themeDef != null) {
+                            settings.setCustomTheme(value);
+                            // Set theme mode based on the theme's type
+                            settings.setThemeMode(themeDef.type.toLowerCase() == 'dark' ? ThemeMode.dark : ThemeMode.light);
+                          } else {
+                            // Fallback for themes that don't exist in the centralized system
+                            settings.setCustomTheme(value);
+                            // Default to light mode for unknown themes
+                            settings.setThemeMode(ThemeMode.light);
+                          }
                         }
                       }
                     }
@@ -1897,7 +1879,12 @@ String _getThemeDropdownValue(SettingsProvider settings) {
     if (settings.hasAITheme(custom)) {
       return custom;
     }
-    // Check if it's a regular custom theme that's unlocked or always available
+    // Check if the theme exists in the centralized theme manager
+    final themeDef = ThemeManager().getThemeDefinition(custom);
+    if (themeDef != null) {
+      return custom;
+    }
+    // For backward compatibility, still check for unlocked themes
     if (settings.unlockedThemes.contains(custom) || 
         custom == 'grey') { // Grey theme is always available
       return custom;

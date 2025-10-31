@@ -92,6 +92,7 @@ flutter:
     - assets/questions-nl-sv.json
     - assets/sounds/
     - assets/.env
+    - assets/themes/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

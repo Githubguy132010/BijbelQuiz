@@ -1,13 +1,26 @@
 import 'package:flutter/material.dart';
 import '../providers/settings_provider.dart';
-import '../theme/app_theme.dart';
+import '../theme/theme_manager.dart';
+import '../theme/app_theme.dart'; // Keep for fallback
 
-/// Utility class for theme management and switching logic
+/// Utility class for theme management and switching logic using centralized theme system
 class ThemeUtils {
   /// Gets the appropriate light theme based on settings
   static ThemeData getLightTheme(SettingsProvider settings) {
     if (settings.selectedCustomThemeKey != null) {
-      return _getCustomTheme(settings.selectedCustomThemeKey!, settings);
+      // Check if it's an AI theme first
+      final aiTheme = settings.getAITheme(settings.selectedCustomThemeKey!);
+      if (aiTheme != null) {
+        return aiTheme.lightTheme;
+      }
+      
+      // Use the theme manager for JSON-defined themes
+      try {
+        return ThemeManager().getLightThemeData(settings.selectedCustomThemeKey!);
+      } catch (e) {
+        // Fallback to hardcoded theme if JSON theme is not found
+        return _getHardcodedTheme(settings.selectedCustomThemeKey!);
+      }
     }
     return appLightTheme;
   }
@@ -15,7 +28,20 @@ class ThemeUtils {
   /// Gets the appropriate dark theme based on settings
   static ThemeData getDarkTheme(SettingsProvider settings) {
     if (settings.selectedCustomThemeKey != null) {
-      return _getCustomTheme(settings.selectedCustomThemeKey!, settings);
+      // Check if it's an AI theme first
+      final aiTheme = settings.getAITheme(settings.selectedCustomThemeKey!);
+      if (aiTheme != null) {
+        // For AI themes, return the dark version if available, otherwise light
+        return aiTheme.darkTheme ?? aiTheme.lightTheme;
+      }
+      
+      // Use the theme manager for JSON-defined themes
+      try {
+        return ThemeManager().getDarkThemeData(settings.selectedCustomThemeKey!);
+      } catch (e) {
+        // Fallback to hardcoded theme if JSON theme is not found
+        return _getHardcodedTheme(settings.selectedCustomThemeKey!);
+      }
     }
     return appDarkTheme;
   }
@@ -24,13 +50,26 @@ class ThemeUtils {
   static ThemeMode getThemeMode(SettingsProvider settings) {
     // Check if the selected custom theme is a dark theme
     if (settings.selectedCustomThemeKey != null) {
+      // Check if it's an AI theme first
+      if (settings.hasAITheme(settings.selectedCustomThemeKey!)) {
+        return settings.getAITheme(settings.selectedCustomThemeKey!)!.darkTheme != null 
+            ? ThemeMode.dark 
+            : ThemeMode.light;
+      }
+      
+      // Use theme manager to determine if theme is dark
+      final themeDef = ThemeManager().getThemeDefinition(settings.selectedCustomThemeKey!);
+      if (themeDef != null) {
+        return themeDef.type.toLowerCase() == 'dark' ? ThemeMode.dark : ThemeMode.light;
+      }
+      
+      // Fallback to hardcoded theme logic
       switch (settings.selectedCustomThemeKey) {
         case 'grey':
-          // For dark themes, we need to return ThemeMode.dark to ensure proper UI behavior
-          // This ensures that widgets that change based on theme mode behave correctly
+        case 'oled':
+        case 'dark':
           return ThemeMode.dark;
         default:
-          // Other custom themes remain as light theme
           return ThemeMode.light;
       }
     }
@@ -38,15 +77,8 @@ class ThemeUtils {
     return settings.themeMode;
   }
 
-  /// Gets a custom theme by key
-  static ThemeData _getCustomTheme(String themeKey, SettingsProvider settings) {
-    // Check if it's an AI theme first
-    final aiTheme = settings.getAITheme(themeKey);
-    if (aiTheme != null) {
-      return aiTheme.lightTheme;
-    }
-
-    // Handle static themes
+  /// Gets a hardcoded theme by key (fallback for when JSON theme is not found)
+  static ThemeData _getHardcodedTheme(String themeKey) {
     switch (themeKey) {
       case 'oled':
         return oledTheme;
@@ -56,6 +88,10 @@ class ThemeUtils {
         return orangeTheme;
       case 'grey':
         return greyTheme;
+      case 'light':
+        return appLightTheme;
+      case 'dark':
+        return appDarkTheme;
       default:
         return appLightTheme;
     }
@@ -63,14 +99,18 @@ class ThemeUtils {
 
   /// Gets all available themes as a map
   static Map<String, ThemeData> getAllThemes({SettingsProvider? settings}) {
-    final themes = {
-      'light': appLightTheme,
-      'dark': appDarkTheme,
-      'oled': oledTheme,
-      'green': greenTheme,
-      'orange': orangeTheme,
-      'grey': greyTheme,
-    };
+    final themes = <String, ThemeData>{};
+    
+    // Add themes from the centralized theme manager
+    final themeDefinitions = ThemeManager().getAvailableThemes();
+    for (final entry in themeDefinitions.entries) {
+      try {
+        themes[entry.key] = ThemeManager().getThemeData(entry.key);
+      } catch (e) {
+        // Fallback to hardcoded theme if JSON theme fails
+        themes[entry.key] = _getHardcodedTheme(entry.key);
+      }
+    }
 
     // Add AI themes if settings provider is available
     if (settings != null) {
@@ -84,14 +124,13 @@ class ThemeUtils {
 
   /// Gets theme display names
   static Map<String, String> getThemeDisplayNames({SettingsProvider? settings}) {
-    final displayNames = {
-      'light': 'Licht',
-      'dark': 'Donker',
-      'oled': 'OLED',
-      'green': 'Groen',
-      'orange': 'Oranje',
-      'grey': 'Donkergrijs',
-    };
+    final displayNames = <String, String>{};
+    
+    // Get names from the theme manager
+    final themeDefinitions = ThemeManager().getAvailableThemes();
+    for (final entry in themeDefinitions.entries) {
+      displayNames[entry.key] = entry.value.name;
+    }
 
     // Add AI theme display names if settings provider is available
     if (settings != null) {
@@ -112,6 +151,10 @@ class ThemeUtils {
     // AI themes are always unlocked (they're user-created)
     if (settings.hasAITheme(themeKey)) {
       return true;
+    }
+    // Check if it's a JSON-defined theme (which would be unlocked by default)
+    if (ThemeManager().getThemeDefinition(themeKey) != null) {
+      return true; // All JSON themes are considered unlocked
     }
     // Static custom themes require unlocking
     return settings.isThemeUnlocked(themeKey);
