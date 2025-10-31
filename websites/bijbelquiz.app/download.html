@@ -23,6 +23,8 @@
             <!-- Platforms will be dynamically inserted here -->
         </div>
 
+
+
         <!-- Single download button (fallback for mobile view) -->
         <div class="actions" id="singleDownloadActions">
             <a href="#" id="primaryBtn" class="btn primary btn-large">Download Android App</a>
@@ -50,25 +52,11 @@
                 downloadUrl: 'https://bijbelquiz.app/downloads/android.apk',
                 currentVersion: '1.2.3'
             },
-            'ios': {
-                name: 'iOS',
-                icon: 'phone_iphone',
-                description: 'iOS App',
-                downloadUrl: 'https://bijbelquiz.app/downloads/ios.ipa',
-                currentVersion: '1.2.3'
-            },
             'windows': {
                 name: 'Windows',
                 icon: 'desktop_windows',
                 description: 'Desktop App',
                 downloadUrl: 'https://bijbelquiz.app/downloads/windows.exe',
-                currentVersion: '1.2.3'
-            },
-            'macos': {
-                name: 'macOS',
-                icon: 'laptop_mac',
-                description: 'Desktop App',
-                downloadUrl: 'https://bijbelquiz.app/downloads/macos.dmg',
                 currentVersion: '1.2.3'
             },
             'linux': {
@@ -127,8 +115,6 @@
         } else {
             // Initial download flow - show all platforms
             showAllPlatforms();
-            // Show web play option
-            document.getElementById('webPlaySection').style.display = 'block';
         }
 
         // Show all platforms download interface
@@ -137,8 +123,8 @@
             const singleDownloadActions = document.getElementById('singleDownloadActions');
 
             // Create platform cards for main platforms
-            // Order: Android, Web, Linux, Windows, iOS, macOS
-            const mainPlatforms = ['android', 'web', 'linux', 'windows', 'ios', 'macos'];
+            // Order: Android, Web, Linux, Windows
+            const mainPlatforms = ['android', 'web', 'linux', 'windows'];
             mainPlatforms.forEach(platformKey => {
                 const platformInfo = platforms[platformKey];
                 const platformCard = document.createElement('div');
