@@ -177,7 +177,7 @@
                             <i class="material-icons" style="font-size: 18px; margin-right: 4px;">${icon}</i>
                             ${buttonText}
                         </a>
-                        ${isAvailable && !isWaitlist ? `<a href="https://bijbelquiz.app/instructie/${platformKey}.html" class="btn secondary" target="_blank" rel="noopener">
+                        ${isAvailable && !isWaitlist && platformKey !== 'linux' ? `<a href="https://bijbelquiz.app/instructie/${platformKey}.html" class="btn secondary" target="_blank" rel="noopener">
                             <i class="material-icons" style="font-size: 18px; margin-right: 4px;">help</i>
                             Installatiehulp
                         </a>` : ''}
