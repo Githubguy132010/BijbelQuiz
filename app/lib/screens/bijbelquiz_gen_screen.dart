@@ -16,7 +16,7 @@ class BijbelQuizGenScreen extends StatefulWidget {
 
 class _BijbelQuizGenScreenState extends State<BijbelQuizGenScreen> {
   final PageController _pageController = PageController();
-  
+
   @override
   void dispose() {
     _pageController.dispose();
@@ -27,7 +27,7 @@ class _BijbelQuizGenScreenState extends State<BijbelQuizGenScreen> {
   Widget build(BuildContext context) {
     final gameStats = context.watch<GameStatsProvider>();
     final timeTrackingService = TimeTrackingService.instance;
-    
+
     final pages = [
       _buildWelcomePage(context),
       _buildQuestionsAnsweredPage(context, gameStats),
@@ -42,19 +42,18 @@ class _BijbelQuizGenScreenState extends State<BijbelQuizGenScreen> {
       animation: _pageController,
       builder: (context, child) {
         // Calculate current page in real-time
-        int currentPage = _pageController.hasClients 
-            ? _pageController.page?.round() ?? 0 
-            : 0;
-        
+        int currentPage =
+            _pageController.hasClients ? _pageController.page?.round() ?? 0 : 0;
+
         // Define background colors for each page
         final pageBackgroundColors = [
-          Theme.of(context).colorScheme.primaryContainer,     // Welcome page (keep theme)
-          Colors.purple.shade200,                            // Questions answered page - purple
-          Colors.orange.shade300,                            // Mistakes page - orange
-          Colors.lightBlue.shade200,                         // Time spent page - light blue
-          Colors.pink.shade300,                              // Best streak page - pink
-          Colors.amber.shade200,                             // Year in review page - amber
-          Colors.green.shade300,                             // Thank you page - green
+          Colors.grey.shade300, // Welcome page - light grey
+          Colors.purple.shade200, // Questions answered page - purple
+          Colors.orange.shade300, // Mistakes page - orange
+          Colors.green.shade300, // Time spent page - light blue
+          Colors.pink.shade300, // Best streak page - pink
+          Colors.amber.shade200, // Year in review page - amber
+          Colors.lightBlue.shade200, // Thank you page - green
         ];
 
         return Scaffold(
@@ -69,6 +68,7 @@ class _BijbelQuizGenScreenState extends State<BijbelQuizGenScreen> {
                 children: pages,
               ),
               // Skip button (only on first page)
+              // Skip button (only on first page)
               if (currentPage == 0)
                 Positioned(
                   top: MediaQuery.of(context).padding.top + 16,
@@ -80,7 +80,7 @@ class _BijbelQuizGenScreenState extends State<BijbelQuizGenScreen> {
                     child: Text(
                       strings.AppStrings.bijbelquizGenSkip,
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface,
+                        color: Colors.black,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -101,9 +101,9 @@ class _BijbelQuizGenScreenState extends State<BijbelQuizGenScreen> {
                       margin: const EdgeInsets.symmetric(horizontal: 4),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: currentPage == index 
-                            ? Theme.of(context).colorScheme.primary 
-                            : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+                        color: currentPage == index
+                            ? Colors.black
+                            : Colors.black.withValues(alpha: 0.3),
                       ),
                     ),
                   ),
@@ -118,22 +118,25 @@ class _BijbelQuizGenScreenState extends State<BijbelQuizGenScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     if (currentPage > 0)
-                      ElevatedButton(
+                      OutlinedButton(
                         onPressed: () {
                           _pageController.previousPage(
                             duration: const Duration(milliseconds: 300),
                             curve: Curves.easeInOut,
                           );
                         },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-                          foregroundColor: Theme.of(context).colorScheme.onSurface,
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: Colors.black, width: 2),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 12),
                         ),
-                        child: const Icon(Icons.arrow_back),
+                        child: Icon(
+                          Icons.arrow_back,
+                          color: Colors.black,
+                        ),
                       ),
                     const Spacer(),
-                    ElevatedButton(
+                    OutlinedButton(
                       onPressed: () {
                         if (currentPage < pages.length - 1) {
                           _pageController.nextPage(
@@ -144,7 +147,15 @@ class _BijbelQuizGenScreenState extends State<BijbelQuizGenScreen> {
                           Navigator.of(context).pop();
                         }
                       },
-                      child: const Icon(Icons.arrow_forward),
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: Colors.black, width: 2),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 12),
+                      ),
+                      child: Icon(
+                        Icons.arrow_forward,
+                        color: Colors.black,
+                      ),
                     ),
                   ],
                 ),
@@ -165,31 +176,31 @@ class _BijbelQuizGenScreenState extends State<BijbelQuizGenScreen> {
           Icon(
             Icons.auto_awesome,
             size: 80,
-            color: Theme.of(context).colorScheme.primary,
+            color: Colors.black,
           ),
           const SizedBox(height: 24),
           Text(
             strings.AppStrings.bijbelquizGenTitle,
             style: Theme.of(context).textTheme.displayMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           Text(
             '${strings.AppStrings.bijbelquizGenSubtitle} ${BijbelQuizGenPeriod.getStatsYear()}',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-            ),
+                  color: Colors.black,
+                ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 40),
           Text(
             strings.AppStrings.bijbelquizGenWelcomeText,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+                  color: Colors.black,
+                ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -197,7 +208,8 @@ class _BijbelQuizGenScreenState extends State<BijbelQuizGenScreen> {
     );
   }
 
-  Widget _buildQuestionsAnsweredPage(BuildContext context, GameStatsProvider gameStats) {
+  Widget _buildQuestionsAnsweredPage(
+      BuildContext context, GameStatsProvider gameStats) {
     final totalQuestions = gameStats.score + gameStats.incorrectAnswers;
     return Container(
       padding: const EdgeInsets.all(24),
@@ -207,32 +219,32 @@ class _BijbelQuizGenScreenState extends State<BijbelQuizGenScreen> {
           Icon(
             Icons.question_answer,
             size: 80,
-            color: Theme.of(context).colorScheme.primary,
+            color: Colors.black,
           ),
           const SizedBox(height: 24),
           Text(
             strings.AppStrings.questionsAnswered,
             style: Theme.of(context).textTheme.displayMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           Text(
             strings.AppStrings.bijbelquizGenQuestionsSubtitle,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+                  color: Colors.black,
+                ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
           Text(
             '$totalQuestions',
             style: Theme.of(context).textTheme.displayLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
-            ),
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -249,32 +261,32 @@ class _BijbelQuizGenScreenState extends State<BijbelQuizGenScreen> {
           Icon(
             Icons.error_outline,
             size: 80,
-            color: Theme.of(context).colorScheme.error,
+            color: Colors.black,
           ),
           const SizedBox(height: 24),
           Text(
             strings.AppStrings.mistakesMade,
             style: Theme.of(context).textTheme.displayMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           Text(
             strings.AppStrings.bijbelquizGenMistakesSubtitle,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+                  color: Colors.black,
+                ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
           Text(
             '${gameStats.incorrectAnswers}',
             style: Theme.of(context).textTheme.displayLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.error,
-            ),
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -282,7 +294,8 @@ class _BijbelQuizGenScreenState extends State<BijbelQuizGenScreen> {
     );
   }
 
-  Widget _buildTimeSpentPage(BuildContext context, TimeTrackingService timeTracking) {
+  Widget _buildTimeSpentPage(
+      BuildContext context, TimeTrackingService timeTracking) {
     return Container(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -291,40 +304,40 @@ class _BijbelQuizGenScreenState extends State<BijbelQuizGenScreen> {
           Icon(
             Icons.timer,
             size: 80,
-            color: Theme.of(context).colorScheme.primary,
+            color: Colors.black,
           ),
           const SizedBox(height: 24),
           Text(
             strings.AppStrings.timeSpent,
             style: Theme.of(context).textTheme.displayMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           Text(
             strings.AppStrings.bijbelquizGenTimeSubtitle,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+                  color: Colors.black,
+                ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
           Text(
             timeTracking.getTotalTimeSpentFormatted(),
             style: Theme.of(context).textTheme.displayLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
-            ),
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           Text(
             '${timeTracking.getTotalTimeSpentInHours().toStringAsFixed(1)} ${strings.AppStrings.hours}',
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-            ),
+                  color: Colors.black,
+                ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -332,7 +345,8 @@ class _BijbelQuizGenScreenState extends State<BijbelQuizGenScreen> {
     );
   }
 
-  Widget _buildBestStreakPage(BuildContext context, GameStatsProvider gameStats) {
+  Widget _buildBestStreakPage(
+      BuildContext context, GameStatsProvider gameStats) {
     return Container(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -341,32 +355,32 @@ class _BijbelQuizGenScreenState extends State<BijbelQuizGenScreen> {
           Icon(
             Icons.local_fire_department,
             size: 80,
-            color: Theme.of(context).colorScheme.primary,
+            color: Colors.black,
           ),
           const SizedBox(height: 24),
           Text(
             strings.AppStrings.bijbelquizGenBestStreak,
             style: Theme.of(context).textTheme.displayMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           Text(
             strings.AppStrings.bijbelquizGenStreakSubtitle,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+                  color: Colors.black,
+                ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
           Text(
             '${gameStats.longestStreak}',
             style: Theme.of(context).textTheme.displayLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
-            ),
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -374,10 +388,13 @@ class _BijbelQuizGenScreenState extends State<BijbelQuizGenScreen> {
     );
   }
 
-  Widget _buildYearInReviewPage(BuildContext context, GameStatsProvider gameStats, TimeTrackingService timeTracking) {
+  Widget _buildYearInReviewPage(BuildContext context,
+      GameStatsProvider gameStats, TimeTrackingService timeTracking) {
     final totalQuestions = gameStats.score + gameStats.incorrectAnswers;
-    final correctPercentage = totalQuestions > 0 ? (gameStats.score / totalQuestions * 100).round() : 0;
-    
+    final correctPercentage = totalQuestions > 0
+        ? (gameStats.score / totalQuestions * 100).round()
+        : 0;
+
     return Container(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -386,42 +403,53 @@ class _BijbelQuizGenScreenState extends State<BijbelQuizGenScreen> {
           Icon(
             Icons.star,
             size: 80,
-            color: Theme.of(context).colorScheme.primary,
+            color: Colors.black,
           ),
           const SizedBox(height: 24),
           Text(
             strings.AppStrings.yearInReview,
             style: Theme.of(context).textTheme.displayMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           Text(
             strings.AppStrings.bijbelquizGenYearReviewSubtitle,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+                  color: Colors.black,
+                ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              color: Colors.transparent,
               borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: Colors.black,
+                width: 2.0,
+              ),
             ),
             child: Column(
               children: [
-                _buildStatRow(context, gameStats.score.toString(), strings.AppStrings.correctAnswers, Theme.of(context).colorScheme.primary),
-                const Divider(height: 32, thickness: 1),
-                _buildStatRow(context, '${correctPercentage.toString()}%', strings.AppStrings.accuracy, Theme.of(context).colorScheme.secondary),
-                const Divider(height: 32, thickness: 1),
-                _buildStatRow(context, timeTracking.getTotalTimeSpentInHours().toStringAsFixed(1), strings.AppStrings.hours, Theme.of(context).colorScheme.tertiary),
-                const Divider(height: 32, thickness: 1),
-                _buildStatRow(context, gameStats.currentStreak.toString(), strings.AppStrings.currentStreak, Theme.of(context).colorScheme.surfaceTint),
+                _buildStatRow(context, gameStats.score.toString(),
+                    strings.AppStrings.correctAnswers, Colors.black),
+                const Divider(height: 16, thickness: 1),
+                _buildStatRow(context, '${correctPercentage.toString()}%',
+                    strings.AppStrings.accuracy, Colors.black),
+                const Divider(height: 16, thickness: 1),
+                _buildStatRow(
+                    context,
+                    timeTracking.getTotalTimeSpentInHours().toStringAsFixed(1),
+                    strings.AppStrings.hours,
+                    Colors.black),
+                const Divider(height: 16, thickness: 1),
+                _buildStatRow(context, gameStats.currentStreak.toString(),
+                    strings.AppStrings.currentStreak, Colors.black),
               ],
             ),
           ),
@@ -430,7 +458,8 @@ class _BijbelQuizGenScreenState extends State<BijbelQuizGenScreen> {
     );
   }
 
-  Widget _buildStatRow(BuildContext context, String value, String label, Color color) {
+  Widget _buildStatRow(
+      BuildContext context, String value, String label, Color color) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
@@ -439,15 +468,15 @@ class _BijbelQuizGenScreenState extends State<BijbelQuizGenScreen> {
           Text(
             label,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+                  color: Colors.black,
+                ),
           ),
           Text(
             value,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
           ),
         ],
       ),
@@ -463,41 +492,50 @@ class _BijbelQuizGenScreenState extends State<BijbelQuizGenScreen> {
           Icon(
             Icons.favorite,
             size: 80,
-            color: Theme.of(context).colorScheme.primary,
+            color: Colors.black,
           ),
           const SizedBox(height: 24),
           Text(
             strings.AppStrings.thankYouForUsingBijbelQuiz,
             style: Theme.of(context).textTheme.displayMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onSurface,
-            ),
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           Text(
             strings.AppStrings.bijbelquizGenThankYouText,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-            ),
+                  color: Colors.black,
+                ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 40),
-          ElevatedButton.icon(
+          OutlinedButton.icon(
             onPressed: () async {
               final Uri url = Uri.parse(AppUrls.donateUrl);
               if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
                 throw Exception('Could not launch ${AppUrls.donateUrl}');
               }
             },
-            icon: const Icon(Icons.favorite, size: 18),
+            icon: Icon(
+              Icons.favorite,
+              size: 18,
+              color: Colors.black,
+            ),
             label: Text(
               strings.AppStrings.bijbelquizGenDonateButton,
               textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.black,
+              ),
             ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+            style: OutlinedButton.styleFrom(
+              side: BorderSide(
+                color: Colors.black,
+                width: 2,
+              ),
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
             ),
           ),
