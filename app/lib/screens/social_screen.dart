@@ -288,13 +288,14 @@ class _SocialScreenState extends State<SocialScreen> {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 16.0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                strings.AppStrings.followedUsersScores,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: colorScheme.onSurface,
+              Expanded(
+                child: Text(
+                  strings.AppStrings.followedUsersScores,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: colorScheme.onSurface,
+                  ),
                 ),
               ),
               IconButton(
