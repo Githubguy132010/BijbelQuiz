@@ -1,6 +1,6 @@
 # BijbelQuiz
 
-BijbelQuiz is a Flutter-based mobile application designed for Bible quizzes, featuring interactive lessons, questions, and progress tracking.
+BijbelQuiz is a Flutter-based mobile application designed for Bible quizzes, featuring interactive lessons, questions, and progress tracking. If you are on Codeberg, please open any issues on Github please, our sync currently does not support 2 way sync. We'll work on it!
 
 ## Project Structure
 
