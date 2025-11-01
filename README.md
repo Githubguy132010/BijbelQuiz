@@ -350,25 +350,7 @@ class SettingsProvider extends ChangeNotifier {
 }
 ```
 
-### Services
 
-- **PerformanceService**: Monitors and optimizes app performance
-- **SoundService**: Handles audio playback across platforms
-- **QuizSoundService**: Centralized quiz sound management with mute support
-- **QuestionLoadingService**: Advanced background question loading with predictive caching
-- **ConnectionService**: Manages network connectivity
-- **QuestionCacheService**: Caches questions for offline use
-- **NotificationService**: Local notification management for daily motivation reminders
-- **ProgressiveQuestionSelector**: Intelligent difficulty adjustment algorithm
-- **QuizAnimationController**: Animation management
-- **AnalyticsService**: Analytics and telemetry service
-- **FeatureFlagsService**: Feature flag management
-- **GeminiService**: AI/Gemini integration service
-- **LessonService**: Lesson management service
-- **PlatformFeedbackService**: Platform-specific feedback service
-- **QuizAnswerHandler**: Quiz answer processing service
-- **QuizTimerManager**: Quiz timer functionality
-- **Logger**: Centralized logging with configurable levels
 
 ## 📚 Additional Documentation
 
