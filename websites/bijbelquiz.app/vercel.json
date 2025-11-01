@@ -6,7 +6,7 @@
     },
     {
       "source": "/donate",
-      "destination": "buymeacoffee.com/bijbelquiz"
+      "destination": "https://buymeacoffee.com/bijbelquiz"
     },
     {
       "source": "/donate.html",
