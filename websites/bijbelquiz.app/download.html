@@ -30,9 +30,7 @@
             <a href="#" id="primaryBtn" class="btn primary btn-large">Download Android App</a>
         </div>
 
-        <footer>
-            &copy; 2025 BijbelQuiz
-        </footer>
+        <footer id="main-footer"></footer>
     </div>
 
     <script>
@@ -410,6 +408,19 @@
             }
         }
     </style>
+    <script>
+        // Fetch and inject the central footer
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/components/footer.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('main-footer').innerHTML = data;
+                })
+                .catch(error => {
+                    console.error('Error loading footer:', error);
+                });
+        });
+    </script>
 </body>
 
 </html>

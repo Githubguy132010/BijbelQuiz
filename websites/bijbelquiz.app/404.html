@@ -77,14 +77,21 @@
             Terug naar home
         </a>
 
-        <footer>
-            <div class="footer-links">
-                <a href="links.html" class="footer-link">Social Media</a>
-                <span class="footer-separator">•</span>
-                <a href="privacy.html" class="footer-link">Privacybeleid</a>
-            </div>
-            &copy; 2025 BijbelQuiz
-        </footer>
+        <footer id="main-footer"></footer>
     </div>
+    
+    <script>
+        // Fetch and inject the central footer
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/components/footer.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('main-footer').innerHTML = data;
+                })
+                .catch(error => {
+                    console.error('Error loading footer:', error);
+                });
+        });
+    </script>
 </body>
 </html>

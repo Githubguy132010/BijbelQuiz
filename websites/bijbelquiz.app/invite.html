@@ -76,14 +76,7 @@
             </a>
         </div>
 
-        <footer>
-            <div class="footer-links">
-                <a href="index.html" class="footer-link">Home</a>
-                <span class="footer-separator">•</span>
-                <a href="links.html" class="footer-link">Social Media</a>
-            </div>
-            &copy; 2025 BijbelQuiz
-        </footer>
+        <footer id="main-footer"></footer>
     </div>
     
     <script>
@@ -115,6 +108,20 @@
                     document.getElementById('main-description').textContent = descriptionText;
                 }
             }
+        });
+    </script>
+    
+    <script>
+        // Fetch and inject the central footer
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/components/footer.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('main-footer').innerHTML = data;
+                })
+                .catch(error => {
+                    console.error('Error loading footer:', error);
+                });
         });
     </script>
 </body>
