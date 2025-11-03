@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:async';
 import 'dart:io' show Platform;
-import 'package:uni_links/uni_links.dart';
+import 'package:app_links/app_links.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logging/logging.dart' show Level;
@@ -254,16 +254,18 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
       if (uri.path.startsWith('/stats') || uri.path.startsWith('/gen.html') || uri.hasQuery) {
         _handleDeepLink(uri);
       }
-    } else {
-      // For mobile platforms, use uni_links
-      _sub = linkStream.listen((String? link) {
-        if (link != null) {
-          final uri = Uri.parse(link);
+    } else if (Platform.isAndroid || Platform.isIOS) {
+      // For mobile platforms, use app_links
+      _sub = AppLinks().uriLinkStream.listen((Uri? uri) {
+        if (uri != null) {
           _handleDeepLink(uri);
         }
       }, onError: (err) {
         AppLogger.error('Error handling deep link: $err');
       });
+    } else {
+      // For other platforms (Linux, Windows, macOS), skip deep link handling
+      AppLogger.info('Skipping deep link handling on ${Platform.operatingSystem} platform');
     }
   }
 
