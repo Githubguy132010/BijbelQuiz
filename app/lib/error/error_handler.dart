@@ -66,7 +66,7 @@ class ErrorHandler {
                   const SizedBox(height: 8),
                   Text(
                     'Error Code: ${error.errorCode}',
-                    style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.outline),
                   ),
                 ],
               ],

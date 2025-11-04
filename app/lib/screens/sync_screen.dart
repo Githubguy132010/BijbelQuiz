@@ -800,10 +800,10 @@ class _SyncScreenState extends State<SyncScreen> {
                       const SizedBox(height: 24),
                       Row(
                         children: [
-                          const Expanded(
+                          Expanded(
                             child: Divider(
                               thickness: 1,
-                              color: Colors.grey,
+                              color: Theme.of(context).colorScheme.outline,
                             ),
                           ),
                           Padding(
@@ -815,10 +815,10 @@ class _SyncScreenState extends State<SyncScreen> {
                               ),
                             ),
                           ),
-                          const Expanded(
+                          Expanded(
                             child: Divider(
                               thickness: 1,
-                              color: Colors.grey,
+                              color: Theme.of(context).colorScheme.outline,
                             ),
                           ),
                         ],

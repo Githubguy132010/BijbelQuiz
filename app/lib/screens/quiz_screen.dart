@@ -423,7 +423,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
                       style: TextStyle(
                         color: hasEnoughPoints
                           ? Theme.of(localContext).colorScheme.primary
-                          : Colors.grey,
+                          : Theme.of(localContext).colorScheme.outline,
                         fontSize: 16,
                       ),
                     ),
@@ -433,14 +433,14 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
                       size: 16,
                       color: hasEnoughPoints
                         ? Theme.of(localContext).colorScheme.primary
-                        : Colors.grey,
+                        : Theme.of(localContext).colorScheme.outline,
                     ),
                     Text(
                       ' 50',
                       style: TextStyle(
                         color: hasEnoughPoints
                           ? Theme.of(localContext).colorScheme.primary
-                          : Colors.grey,
+                          : Theme.of(localContext).colorScheme.outline,
                         fontSize: 16,
                       ),
                     ),

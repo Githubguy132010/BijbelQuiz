@@ -115,7 +115,7 @@ class QuizBottomBar extends StatelessWidget {
     required bool isDesktop,
   }) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textColor = canUse ? colorScheme.primary : Colors.grey;
+    final textColor = canUse ? colorScheme.primary : colorScheme.outline;
 
     // Build semantic label based on button state
     String semanticLabel = label;
