@@ -96,6 +96,7 @@ class ModernAdminDashboard:
         # Add tabs
         self.setup_tracking_tab()
         self.setup_errors_tab()
+        self.setup_store_tab()
         
         # Initially show tracking tab
         self.notebook.select(0)
@@ -1046,6 +1047,570 @@ Build Number: {error.get('build_number', 'N/A')}
                     
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to delete error report: {str(e)}")
+
+    def setup_store_tab(self):
+        """Setup the store items management tab"""
+        # Main store frame
+        store_frame = tb.Frame(self.notebook)
+        self.notebook.add(store_frame, text="Store Management")
+        
+        # Controls and filters frame
+        controls_frame = tb.Labelframe(store_frame, text="Store Controls & Filters", padding=10)
+        controls_frame.pack(fill=tk.X, padx=5, pady=5)
+        
+        # Load data button
+        tb.Button(controls_frame, text="Load Store Items", 
+                 command=self.load_store_items, bootstyle=SUCCESS).pack(side=tk.LEFT, padx=5)
+        
+        # Add new item button
+        tb.Button(controls_frame, text="Add New Item", 
+                 command=self.add_new_store_item, bootstyle=INFO).pack(side=tk.LEFT, padx=5)
+        
+        # Filters
+        tb.Label(controls_frame, text="Item Type:").pack(side=tk.LEFT, padx=(20, 5))
+        self.item_type_filter = tb.Combobox(controls_frame, width=15, bootstyle="secondary", values=[
+            "", "powerup", "theme", "feature"
+        ])
+        self.item_type_filter.pack(side=tk.LEFT, padx=5)
+        self.item_type_filter.bind('<<ComboboxSelected>>', lambda e: self.load_store_items())
+        
+        # Search by name
+        tb.Label(controls_frame, text="Search:").pack(side=tk.LEFT, padx=(10, 5))
+        self.store_search = tb.Entry(controls_frame, width=15, bootstyle="secondary")
+        self.store_search.pack(side=tk.LEFT, padx=5)
+        self.store_search.bind('<KeyRelease>', lambda e: self.load_store_items())
+        
+        # Split store frame into two main sections
+        store_data_frame = tb.Frame(store_frame)
+        store_data_frame.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+        
+        # Left: Store items list
+        left_store_frame = tb.Frame(store_data_frame)
+        left_store_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 5))
+        
+        # Store items list frame
+        store_list_frame = tb.Labelframe(left_store_frame, text="Store Items", padding=10)
+        store_list_frame.pack(fill=tk.BOTH, expand=True)
+        
+        # Treeview for store items
+        store_tree_frame = tb.Frame(store_list_frame)
+        store_tree_frame.pack(fill=tk.BOTH, expand=True)
+        
+        self.store_tree = tb.Treeview(store_tree_frame, 
+                                    columns=('item_key', 'item_name', 'item_type', 'base_price', 'current_price', 'is_discounted'), 
+                                    show='headings', height=15, bootstyle="primary")
+        
+        # Define headings
+        self.store_tree.heading('item_key', text='Item Key')
+        self.store_tree.heading('item_name', text='Name')
+        self.store_tree.heading('item_type', text='Type')
+        self.store_tree.heading('base_price', text='Base Price')
+        self.store_tree.heading('current_price', text='Current Price')
+        self.store_tree.heading('is_discounted', text='Discounted')
+        
+        # Define column widths
+        self.store_tree.column('item_key', width=150)
+        self.store_tree.column('item_name', width=200)
+        self.store_tree.column('item_type', width=100)
+        self.store_tree.column('base_price', width=100)
+        self.store_tree.column('current_price', width=120)
+        self.store_tree.column('is_discounted', width=100)
+        
+        # Add scrollbar
+        store_v_scrollbar = tb.Scrollbar(store_tree_frame, orient=tk.VERTICAL, 
+                                       command=self.store_tree.yview, bootstyle="round")
+        self.store_tree.configure(yscrollcommand=store_v_scrollbar.set)
+        
+        self.store_tree.grid(row=0, column=0, sticky="nsew")
+        store_v_scrollbar.grid(row=0, column=1, sticky="ns")
+        
+        store_tree_frame.grid_rowconfigure(0, weight=1)
+        store_tree_frame.grid_columnconfigure(0, weight=1)
+        
+        # Bind selection event
+        self.store_tree.bind('<<TreeviewSelect>>', self.on_store_item_select)
+        
+        # Right: Item details and editing
+        right_store_frame = tb.Frame(store_data_frame)
+        right_store_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=(5, 0))
+        
+        # Item details frame
+        item_details_frame = tb.Labelframe(right_store_frame, text="Item Details", padding=10)
+        item_details_frame.pack(fill=tk.BOTH, expand=True)
+        
+        # Create form fields for editing
+        self.create_store_item_form(item_details_frame)
+    
+    def create_store_item_form(self, parent_frame):
+        """Create form fields for store item details"""
+        # Scrollable frame for the form
+        canvas = tk.Canvas(parent_frame)
+        scrollbar = tb.Scrollbar(parent_frame, orient="vertical", command=canvas.yview, bootstyle="round")
+        scrollable_frame = tb.Frame(canvas)
+
+        scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+        )
+
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        # Form fields
+        # Item Key
+        tb.Label(scrollable_frame, text="Item Key:").grid(row=0, column=0, sticky="w", pady=2)
+        self.item_key_var = tk.StringVar()
+        self.item_key_entry = tb.Entry(scrollable_frame, textvariable=self.item_key_var, bootstyle="secondary", width=30)
+        self.item_key_entry.grid(row=0, column=1, sticky="ew", pady=2, padx=(10, 0))
+        self.item_key_entry.config(state="readonly")  # Read-only for existing items
+
+        # Item Name
+        tb.Label(scrollable_frame, text="Name:").grid(row=1, column=0, sticky="w", pady=2)
+        self.item_name_var = tk.StringVar()
+        self.item_name_entry = tb.Entry(scrollable_frame, textvariable=self.item_name_var, bootstyle="secondary", width=30)
+        self.item_name_entry.grid(row=1, column=1, sticky="ew", pady=2, padx=(10, 0))
+
+        # Item Description
+        tb.Label(scrollable_frame, text="Description:").grid(row=2, column=0, sticky="w", pady=2)
+        self.item_description_var = tk.StringVar()
+        self.item_description_entry = tb.Entry(scrollable_frame, textvariable=self.item_description_var, bootstyle="secondary", width=30)
+        self.item_description_entry.grid(row=2, column=1, sticky="ew", pady=2, padx=(10, 0))
+
+        # Item Type
+        tb.Label(scrollable_frame, text="Type:").grid(row=3, column=0, sticky="w", pady=2)
+        self.item_type_var = tk.StringVar()
+        self.item_type_combo = tb.Combobox(scrollable_frame, textvariable=self.item_type_var, 
+                                          values=["powerup", "theme", "feature"], 
+                                          state="readonly", bootstyle="secondary", width=27)
+        self.item_type_combo.grid(row=3, column=1, sticky="ew", pady=2, padx=(10, 0))
+
+        # Icon
+        tb.Label(scrollable_frame, text="Icon:").grid(row=4, column=0, sticky="w", pady=2)
+        self.icon_var = tk.StringVar()
+        self.icon_entry = tb.Entry(scrollable_frame, textvariable=self.icon_var, bootstyle="secondary", width=30)
+        self.icon_entry.grid(row=4, column=1, sticky="ew", pady=2, padx=(10, 0))
+
+        # Base Price
+        tb.Label(scrollable_frame, text="Base Price:").grid(row=5, column=0, sticky="w", pady=2)
+        self.base_price_var = tk.IntVar()
+        self.base_price_spinbox = tb.Spinbox(scrollable_frame, from_=0, to=9999, textvariable=self.base_price_var, bootstyle="secondary", width=28)
+        self.base_price_spinbox.grid(row=5, column=1, sticky="ew", pady=2, padx=(10, 0))
+
+        # Category
+        tb.Label(scrollable_frame, text="Category:").grid(row=6, column=0, sticky="w", pady=2)
+        self.category_var = tk.StringVar()
+        self.category_entry = tb.Entry(scrollable_frame, textvariable=self.category_var, bootstyle="secondary", width=30)
+        self.category_entry.grid(row=6, column=1, sticky="ew", pady=2, padx=(10, 0))
+
+        # Is Active
+        tb.Label(scrollable_frame, text="Is Active:").grid(row=7, column=0, sticky="w", pady=2)
+        self.is_active_var = tk.BooleanVar()
+        self.is_active_check = tb.Checkbutton(scrollable_frame, variable=self.is_active_var)
+        self.is_active_check.grid(row=7, column=1, sticky="w", pady=2, padx=(10, 0))
+
+        # Current Price (read-only)
+        tb.Label(scrollable_frame, text="Current Price:").grid(row=8, column=0, sticky="w", pady=2)
+        self.current_price_var = tk.IntVar()
+        self.current_price_label = tb.Label(scrollable_frame, textvariable=self.current_price_var, bootstyle="secondary")
+        self.current_price_label.grid(row=8, column=1, sticky="w", pady=2, padx=(10, 0))
+
+        # Is Discounted
+        tb.Label(scrollable_frame, text="Is Discounted:").grid(row=9, column=0, sticky="w", pady=2)
+        self.is_discounted_var = tk.BooleanVar()
+        self.is_discounted_check = tb.Checkbutton(scrollable_frame, variable=self.is_discounted_var, command=self.on_discount_change)
+        self.is_discounted_check.grid(row=9, column=1, sticky="w", pady=2, padx=(10, 0))
+
+        # Discount Percentage
+        tb.Label(scrollable_frame, text="Discount %:").grid(row=10, column=0, sticky="w", pady=2)
+        self.discount_percentage_var = tk.IntVar()
+        self.discount_percentage_spinbox = tb.Spinbox(scrollable_frame, from_=0, to=100, textvariable=self.discount_percentage_var, bootstyle="secondary", width=28)
+        self.discount_percentage_spinbox.grid(row=10, column=1, sticky="ew", pady=2, padx=(10, 0))
+
+        # Discount Start Date
+        tb.Label(scrollable_frame, text="Discount Start:").grid(row=11, column=0, sticky="w", pady=2)
+        self.discount_start_var = tk.StringVar()
+        self.discount_start_entry = tb.Entry(scrollable_frame, textvariable=self.discount_start_var, bootstyle="secondary", width=30)
+        self.discount_start_entry.grid(row=11, column=1, sticky="ew", pady=2, padx=(10, 0))
+        tb.Label(scrollable_frame, text="(YYYY-MM-DD HH:MM:SS format)", font=("TkDefaultFont", 8)).grid(row=11, column=2, sticky="w", pady=2)
+
+        # Discount End Date
+        tb.Label(scrollable_frame, text="Discount End:").grid(row=12, column=0, sticky="w", pady=2)
+        self.discount_end_var = tk.StringVar()
+        self.discount_end_entry = tb.Entry(scrollable_frame, textvariable=self.discount_end_var, bootstyle="secondary", width=30)
+        self.discount_end_entry.grid(row=12, column=1, sticky="ew", pady=2, padx=(10, 0))
+        tb.Label(scrollable_frame, text="(YYYY-MM-DD HH:MM:SS format)", font=("TkDefaultFont", 8)).grid(row=12, column=2, sticky="w", pady=2)
+
+        # Button frame
+        button_frame = tb.Frame(scrollable_frame)
+        button_frame.grid(row=13, column=0, columnspan=2, pady=10)
+
+        # Update button
+        self.update_item_btn = tb.Button(button_frame, text="Update Item", 
+                                       command=self.update_store_item, bootstyle=INFO)
+        self.update_item_btn.pack(side=tk.LEFT, padx=(0, 10))
+
+        # Delete button
+        self.delete_item_btn = tb.Button(button_frame, text="Delete Item", 
+                                       command=self.delete_store_item, bootstyle=DANGER)
+        self.delete_item_btn.pack(side=tk.LEFT)
+
+        # Configure grid weights
+        parent_frame.grid_rowconfigure(0, weight=1)
+        parent_frame.grid_columnconfigure(0, weight=1)
+        scrollable_frame.grid_columnconfigure(1, weight=1)
+
+        # Pack the canvas and scrollbar
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+    
+    def load_store_items(self, event=None):
+        """Load store items from Supabase with optional filtering"""
+        if not self.supabase_client:
+            messagebox.showerror("Error", "Not connected to Supabase. Please check your credentials.")
+            return
+        
+        try:
+            # Build query with filters
+            query = self.supabase_client.table('store_items').select('*').order('item_name')
+            
+            # Apply filters
+            item_type = self.item_type_filter.get()
+            if item_type:
+                query = query.eq('item_type', item_type)
+            
+            search_text = self.store_search.get().strip()
+            if search_text:
+                query = query.ilike('item_name', f'%{search_text}%')
+            
+            # Execute query
+            response = query.execute()
+            
+            # Clear existing items
+            for item in self.store_tree.get_children():
+                self.store_tree.delete(item)
+            
+            # Add new items
+            for item in response.data:
+                item_key = item.get('item_key', '')
+                item_name = item.get('item_name', '')
+                item_type = item.get('item_type', '')
+                base_price = item.get('base_price', 0)
+                current_price = item.get('current_price', 0)
+                is_discounted = item.get('is_discounted', False)
+                
+                # Format discounted indicator
+                discount_status = "Yes" if is_discounted else "No"
+                
+                self.store_tree.insert('', tk.END, values=(
+                    item_key,
+                    item_name,
+                    item_type,
+                    base_price,
+                    current_price,
+                    discount_status
+                ), tags=(item['id'],))  # Store item ID as tag
+            
+            self.status_var.set(f"Loaded {len(response.data)} store items")
+            
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to load store items: {str(e)}")
+            self.status_var.set("Error loading store items")
+    
+    def on_store_item_select(self, event):
+        """Handle store item selection in the treeview"""
+        selection = self.store_tree.selection()
+        if not selection:
+            print("No selection made")
+            return
+        
+        item = self.store_tree.item(selection[0])
+        print(f"Selected item: {item}")
+        
+        # Check if tags exist and have content
+        if 'tags' not in item or not item['tags']:
+            print("No tags found in selected item")
+            return
+        
+        item_id = item['tags'][0]  # Get item ID from tags
+        print(f"Item ID to load: {item_id}")
+        
+        self.load_store_item_details(item_id)
+    
+    def load_store_item_details(self, item_id):
+        """Load and display details of a selected store item"""
+        print(f"Loading store item details for ID: {item_id}")
+        
+        if not self.supabase_client:
+            print("No Supabase client available")
+            return
+        
+        try:
+            response = self.supabase_client.table('store_items').select('*').eq('id', item_id).execute()
+            print(f"Response data: {response.data}")
+            
+            if not response.data:
+                print(f"No data found for item ID: {item_id}")
+                return
+            
+            store_item = response.data[0]
+            print(f"Store item loaded: {store_item}")
+            
+            # Update form fields with item details
+            self.item_key_var.set(store_item.get('item_key', ''))
+            self.item_name_var.set(store_item.get('item_name', ''))
+            self.item_description_var.set(store_item.get('item_description', ''))
+            self.item_type_var.set(store_item.get('item_type', ''))
+            self.icon_var.set(store_item.get('icon', ''))
+            self.base_price_var.set(store_item.get('base_price', 0))
+            self.category_var.set(store_item.get('category', ''))
+            self.is_active_var.set(store_item.get('is_active', True))
+            self.current_price_var.set(store_item.get('current_price', 0))
+            self.is_discounted_var.set(store_item.get('is_discounted', False))
+            self.discount_percentage_var.set(store_item.get('discount_percentage', 0))
+            
+            # Format dates for display
+            discount_start = store_item.get('discount_start', '')
+            if discount_start:
+                # Convert ISO format to a more readable format if needed
+                self.discount_start_var.set(discount_start[:19])  # Get only datetime part
+            else:
+                self.discount_start_var.set('')
+                
+            discount_end = store_item.get('discount_end', '')
+            if discount_end:
+                self.discount_end_var.set(discount_end[:19])  # Get only datetime part
+            else:
+                self.discount_end_var.set('')
+                
+            print("Store item details loaded successfully")
+            
+            # Update the UI to ensure it refreshes
+            self.root.update_idletasks()
+                
+        except Exception as e:
+            print(f"Exception in load_store_item_details: {e}")
+            messagebox.showerror("Error", f"Failed to load store item details: {str(e)}")
+    
+    def on_discount_change(self):
+        """Handle changes to discount checkbox"""
+        is_discounted = self.is_discounted_var.get()
+        
+        # Enable/disable discount fields based on discount status
+        state = 'normal' if is_discounted else 'disabled'
+        self.discount_percentage_spinbox.config(state=state)
+        self.discount_start_entry.config(state=state)
+        self.discount_end_entry.config(state=state)
+        
+    def update_store_item(self):
+        """Update a store item in the database"""
+        if not self.supabase_client:
+            messagebox.showerror("Error", "Not connected to Supabase. Please check your credentials.")
+            return
+        
+        try:
+            # Get the selected item ID
+            selection = self.store_tree.selection()
+            if not selection:
+                messagebox.showwarning("Warning", "Please select a store item to update.")
+                return
+            
+            item = self.store_tree.item(selection[0])
+            item_id = item['tags'][0]
+            
+            # Prepare data to update
+            update_data = {
+                'item_name': self.item_name_var.get(),
+                'item_description': self.item_description_var.get(),
+                'item_type': self.item_type_var.get(),
+                'icon': self.icon_var.get(),
+                'base_price': self.base_price_var.get(),
+                'category': self.category_var.get(),
+                'is_active': self.is_active_var.get(),
+                'is_discounted': self.is_discounted_var.get(),
+                'discount_percentage': self.discount_percentage_var.get(),
+            }
+            
+            # Handle date fields - convert empty strings to None
+            discount_start = self.discount_start_var.get().strip()
+            if discount_start:
+                update_data['discount_start'] = discount_start
+            else:
+                update_data['discount_start'] = None
+                
+            discount_end = self.discount_end_var.get().strip()
+            if discount_end:
+                update_data['discount_end'] = discount_end
+            else:
+                update_data['discount_end'] = None
+            
+            # Update the item in the database
+            response = self.supabase_client.table('store_items').update(update_data).eq('id', item_id).execute()
+            
+            if response:
+                messagebox.showinfo("Success", "Store item updated successfully.")
+                self.load_store_items()  # Refresh the list
+            else:
+                messagebox.showerror("Error", "Failed to update store item.")
+                
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to update store item: {str(e)}")
+    
+    def delete_store_item(self):
+        """Delete a store item from the database"""
+        if not self.supabase_client:
+            messagebox.showerror("Error", "Not connected to Supabase. Please check your credentials.")
+            return
+        
+        try:
+            # Get the selected item ID
+            selection = self.store_tree.selection()
+            if not selection:
+                messagebox.showwarning("Warning", "Please select a store item to delete.")
+                return
+            
+            item = self.store_tree.item(selection[0])
+            item_id = item['tags'][0]
+            
+            # Confirm deletion with the user
+            result = messagebox.askyesno("Confirm Deletion", 
+                                      f"Are you sure you want to delete store item with ID: {item_id}?\n\nThis action cannot be undone.")
+            
+            if result:
+                # Delete the item from the database
+                response = self.supabase_client.table('store_items').delete().eq('id', item_id).execute()
+                
+                if response:
+                    messagebox.showinfo("Success", "Store item deleted successfully.")
+                    self.load_store_items()  # Refresh the list
+                else:
+                    messagebox.showerror("Error", "Failed to delete store item.")
+                    
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to delete store item: {str(e)}")
+    
+    def add_new_store_item(self):
+        """Add a new store item to the database"""
+        if not self.supabase_client:
+            messagebox.showerror("Error", "Not connected to Supabase. Please check your credentials.")
+            return
+        
+        # Create a new window for adding a store item
+        add_window = tk.Toplevel(self.root)
+        add_window.title("Add New Store Item")
+        add_window.geometry("400x500")
+        
+        # Create form fields for new item
+        frame = tb.Frame(add_window, padding=20)
+        frame.pack(fill=tk.BOTH, expand=True)
+        
+        # Item Key
+        tb.Label(frame, text="Item Key:").grid(row=0, column=0, sticky="w", pady=2)
+        item_key_var = tk.StringVar()
+        tb.Entry(frame, textvariable=item_key_var, bootstyle="secondary").grid(row=0, column=1, sticky="ew", pady=2, padx=(10, 0))
+        
+        # Item Name
+        tb.Label(frame, text="Name:").grid(row=1, column=0, sticky="w", pady=2)
+        item_name_var = tk.StringVar()
+        tb.Entry(frame, textvariable=item_name_var, bootstyle="secondary").grid(row=1, column=1, sticky="ew", pady=2, padx=(10, 0))
+        
+        # Item Description
+        tb.Label(frame, text="Description:").grid(row=2, column=0, sticky="w", pady=2)
+        item_description_var = tk.StringVar()
+        tb.Entry(frame, textvariable=item_description_var, bootstyle="secondary").grid(row=2, column=1, sticky="ew", pady=2, padx=(10, 0))
+        
+        # Item Type
+        tb.Label(frame, text="Type:").grid(row=3, column=0, sticky="w", pady=2)
+        item_type_var = tk.StringVar()
+        tb.Combobox(frame, textvariable=item_type_var, 
+                   values=["powerup", "theme", "feature"], 
+                   state="readonly", bootstyle="secondary").grid(row=3, column=1, sticky="ew", pady=2, padx=(10, 0))
+        
+        # Icon
+        tb.Label(frame, text="Icon:").grid(row=4, column=0, sticky="w", pady=2)
+        icon_var = tk.StringVar()
+        tb.Entry(frame, textvariable=icon_var, bootstyle="secondary").grid(row=4, column=1, sticky="ew", pady=2, padx=(10, 0))
+        
+        # Base Price
+        tb.Label(frame, text="Base Price:").grid(row=5, column=0, sticky="w", pady=2)
+        base_price_var = tk.IntVar()
+        tb.Spinbox(frame, from_=0, to=9999, textvariable=base_price_var, bootstyle="secondary").grid(row=5, column=1, sticky="ew", pady=2, padx=(10, 0))
+        
+        # Category
+        tb.Label(frame, text="Category:").grid(row=6, column=0, sticky="w", pady=2)
+        category_var = tk.StringVar()
+        tb.Entry(frame, textvariable=category_var, bootstyle="secondary").grid(row=6, column=1, sticky="ew", pady=2, padx=(10, 0))
+        
+        # Is Active
+        tb.Label(frame, text="Is Active:").grid(row=7, column=0, sticky="w", pady=2)
+        is_active_var = tk.BooleanVar(value=True)
+        tb.Checkbutton(frame, variable=is_active_var).grid(row=7, column=1, sticky="w", pady=2, padx=(10, 0))
+        
+        # Is Discounted
+        tb.Label(frame, text="Is Discounted:").grid(row=8, column=0, sticky="w", pady=2)
+        is_discounted_var = tk.BooleanVar()
+        discount_check = tb.Checkbutton(frame, variable=is_discounted_var)
+        discount_check.grid(row=8, column=1, sticky="w", pady=2, padx=(10, 0))
+        
+        # Discount Percentage
+        tb.Label(frame, text="Discount %:").grid(row=9, column=0, sticky="w", pady=2)
+        discount_percentage_var = tk.IntVar()
+        discount_perc_spinbox = tb.Spinbox(frame, from_=0, to=100, textvariable=discount_percentage_var, bootstyle="secondary")
+        discount_perc_spinbox.grid(row=9, column=1, sticky="ew", pady=2, padx=(10, 0))
+        discount_perc_spinbox.config(state="disabled")
+        
+        # Bind discount checkbox to enable/disable discount fields
+        def toggle_discount_fields():
+            state = 'normal' if is_discounted_var.get() else 'disabled'
+            discount_perc_spinbox.config(state=state)
+        
+        discount_check.config(command=toggle_discount_fields)
+        
+        # Category grid configuration
+        frame.grid_columnconfigure(1, weight=1)
+        
+        # Buttons
+        button_frame = tb.Frame(frame)
+        button_frame.grid(row=10, column=0, columnspan=2, pady=20)
+        
+        def save_new_item():
+            try:
+                # Validate required fields
+                if not item_key_var.get().strip():
+                    messagebox.showerror("Error", "Item Key is required.")
+                    return
+                if not item_name_var.get().strip():
+                    messagebox.showerror("Error", "Item Name is required.")
+                    return
+                
+                # Prepare data
+                new_item_data = {
+                    'item_key': item_key_var.get().strip(),
+                    'item_name': item_name_var.get().strip(),
+                    'item_description': item_description_var.get().strip(),
+                    'item_type': item_type_var.get(),
+                    'icon': icon_var.get().strip(),
+                    'base_price': base_price_var.get(),
+                    'category': category_var.get().strip(),
+                    'is_active': is_active_var.get(),
+                    'is_discounted': is_discounted_var.get(),
+                    'discount_percentage': discount_percentage_var.get(),
+                }
+                
+                # Insert the new item into the database
+                response = self.supabase_client.table('store_items').insert(new_item_data).execute()
+                
+                if response:
+                    messagebox.showinfo("Success", "Store item added successfully.")
+                    add_window.destroy()
+                    self.load_store_items()  # Refresh the list
+                else:
+                    messagebox.showerror("Error", "Failed to add store item.")
+                    
+            except Exception as e:
+                messagebox.showerror("Error", f"Failed to add store item: {str(e)}")
+        
+        tb.Button(button_frame, text="Save", command=save_new_item, bootstyle=SUCCESS).pack(side=tk.LEFT, padx=(0, 10))
+        tb.Button(button_frame, text="Cancel", command=add_window.destroy, bootstyle=SECONDARY).pack(side=tk.LEFT)
     
 
 
