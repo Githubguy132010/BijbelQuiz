@@ -236,7 +236,7 @@ class ModernAdminDashboard:
         
         # Create a canvas and scrollbar for scrolling
         self.viz_canvas = tk.Canvas(viz_container, bg='white')
-        viz_scrollbar = tb.Scrollbar(viz_container, orient="vertical", command=self.viz_canvas.yview, bootstyle="round")
+        self.viz_scrollbar = tb.Scrollbar(viz_container, orient="vertical", command=self.viz_canvas.yview, bootstyle="round")
         
         # Create the visualization frame inside the canvas
         self.viz_frame = tb.Labelframe(self.viz_canvas, text="Feature Usage Visualization", padding=10)
@@ -249,7 +249,7 @@ class ModernAdminDashboard:
         
         # Create a window inside the canvas to hold the visualization frame
         self.viz_canvas.create_window((0, 0), window=self.viz_frame, anchor="nw")
-        self.viz_canvas.configure(yscrollcommand=viz_scrollbar.set)
+        self.viz_canvas.configure(yscrollcommand=self.viz_scrollbar.set)
         
         # Bind mousewheel to canvas for scrolling
         def _on_mousewheel(event):
@@ -882,16 +882,15 @@ class ModernAdminDashboard:
         # Store reference to canvas to prevent garbage collection
         self.canvas = figure_canvas
         
-        # Pack the visualization frame below the analysis panel
-        self.viz_frame.pack(fill=tk.BOTH, expand=True)
-        
         # Update the scroll region to include all content
         self.viz_frame.update_idletasks()
         self.viz_canvas.configure(scrollregion=self.viz_canvas.bbox("all"))
         
-        # Pack the canvas and scrollbar
-        self.viz_canvas.pack(side="left", fill="both", expand=True)
-        viz_scrollbar.pack(side="right", fill="y")
+        # Pack the canvas and scrollbar (only if not already packed)
+        if not self.viz_canvas.winfo_ismapped():
+            self.viz_canvas.pack(side="left", fill="both", expand=True)
+        if not self.viz_scrollbar.winfo_ismapped():
+            self.viz_scrollbar.pack(side="right", fill="y")
     
     def on_error_select(self, event):
         """Handle error selection in the treeview"""
