@@ -19,6 +19,11 @@ jobs:
         with:
           ref: main
           token: ${{ secrets.GH_PAT }}
+      uses: actions/checkout@v4
+      with:
+        ref: main
+        token: ${{ secrets.GH_PAT }}
+>>>>>>> b332b8b411101a8d4324da5d6f6d73fa9b64cf82
 
     - name: Get PR author info
       id: pr-author
