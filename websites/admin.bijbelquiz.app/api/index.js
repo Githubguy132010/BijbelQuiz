@@ -1,18 +1,9 @@
-// server.js - Node.js server for Admin Dashboard API (for local development)
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const rateLimit = require('express-rate-limit');
-const slowDown = require('express-slow-down');
-const xss = require('xss');
-const validator = require('validator');
-const { createClient } = require('@supabase/supabase-js');
-require('dotenv').config();
-
-const app = express();
-const PORT = process.env.PORT || 3000;
+// api/index.js - Vercel serverless function for Admin Dashboard API
+import { createClient } from '@supabase/supabase-js';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import xss from 'xss';
+import validator from 'validator';
 
 // Initialize Supabase client
 let supabase;
@@ -21,88 +12,6 @@ if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
 } else {
     console.error("Supabase configuration is missing. Please set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in your environment.");
 }
-
-// Serve static files from the current directory
-app.use(express.static(__dirname));
-
-// Security middleware
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'", "https://*.supabase.co"], // Supabase connection
-    },
-  },
-  referrerPolicy: { policy: 'no-referrer' },
-  hsts: {
-    maxAge: 31536000, // 1 year
-    includeSubDomains: true,
-    preload: true
-  }
-}));
-
-// CORS Configuration - only allow specific origins
-const allowedOrigins = process.env.ALLOWED_ORIGINS ? 
-  process.env.ALLOWED_ORIGINS.split(',') : 
-  ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5500'];
-
-app.use(cors({
-  origin: allowedOrigins,
-  credentials: true
-}));
-
-// Rate limiting for API endpoints
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: {
-    error: 'Too many requests from this IP, please try again later.'
-  },
-  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-});
-
-// Rate limiting for authentication endpoints
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // limit each IP to 5 login requests per windowMs
-  message: {
-    error: 'Too many login attempts from this IP, please try again later.'
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-
-// Slow down middleware - gradually increase response time when request rate increases
-const speedLimiter = slowDown({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  delayAfter: 25, // allow 25 requests per 15 minutes, then...
-  delayMs: 500 // begin adding 500ms of delay per request above 25
-});
-
-app.use(express.json({ limit: '10mb' }));
-app.use(speedLimiter);
-
-// Apply rate limiting to API routes
-app.use('/api/', apiLimiter);
-
-// Sanitize input function
-const sanitizeInput = (input) => {
-  if (typeof input === 'string') {
-    // Sanitize using xss library and validator
-    return xss(input).trim();
-  } else if (typeof input === 'object' && input !== null) {
-    const sanitized = {};
-    for (const [key, value] of Object.entries(input)) {
-      sanitized[key] = sanitizeInput(value); // Recursively sanitize
-    }
-    return sanitized;
-  }
-  return input;
-};
 
 // In production, admin users should come from a database
 // For demo purposes only, using a hardcoded admin user
@@ -138,83 +47,183 @@ const initializeAdminUser = async () => {
 initializeAdminUser();
 
 // Verify token middleware
-const authenticateToken = (req, res, next) => {
+const authenticateToken = (req) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
 
   if (!token) {
-    return res.status(401).json({ error: 'Access token required' });
+    return { authenticated: false, error: 'Access token required' };
   }
 
-  jwt.verify(token, process.env.JWT_SECRET || 'fallback_secret_for_dev', (err, user) => {
-    if (err) {
-      if (err.name === 'TokenExpiredError') {
-        return res.status(403).json({ error: 'Token expired' });
-      } else if (err.name === 'JsonWebTokenError') {
-        return res.status(403).json({ error: 'Invalid token' });
-      }
-      return res.status(403).json({ error: 'Invalid or expired token' });
+  try {
+    const user = jwt.verify(token, process.env.JWT_SECRET || 'fallback_secret_for_dev');
+    return { authenticated: true, user };
+  } catch (err) {
+    if (err.name === 'TokenExpiredError') {
+      return { authenticated: false, error: 'Token expired' };
+    } else if (err.name === 'JsonWebTokenError') {
+      return { authenticated: false, error: 'Invalid token' };
     }
-    req.user = user;
-    next();
-  });
+    return { authenticated: false, error: 'Invalid or expired token' };
+  }
+};
+
+// Sanitize input function
+const sanitizeInput = (input) => {
+  if (typeof input === 'string') {
+    // Sanitize using xss library and validator
+    return xss(input).trim();
+  } else if (typeof input === 'object' && input !== null) {
+    const sanitized = {};
+    for (const [key, value] of Object.entries(input)) {
+      sanitized[key] = sanitizeInput(value); // Recursively sanitize
+    }
+    return sanitized;
+  }
+  return input;
 };
 
 // Validate and sanitize query parameters
-const validateAndSanitizeQuery = (req, res, next) => {
-  const { type, user, question, search } = req.query;
+const validateAndSanitizeQuery = (req) => {
+  const { type, user, question, search } = req.query || {};
+  const sanitizedQuery = { ...req.query };
   
   // Sanitize all query parameters
-  if (type) req.query.type = sanitizeInput(type);
-  if (user) req.query.user = sanitizeInput(user);
-  if (question) req.query.question = sanitizeInput(question);
-  if (search) req.query.search = sanitizeInput(search);
+  if (type) sanitizedQuery.type = sanitizeInput(type);
+  if (user) sanitizedQuery.user = sanitizeInput(user);
+  if (question) sanitizedQuery.question = sanitizeInput(question);
+  if (search) sanitizedQuery.search = sanitizeInput(search);
   
   // Validate query parameters
-  if (type && !validator.isAscii(type) && type.length > 50) {
-    return res.status(400).json({ error: 'Invalid type parameter' });
+  if (type && (!validator.isAscii(type) || type.length > 50)) {
+    return { valid: false, error: 'Invalid type parameter' };
   }
   
   if (user && (!validator.isAscii(user) || user.length > 100)) {
-    return res.status(400).json({ error: 'Invalid user parameter' });
+    return { valid: false, error: 'Invalid user parameter' };
   }
   
   if (question && (!validator.isAscii(question) || question.length > 50)) {
-    return res.status(400).json({ error: 'Invalid question parameter' });
+    return { valid: false, error: 'Invalid question parameter' };
   }
   
   if (search && (!validator.isAscii(search) || search.length > 100)) {
-    return res.status(400).json({ error: 'Invalid search parameter' });
+    return { valid: false, error: 'Invalid search parameter' };
   }
   
-  next();
-};
-
-// Validate and sanitize request body
-const validateAndSanitizeBody = (req, res, next) => {
-  if (req.body) {
-    req.body = sanitizeInput(req.body);
-    
-    // Additional validation for specific endpoints can be added here
-    next();
-  } else {
-    next();
-  }
+  return { valid: true, sanitizedQuery };
 };
 
 // Validate ID parameter
-const validateIdParam = (req, res, next) => {
-  const id = req.params.id;
-  
+const validateIdParam = (id) => {
   if (!id || !validator.isInt(id, { min: 1, max: 999999 })) {
-    return res.status(400).json({ error: 'Invalid ID parameter' });
+    return { valid: false, error: 'Invalid ID parameter' };
   }
   
-  next();
+  return { valid: true };
 };
 
-// Login endpoint with rate limiting
-app.post('/api/login', authLimiter, async (req, res) => {
+// Main handler function for Vercel
+export default async function handler(req, res) {
+  // Set CORS headers
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  // Extract path and method
+  const { path, method } = req;
+  
+  // Health check endpoint
+  if (path === '/health' && method === 'GET') {
+    return res.json({ status: 'OK', timestamp: new Date().toISOString() });
+  }
+
+  // Check if this is an API request
+  if (path.startsWith('/api/')) {
+    const endpoint = path.replace('/api/', '');
+    
+    // Login endpoint (public)
+    if (endpoint === 'login' && method === 'POST') {
+      return handleLogin(req, res);
+    }
+    
+    // All other API endpoints require authentication
+    const authResult = authenticateToken(req);
+    if (!authResult.authenticated) {
+      return res.status(401).json({ error: authResult.error });
+    }
+    
+    // Handle protected endpoints
+    switch (endpoint) {
+      case 'tracking':
+        if (method === 'GET') {
+          return handleGetTracking(req, res);
+        }
+        break;
+      case 'errors':
+        if (method === 'GET') {
+          return handleGetErrors(req, res);
+        }
+        break;
+      case 'errors/':
+        // This case handles errors with an ID (errors/{id})
+        const errorId = req.query.id;
+        if (method === 'GET') {
+          return handleGetErrorById(req, res, errorId);
+        } else if (method === 'DELETE') {
+          return handleDeleteError(req, res, errorId);
+        }
+        break;
+      case 'store':
+        if (method === 'GET') {
+          return handleGetStore(req, res);
+        } else if (method === 'POST') {
+          return handlePostStore(req, res);
+        } else if (method === 'PUT' && req.query.id) {
+          return handlePutStore(req, res, req.query.id);
+        } else if (method === 'DELETE' && req.query.id) {
+          return handleDeleteStore(req, res, req.query.id);
+        }
+        break;
+      case 'store/':
+        // This case handles store items with an ID (store/{id})
+        if (method === 'GET' && req.query.id) {
+          return handleGetStoreById(req, res, req.query.id);
+        }
+        break;
+      case 'messages':
+        if (method === 'GET') {
+          return handleGetMessages(req, res);
+        } else if (method === 'POST') {
+          return handlePostMessages(req, res);
+        } else if (method === 'PUT' && req.query.id) {
+          return handlePutMessages(req, res, req.query.id);
+        } else if (method === 'DELETE' && req.query.id) {
+          return handleDeleteMessages(req, res, req.query.id);
+        }
+        break;
+      case 'messages/':
+        // This case handles messages with an ID (messages/{id})
+        if (method === 'GET' && req.query.id) {
+          return handleGetMessageById(req, res, req.query.id);
+        }
+        break;
+      default:
+        return res.status(404).json({ error: 'Endpoint not found' });
+    }
+  }
+  
+  // For any other routes, return 404
+  return res.status(404).json({ error: 'Not found' });
+}
+
+// Login endpoint handler
+async function handleLogin(req, res) {
   try {
     let { username, password } = req.body;
 
@@ -262,7 +271,7 @@ app.post('/api/login', authLimiter, async (req, res) => {
       process.env.JWT_SECRET || 'fallback_secret_for_dev'
     );
 
-    res.json({
+    res.status(200).json({
       token,
       user: {
         id: user.id,
@@ -273,14 +282,18 @@ app.post('/api/login', authLimiter, async (req, res) => {
     console.error('Login error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
-});
+}
 
-// Protected API routes
-app.use('/api/', authenticateToken);
-
-// Get tracking data
-app.get('/api/tracking', validateAndSanitizeQuery, async (req, res) => {
+// Get tracking data handler
+async function handleGetTracking(req, res) {
   try {
+    const validation = validateAndSanitizeQuery(req);
+    if (!validation.valid) {
+      return res.status(400).json({ error: validation.error });
+    }
+    
+    req.query = validation.sanitizedQuery;
+    
     // Build query with filters
     let query = supabase.from('tracking_events').select('*').order('timestamp', { ascending: false });
     
@@ -299,16 +312,23 @@ app.get('/api/tracking', validateAndSanitizeQuery, async (req, res) => {
       return res.status(500).json({ error: 'Failed to fetch tracking data' });
     }
     
-    res.json(data);
+    res.status(200).json(data);
   } catch (error) {
     console.error('Error fetching tracking data:', error);
     res.status(500).json({ error: 'Failed to fetch tracking data' });
   }
-});
+}
 
-// Get error reports
-app.get('/api/errors', validateAndSanitizeQuery, async (req, res) => {
+// Get error reports handler
+async function handleGetErrors(req, res) {
   try {
+    const validation = validateAndSanitizeQuery(req);
+    if (!validation.valid) {
+      return res.status(400).json({ error: validation.error });
+    }
+    
+    req.query = validation.sanitizedQuery;
+    
     // Build query with filters
     let query = supabase.from('error_reports').select('*').order('timestamp', { ascending: false });
     
@@ -327,17 +347,20 @@ app.get('/api/errors', validateAndSanitizeQuery, async (req, res) => {
       return res.status(500).json({ error: 'Failed to fetch error reports' });
     }
     
-    res.json(data);
+    res.status(200).json(data);
   } catch (error) {
     console.error('Error fetching error reports:', error);
     res.status(500).json({ error: 'Failed to fetch error reports' });
   }
-});
+}
 
-// Get specific error report by ID
-app.get('/api/errors/:id', validateIdParam, async (req, res) => {
+// Get specific error report by ID handler
+async function handleGetErrorById(req, res, errorId) {
   try {
-    const errorId = req.params.id;
+    const validation = validateIdParam(errorId);
+    if (!validation.valid) {
+      return res.status(400).json({ error: validation.error });
+    }
     
     const { data, error } = await supabase
       .from('error_reports')
@@ -350,17 +373,20 @@ app.get('/api/errors/:id', validateIdParam, async (req, res) => {
       return res.status(500).json({ error: 'Failed to fetch error report' });
     }
     
-    res.json(data);
+    res.status(200).json(data);
   } catch (error) {
     console.error('Error fetching error report:', error);
     res.status(500).json({ error: 'Failed to fetch error report' });
   }
-});
+}
 
-// Delete error report
-app.delete('/api/errors/:id', validateIdParam, async (req, res) => {
+// Delete error report handler
+async function handleDeleteError(req, res, errorId) {
   try {
-    const errorId = req.params.id;
+    const validation = validateIdParam(errorId);
+    if (!validation.valid) {
+      return res.status(400).json({ error: validation.error });
+    }
     
     const { data, error } = await supabase
       .from('error_reports')
@@ -372,16 +398,23 @@ app.delete('/api/errors/:id', validateIdParam, async (req, res) => {
       return res.status(500).json({ error: 'Failed to delete error report' });
     }
     
-    res.json({ message: `Error report ${errorId} deleted successfully` });
+    res.status(200).json({ message: `Error report ${errorId} deleted successfully` });
   } catch (error) {
     console.error('Error deleting error report:', error);
     res.status(500).json({ error: 'Failed to delete error report' });
   }
-});
+}
 
-// Get store items
-app.get('/api/store', validateAndSanitizeQuery, async (req, res) => {
+// Get store items handler
+async function handleGetStore(req, res) {
   try {
+    const validation = validateAndSanitizeQuery(req);
+    if (!validation.valid) {
+      return res.status(400).json({ error: validation.error });
+    }
+    
+    req.query = validation.sanitizedQuery;
+    
     // Build query with filters
     let query = supabase.from('store_items').select('*').order('item_name');
     
@@ -398,17 +431,20 @@ app.get('/api/store', validateAndSanitizeQuery, async (req, res) => {
       return res.status(500).json({ error: 'Failed to fetch store items' });
     }
     
-    res.json(data);
+    res.status(200).json(data);
   } catch (error) {
     console.error('Error fetching store items:', error);
     res.status(500).json({ error: 'Failed to fetch store items' });
   }
-});
+}
 
-// Get specific store item by ID
-app.get('/api/store/:id', validateIdParam, async (req, res) => {
+// Get specific store item by ID handler
+async function handleGetStoreById(req, res, itemId) {
   try {
-    const itemId = req.params.id;
+    const validation = validateIdParam(itemId);
+    if (!validation.valid) {
+      return res.status(400).json({ error: validation.error });
+    }
     
     const { data, error } = await supabase
       .from('store_items')
@@ -421,18 +457,22 @@ app.get('/api/store/:id', validateIdParam, async (req, res) => {
       return res.status(500).json({ error: 'Failed to fetch store item' });
     }
     
-    res.json(data);
+    res.status(200).json(data);
   } catch (error) {
     console.error('Error fetching store item:', error);
     res.status(500).json({ error: 'Failed to fetch store item' });
   }
-});
+}
 
-// Update store item
-app.put('/api/store/:id', validateIdParam, validateAndSanitizeBody, async (req, res) => {
+// Update store item handler
+async function handlePutStore(req, res, itemId) {
   try {
-    const itemId = req.params.id;
-    const updateData = req.body;
+    const validation = validateIdParam(itemId);
+    if (!validation.valid) {
+      return res.status(400).json({ error: validation.error });
+    }
+    
+    const updateData = sanitizeInput(req.body);
     
     // Validate updateData fields
     if (updateData.item_name && (updateData.item_name.length < 1 || updateData.item_name.length > 100)) {
@@ -457,17 +497,20 @@ app.put('/api/store/:id', validateIdParam, validateAndSanitizeBody, async (req, 
       return res.status(500).json({ error: 'Failed to update store item' });
     }
     
-    res.json({ message: `Store item ${itemId} updated successfully` });
+    res.status(200).json({ message: `Store item ${itemId} updated successfully` });
   } catch (error) {
     console.error('Error updating store item:', error);
     res.status(500).json({ error: 'Failed to update store item' });
   }
-});
+}
 
-// Delete store item
-app.delete('/api/store/:id', validateIdParam, async (req, res) => {
+// Delete store item handler
+async function handleDeleteStore(req, res, itemId) {
   try {
-    const itemId = req.params.id;
+    const validation = validateIdParam(itemId);
+    if (!validation.valid) {
+      return res.status(400).json({ error: validation.error });
+    }
     
     const { data, error } = await supabase
       .from('store_items')
@@ -479,17 +522,17 @@ app.delete('/api/store/:id', validateIdParam, async (req, res) => {
       return res.status(500).json({ error: 'Failed to delete store item' });
     }
     
-    res.json({ message: `Store item ${itemId} deleted successfully` });
+    res.status(200).json({ message: `Store item ${itemId} deleted successfully` });
   } catch (error) {
     console.error('Error deleting store item:', error);
     res.status(500).json({ error: 'Failed to delete store item' });
   }
-});
+}
 
-// Create new store item
-app.post('/api/store', validateAndSanitizeBody, async (req, res) => {
+// Create new store item handler
+async function handlePostStore(req, res) {
   try {
-    const newItem = req.body;
+    const newItem = sanitizeInput(req.body);
     
     // Validate required fields
     if (!newItem.item_key || newItem.item_key.length > 50) {
@@ -522,16 +565,23 @@ app.post('/api/store', validateAndSanitizeBody, async (req, res) => {
       return res.status(500).json({ error: 'Failed to create store item' });
     }
     
-    res.json({ message: 'Store item created successfully', id: data[0].id });
+    res.status(200).json({ message: 'Store item created successfully', id: data[0].id });
   } catch (error) {
     console.error('Error creating store item:', error);
     res.status(500).json({ error: 'Failed to create store item' });
   }
-});
+}
 
-// Get messages
-app.get('/api/messages', validateAndSanitizeQuery, async (req, res) => {
+// Get messages handler
+async function handleGetMessages(req, res) {
   try {
+    const validation = validateAndSanitizeQuery(req);
+    if (!validation.valid) {
+      return res.status(400).json({ error: validation.error });
+    }
+    
+    req.query = validation.sanitizedQuery;
+    
     // Build query with search filter
     let query = supabase.from('messages').select('*').order('created_at', { ascending: false });
     
@@ -547,18 +597,22 @@ app.get('/api/messages', validateAndSanitizeQuery, async (req, res) => {
       return res.status(500).json({ error: 'Failed to fetch messages' });
     }
     
-    res.json(data);
+    res.status(200).json(data);
   } catch (error) {
     console.error('Error fetching messages:', error);
     res.status(500).json({ error: 'Failed to fetch messages' });
   }
-});
+}
 
-// Update message
-app.put('/api/messages/:id', validateIdParam, validateAndSanitizeBody, async (req, res) => {
+// Update message handler
+async function handlePutMessages(req, res, messageId) {
   try {
-    const messageId = req.params.id;
-    const updateData = req.body;
+    const validation = validateIdParam(messageId);
+    if (!validation.valid) {
+      return res.status(400).json({ error: validation.error });
+    }
+    
+    const updateData = sanitizeInput(req.body);
     
     // Validate updateData fields
     if (updateData.title && (updateData.title.length < 1 || updateData.title.length > 200)) {
@@ -583,17 +637,20 @@ app.put('/api/messages/:id', validateIdParam, validateAndSanitizeBody, async (re
       return res.status(500).json({ error: 'Failed to update message' });
     }
     
-    res.json({ message: `Message ${messageId} updated successfully` });
+    res.status(200).json({ message: `Message ${messageId} updated successfully` });
   } catch (error) {
     console.error('Error updating message:', error);
     res.status(500).json({ error: 'Failed to update message' });
   }
-});
+}
 
-// Delete message
-app.delete('/api/messages/:id', validateIdParam, async (req, res) => {
+// Delete message handler
+async function handleDeleteMessages(req, res, messageId) {
   try {
-    const messageId = req.params.id;
+    const validation = validateIdParam(messageId);
+    if (!validation.valid) {
+      return res.status(400).json({ error: validation.error });
+    }
     
     const { data, error } = await supabase
       .from('messages')
@@ -605,17 +662,17 @@ app.delete('/api/messages/:id', validateIdParam, async (req, res) => {
       return res.status(500).json({ error: 'Failed to delete message' });
     }
     
-    res.json({ message: `Message ${messageId} deleted successfully` });
+    res.status(200).json({ message: `Message ${messageId} deleted successfully` });
   } catch (error) {
     console.error('Error deleting message:', error);
     res.status(500).json({ error: 'Failed to delete message' });
   }
-});
+}
 
-// Create new message
-app.post('/api/messages', validateAndSanitizeBody, async (req, res) => {
+// Create new message handler
+async function handlePostMessages(req, res) {
   try {
-    const newMessage = req.body;
+    const newMessage = sanitizeInput(req.body);
     
     // Validate required fields
     if (!newMessage.title || newMessage.title.length < 1 || newMessage.title.length > 200) {
@@ -640,23 +697,35 @@ app.post('/api/messages', validateAndSanitizeBody, async (req, res) => {
       return res.status(500).json({ error: 'Failed to create message' });
     }
     
-    res.json({ message: 'Message created successfully', id: data[0].id });
+    res.status(200).json({ message: 'Message created successfully', id: data[0].id });
   } catch (error) {
     console.error('Error creating message:', error);
     res.status(500).json({ error: 'Failed to create message' });
   }
-});
-
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({ status: 'OK', timestamp: new Date().toISOString() });
-});
-
-// If this file is run directly (not imported), start the server
-if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`Admin Dashboard Server running on port ${PORT}`);
-  });
 }
 
-module.exports = app; // Export for Vercel or testing
+// Get specific message by ID handler
+async function handleMessageById(req, res, messageId) {
+  try {
+    const validation = validateIdParam(messageId);
+    if (!validation.valid) {
+      return res.status(400).json({ error: validation.error });
+    }
+    
+    const { data, error } = await supabase
+      .from('messages')
+      .select('*')
+      .eq('id', messageId)
+      .single();
+    
+    if (error) {
+      console.error('Error fetching message:', error);
+      return res.status(500).json({ error: 'Failed to fetch message' });
+    }
+    
+    res.status(200).json(data);
+  } catch (error) {
+    console.error('Error fetching message:', error);
+    res.status(500).json({ error: 'Failed to fetch message' });
+  }
+}
