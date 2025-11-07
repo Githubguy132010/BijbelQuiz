@@ -98,7 +98,10 @@ void main() async {
         Provider(create: (_) => MessagingService()),
         ChangeNotifierProvider(create: (context) {
           final messagingService = Provider.of<MessagingService>(context, listen: false);
-          return MessagesProvider(messagingService);
+          final messagesProvider = MessagesProvider(messagingService);
+          // Initialize the provider to load persisted data
+          messagesProvider.initialize();
+          return messagesProvider;
         }),
       ],
       child: BijbelQuizApp(),
@@ -253,12 +256,12 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
       }
 
       // Load messages on app startup (after other services are initialized)
-      _loadMessagesOnAppStart();
+      await _loadMessagesOnAppStart();
     });
   }
 
   /// Load messages on app startup
-  void _loadMessagesOnAppStart() async {
+  Future<void> _loadMessagesOnAppStart() async {
     try {
       final context = navigatorKey.currentContext;
       if (context != null) {

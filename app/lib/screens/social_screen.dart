@@ -781,16 +781,19 @@ class _SocialScreenState extends State<SocialScreen> {
   }
 
   /// Navigate to messages screen
-  void _navigateToMessagesScreen() {
+  Future<void> _navigateToMessagesScreen() async {
     _analyticsService.capture(context, 'messages_screen_opened');
+    
     // Mark messages as viewed when navigating to messages screen
     final messagesProvider = Provider.of<MessagesProvider>(context, listen: false);
-    messagesProvider.markAllMessagesAsViewed();
+    await messagesProvider.markAllMessagesAsViewed();
     
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const MessagesScreen(),
-      ),
-    );
+    if (mounted) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const MessagesScreen(),
+        ),
+      );
+    }
   }
 }

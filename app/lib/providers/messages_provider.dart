@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../services/messaging_service.dart';
 
 /// Provider for managing message state and unread message tracking
@@ -10,6 +11,8 @@ class MessagesProvider with ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
   int _unreadCount = 0;
+  SharedPreferences? _prefs;
+  static const String _viewedMessagesKey = 'viewed_message_ids';
 
   MessagesProvider(this._messagingService);
 
@@ -20,6 +23,30 @@ class MessagesProvider with ChangeNotifier {
   String? get errorMessage => _errorMessage;
   int get unreadCount => _unreadCount;
   bool get hasUnreadMessages => _unreadCount > 0;
+
+  /// Initializes the provider and loads persisted data
+  Future<void> initialize() async {
+    _prefs = await SharedPreferences.getInstance();
+    await _loadViewedMessageIds();
+  }
+
+  /// Loads viewed message IDs from persistent storage
+  Future<void> _loadViewedMessageIds() async {
+    if (_prefs == null) return;
+    
+    final messageIdsString = _prefs!.getStringList(_viewedMessagesKey);
+    if (messageIdsString != null) {
+      _viewedMessageIds = messageIdsString.toSet();
+    }
+  }
+
+  /// Saves viewed message IDs to persistent storage
+  Future<void> _saveViewedMessageIds() async {
+    if (_prefs == null) return;
+    
+    final messageIdsList = _viewedMessageIds.toList();
+    await _prefs!.setStringList(_viewedMessagesKey, messageIdsList);
+  }
 
   /// Loads active messages and tracks which ones have been viewed
   Future<void> loadActiveMessages() async {
@@ -53,17 +80,19 @@ class MessagesProvider with ChangeNotifier {
   }
 
   /// Marks a specific message as viewed
-  void markMessageAsViewed(String messageId) {
+  Future<void> markMessageAsViewed(String messageId) async {
     if (!_viewedMessageIds.contains(messageId)) {
       _viewedMessageIds.add(messageId);
+      await _saveViewedMessageIds();
       _calculateUnreadCount();
       notifyListeners();
     }
   }
 
   /// Marks all current messages as viewed
-  void markAllMessagesAsViewed() {
+  Future<void> markAllMessagesAsViewed() async {
     _viewedMessageIds.addAll(_activeMessages.map((msg) => msg.id));
+    await _saveViewedMessageIds();
     _unreadCount = 0;
     notifyListeners();
   }
@@ -98,12 +127,18 @@ class MessagesProvider with ChangeNotifier {
   }
 
   /// Resets the provider state (useful for testing or logout)
-  void reset() {
+  Future<void> reset() async {
     _activeMessages.clear();
     _viewedMessageIds.clear();
     _isLoading = false;
     _errorMessage = null;
     _unreadCount = 0;
+    
+    // Clear persisted data
+    if (_prefs != null) {
+      await _prefs!.remove(_viewedMessagesKey);
+    }
+    
     notifyListeners();
   }
 }
