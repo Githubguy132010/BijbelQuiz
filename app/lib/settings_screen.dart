@@ -221,7 +221,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 // Add themes from centralized theme manager
                 final availableThemes = ThemeManager().getAvailableThemes();
                 for (final entry in availableThemes.entries) {
-                  themeDisplayNames[entry.key] = entry.value.name;
+                  // Only include themes that are unlocked (purchased) or always available
+                  if (entry.key == 'grey' || settings.unlockedThemes.contains(entry.key)) {
+                    themeDisplayNames[entry.key] = entry.value.name;
+                  }
                 }
 
                 // Add AI themes
@@ -1815,8 +1818,8 @@ String _getThemeDropdownValue(SettingsProvider settings) {
       return custom;
     }
     // For backward compatibility, still check for unlocked themes
-    if (settings.unlockedThemes.contains(custom) || 
-        custom == 'grey') { // Grey theme is always available
+    if (settings.unlockedThemes.contains(custom) ||
+        custom == 'grey' || custom == 'christmas') { // Christmas theme becomes available when unlocked
       return custom;
     }
   }

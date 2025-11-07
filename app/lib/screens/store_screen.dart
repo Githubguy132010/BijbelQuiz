@@ -523,6 +523,25 @@ class _StoreScreenState extends State<StoreScreen> {
 
                     SizedBox(height: isDesktop ? 16 : 12),
 
+                    _buildThemeCard(
+                      context,
+                      title: 'Kerst Thema',
+                      description: 'Een feestelijk kerstthema met rode en groene kleuren',
+                      icon: Icons.card_giftcard_rounded,
+                      iconColor: Colors.red[700]!,
+                      cost: _getPriceByKey('christmas_theme'),
+                      isDiscounted: _isDiscountedByKey('christmas_theme'),
+                      discountAmount: _getDiscountAmountByKey('christmas_theme'),
+                      isDev: isDev,
+                      gameStats: gameStats,
+                      settings: settings,
+                      unlocked: unlocked,
+                      themeKey: 'christmas',
+                      isDesktop: isDesktop,
+                    ),
+
+                    SizedBox(height: isDesktop ? 16 : 12),
+
                     _buildAIThemeCard(
                       context,
                       title: strings.AppStrings.aiThemeGenerator,
