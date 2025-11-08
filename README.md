@@ -24,13 +24,19 @@ BijbelQuiz is a cross-platform Bible quiz app designed to test and improve your 
     cd BijbelQuiz
     ```
 
-2. **Install dependencies**:
+2. **Navigate to the app directory**:
+
+    ```bash
+    cd app
+    ```
+
+3. **Install dependencies**:
 
     ```bash
     flutter pub get
     ```
 
-3. **Set up development environment**:
+4. **Set up development environment**:
 
     ```bash
     # For Android development
@@ -40,7 +46,7 @@ BijbelQuiz is a cross-platform Bible quiz app designed to test and improve your 
     sudo gem install cocoapods
     ```
 
-4. **Run the app**:
+5. **Run the app**:
 
     ```bash
     # For Android
