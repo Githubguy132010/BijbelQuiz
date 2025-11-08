@@ -474,6 +474,14 @@ class _AIThemeDesignerScreenState extends State<AIThemeDesignerScreen> {
           style: TopSnackBarStyle.success
         );
 
+        // Track successful AI theme generation
+        final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
+        analyticsService.trackFeatureSuccess(context, AnalyticsService.FEATURE_AI_THEME_GENERATOR, additionalProperties: {
+          'theme_name': themeName,
+          'description': description,
+          'cost': cost,
+        });
+
         // Show theme preview dialog
         await _showThemePreviewDialog(context, aiTheme);
       }

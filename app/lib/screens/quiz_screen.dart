@@ -376,6 +376,13 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
                   gameStats.spendPointsForRetry().then((success) {
                     if (!dialogContext.mounted) return;
                     if (success) {
+                      // Track successful retry with points
+                      analyticsService.trackFeatureSuccess(context, AnalyticsService.FEATURE_RETRY_WITH_POINTS, additionalProperties: {
+                        'time_remaining': 0, // Time is up
+                        'current_streak': gameStats.currentStreak,
+                        'current_score': gameStats.score,
+                      });
+
                       Navigator.of(dialogContext).pop();
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         if (mounted) {
@@ -1106,6 +1113,13 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
       },
     );
     if (success) {
+      // Track successful question skip
+      analyticsService.trackFeatureSuccess(context, AnalyticsService.FEATURE_SKIP_QUESTION, additionalProperties: {
+        'question_category': question.category,
+        'question_difficulty': question.difficulty,
+        'time_remaining': _quizState.timeRemaining,
+      });
+
       _timerManager.timeAnimationController.stop();
       setState(() {
         _quizState = _quizState.copyWith(
@@ -1210,6 +1224,14 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
             }
           });
         }
+      });
+
+      // Track successful biblical reference unlock
+      analyticsService.trackFeatureSuccess(context, AnalyticsService.FEATURE_BIBLICAL_REFERENCES, additionalProperties: {
+        'question_category': question.category,
+        'question_difficulty': question.difficulty,
+        'biblical_reference': question.biblicalReference ?? 'none',
+        'time_remaining': _quizState.timeRemaining,
       });
     } else {
       // Not enough stars - this is a user state issue, not an error to report automatically

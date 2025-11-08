@@ -739,6 +739,13 @@ class _LessonSelectScreenState extends State<LessonSelectScreen> {
                                         _showPromoCard = false;
                                       });
                                     },
+                                    onView: () {
+                                      // Track promo card view
+                                      final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
+                                      analyticsService.trackFeatureUsage(context, AnalyticsService.FEATURE_PROMO_CARDS, AnalyticsService.ACTION_ACCESSED, additionalProperties: {
+                                        'promo_type': _isDonationPromo ? 'donation' : (_isSatisfactionPromo ? 'satisfaction' : (_isDifficultyPromo ? 'difficulty' : (_socialMediaType ?? 'follow'))),
+                                      });
+                                    },
                                     onAction: (url) async {
                                       final settings = Provider.of<SettingsProvider>(context, listen: false);
                                       

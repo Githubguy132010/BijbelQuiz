@@ -155,6 +155,15 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
       'winner': _player1Score > _player2Score ? 'player1' : (_player2Score > _player1Score ? 'player2' : 'tie'),
     });
 
+    // Track multiplayer game completion
+    analyticsService.trackFeatureCompletion(context, AnalyticsService.FEATURE_MULTIPLAYER_GAME, additionalProperties: {
+      'duration_minutes': widget.gameDurationMinutes,
+      'player1_score': _player1Score,
+      'player2_score': _player2Score,
+      'winner': _player1Score > _player2Score ? 'player1' : (_player2Score > _player1Score ? 'player2' : 'tie'),
+      'total_questions_answered': _player1Score + _player2Score,
+    });
+
     // Update UI to show results instead of dialog
     setState(() {});
   }
@@ -883,9 +892,17 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
     );
     
     if (success) {
+      // Track successful question skip
+      analyticsService.trackFeatureSuccess(context, AnalyticsService.FEATURE_SKIP_QUESTION, additionalProperties: {
+        'question_category': quizState.question.category,
+        'question_difficulty': quizState.question.difficulty,
+        'time_remaining': quizState.timeRemaining,
+        'player': playerName,
+      });
+
       // Stop the appropriate player's timer
       timerManager.timeAnimationController.stop();
-      
+
       setState(() {
         if (isPlayer1) {
           _player1QuizState = _player1QuizState.copyWith(
@@ -899,22 +916,22 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
           );
         }
       });
-      
+
       await Future.delayed(_performanceService.getOptimalAnimationDuration(const Duration(milliseconds: 300)));
       if (!mounted) return;
-      
+
       setState(() {
         // Record that the current question was not answered correctly (since it was skipped)
         questionSelector.recordAnswerResult(quizState.question.question, false);
         final nextQuestion = questionSelector.pickNextQuestion(quizState.currentDifficulty, context);
-        
+
         if (isPlayer1) {
           _player1QuizState = QuizState(
             question: nextQuestion,
             timeRemaining: 20, // Default timer
             currentDifficulty: quizState.currentDifficulty,
           );
-          
+
           // Restart timer for player 1
           _player1TimerManager.startTimer(context: context, reset: true);
           _player1AnimationController.triggerTimeAnimation();
@@ -924,7 +941,7 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
             timeRemaining: 20, // Default timer
             currentDifficulty: quizState.currentDifficulty,
           );
-          
+
           // Restart timer for player 2
           _player2TimerManager.startTimer(context: context, reset: true);
           _player2AnimationController.triggerTimeAnimation();
@@ -1013,6 +1030,15 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
             }
           });
         }
+      });
+
+      // Track successful biblical reference unlock
+      analyticsService.trackFeatureSuccess(context, AnalyticsService.FEATURE_BIBLICAL_REFERENCES, additionalProperties: {
+        'question_category': quizState.question.category,
+        'question_difficulty': quizState.question.difficulty,
+        'biblical_reference': quizState.question.biblicalReference ?? 'none',
+        'time_remaining': quizState.timeRemaining,
+        'player': playerName,
       });
     } else {
       // Not enough stars - this is a user state issue, not an error to report automatically

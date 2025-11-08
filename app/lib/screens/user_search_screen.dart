@@ -90,10 +90,10 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
     final isFollowing = _followingList.contains(targetDeviceId);
     
     _analyticsService.capture(
-      context, 
+      context,
       isFollowing ? 'unfollow_user' : 'follow_user',
       properties: {
-        'target_device_id': targetDeviceId,
+        'target_device_id': targetDeviceId.substring(0, 8), // Only track partial device ID for privacy
         'username': username,
       },
     );
