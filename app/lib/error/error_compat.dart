@@ -82,7 +82,7 @@ class QuizErrorDisplay extends StatelessWidget {
                       icon: const Icon(Icons.refresh_rounded),
                       label: Text('Try Again'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: colorScheme.onErrorContainer.withOpacity(0.2),
+                        backgroundColor: colorScheme.onErrorContainer.withValues(alpha: 0.2),
                         foregroundColor: colorScheme.onErrorContainer,
                         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                       ),

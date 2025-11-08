@@ -75,7 +75,7 @@ class AppErrorDisplay extends StatelessWidget {
             Text(
               'Technical: ${error.technicalMessage}',
               style: theme.textTheme.bodySmall?.copyWith(
-                color: colorScheme.onErrorContainer.withOpacity(0.7),
+                color: colorScheme.onErrorContainer.withValues(alpha: 0.7),
               ),
             ),
           ],
@@ -86,7 +86,7 @@ class AppErrorDisplay extends StatelessWidget {
               icon: const Icon(Icons.refresh),
               label: const Text('Retry'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: colorScheme.onErrorContainer.withOpacity(0.2),
+                backgroundColor: colorScheme.onErrorContainer.withValues(alpha: 0.2),
                 foregroundColor: colorScheme.onErrorContainer,
               ),
             ),

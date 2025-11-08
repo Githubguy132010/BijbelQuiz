@@ -578,14 +578,14 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
     return Scaffold(
       backgroundColor: colorScheme.surface,
       body: SafeArea(
-        child: RawKeyboardListener(
+        child: KeyboardListener(
           focusNode: _keyboardFocusNode..requestFocus(),
-          onKey: (RawKeyEvent event) {
+          onKeyEvent: (KeyEvent event) {
             // Only handle on desktop platforms
             if (defaultTargetPlatform == TargetPlatform.windows ||
                 defaultTargetPlatform == TargetPlatform.macOS ||
                 defaultTargetPlatform == TargetPlatform.linux) {
-              if (event is RawKeyDownEvent) {
+              if (event is KeyDownEvent) {
                 final key = event.logicalKey;
                 int? answerIndex;
                 bool? isPlayer1;

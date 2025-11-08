@@ -232,14 +232,14 @@ void main() {
 
         for (final color in palette.values) {
           expect(color, isNotNull);
-          expect(color.alpha, greaterThanOrEqualTo(0));
-          expect(color.alpha, lessThanOrEqualTo(255));
-          expect(color.red, greaterThanOrEqualTo(0));
-          expect(color.red, lessThanOrEqualTo(255));
-          expect(color.green, greaterThanOrEqualTo(0));
-          expect(color.green, lessThanOrEqualTo(255));
-          expect(color.blue, greaterThanOrEqualTo(0));
-          expect(color.blue, lessThanOrEqualTo(255));
+          expect((color.a * 255.0).round(), greaterThanOrEqualTo(0));
+          expect((color.a * 255.0).round(), lessThanOrEqualTo(255));
+          expect((color.r * 255.0).round(), greaterThanOrEqualTo(0));
+          expect((color.r * 255.0).round(), lessThanOrEqualTo(255));
+          expect((color.g * 255.0).round(), greaterThanOrEqualTo(0));
+          expect((color.g * 255.0).round(), lessThanOrEqualTo(255));
+          expect((color.b * 255.0).round(), greaterThanOrEqualTo(0));
+          expect((color.b * 255.0).round(), lessThanOrEqualTo(255));
         }
       });
     });

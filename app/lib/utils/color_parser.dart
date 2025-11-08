@@ -348,7 +348,7 @@ class ColorParser {
 
   /// Normalizes a Color object to hex string format
   static String normalizeColorToHex(Color color) {
-    return '#${color.alpha.toRadixString(16).padLeft(2, '0').toUpperCase()}${color.red.toRadixString(16).padLeft(2, '0').toUpperCase()}${color.green.toRadixString(16).padLeft(2, '0').toUpperCase()}${color.blue.toRadixString(16).padLeft(2, '0').toUpperCase()}';
+    return '#${(color.a * 255.0).round().toRadixString(16).padLeft(2, '0').toUpperCase()}${(color.r * 255.0).round().toRadixString(16).padLeft(2, '0').toUpperCase()}${(color.g * 255.0).round().toRadixString(16).padLeft(2, '0').toUpperCase()}${(color.b * 255.0).round().toRadixString(16).padLeft(2, '0').toUpperCase()}';
   }
 
   /// Validates if a color meets accessibility contrast requirements
@@ -366,9 +366,9 @@ class ColorParser {
 
   /// Calculates the relative luminance of a color
   static double _calculateLuminance(Color color) {
-    double rsRGB = color.red / 255;
-    double gsRGB = color.green / 255;
-    double bsRGB = color.blue / 255;
+    double rsRGB = (color.r * 255.0).round() / 255;
+    double gsRGB = (color.g * 255.0).round() / 255;
+    double bsRGB = (color.b * 255.0).round() / 255;
 
     double r = rsRGB <= 0.03928 ? rsRGB / 12.92 : pow((rsRGB + 0.055) / 1.055, 2.4).toDouble();
     double g = gsRGB <= 0.03928 ? gsRGB / 12.92 : pow((gsRGB + 0.055) / 1.055, 2.4).toDouble();

@@ -100,7 +100,7 @@ class _AIThemeDesignerScreenState extends State<AIThemeDesignerScreen> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.purple.withAlpha((0.1 * 255).round()),
+                color: Colors.purple.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
@@ -114,7 +114,7 @@ class _AIThemeDesignerScreenState extends State<AIThemeDesignerScreen> {
               strings.AppStrings.aiThemeGenerator,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w700,
-                color: colorScheme.onSurface.withAlpha((0.7 * 255).round()),
+                color: colorScheme.onSurface.withValues(alpha: 0.7),
               ),
             ),
           ],
@@ -144,13 +144,13 @@ class _AIThemeDesignerScreenState extends State<AIThemeDesignerScreen> {
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [
-                              colorScheme.primary.withAlpha((0.1 * 255).round()),
-                              colorScheme.primary.withAlpha((0.05 * 255).round()),
+                              colorScheme.primary.withValues(alpha: 0.1),
+                              colorScheme.primary.withValues(alpha: 0.05),
                             ],
                           ),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color: colorScheme.outline.withAlpha((0.1 * 255).round()),
+                            color: colorScheme.outline.withValues(alpha: 0.1),
                             width: 1,
                           ),
                         ),
@@ -178,7 +178,7 @@ class _AIThemeDesignerScreenState extends State<AIThemeDesignerScreen> {
                             Text(
                               strings.AppStrings.availableStars,
                               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                color: colorScheme.onSurface.withAlpha((0.7 * 255).round()),
+                                color: colorScheme.onSurface.withValues(alpha: 0.7),
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -193,10 +193,10 @@ class _AIThemeDesignerScreenState extends State<AIThemeDesignerScreen> {
                         width: double.infinity,
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: colorScheme.primary.withAlpha((0.1 * 255).round()),
+                          color: colorScheme.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: colorScheme.primary.withAlpha((0.2 * 255).round()),
+                            color: colorScheme.primary.withValues(alpha: 0.2),
                             width: 1,
                           ),
                         ),
@@ -242,7 +242,7 @@ class _AIThemeDesignerScreenState extends State<AIThemeDesignerScreen> {
                       Text(
                         'Bijvoorbeeld: "Een blauw thema met gouden accenten, geïnspireerd op de oceaan..."',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: colorScheme.onSurface.withAlpha((0.6 * 255).round()),
+                          color: colorScheme.onSurface.withValues(alpha: 0.6),
                         ),
                       ),
                       
@@ -270,7 +270,7 @@ class _AIThemeDesignerScreenState extends State<AIThemeDesignerScreen> {
                       // Generation status
                       if (_isGenerating) ...[
                         LinearProgressIndicator(
-                          backgroundColor: colorScheme.primary.withAlpha((0.1 * 255).round()),
+                          backgroundColor: colorScheme.primary.withValues(alpha: 0.1),
                           valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
                         ),
                         const SizedBox(height: 12),
@@ -326,7 +326,7 @@ class _AIThemeDesignerScreenState extends State<AIThemeDesignerScreen> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: Colors.white.withOpacity(0.7),
+                          color: Colors.white.withValues(alpha: 0.7),
                         ),
                       )
                     : Text(
@@ -632,7 +632,7 @@ class _AIThemeDesignerScreenState extends State<AIThemeDesignerScreen> {
               },
               child: Text(
                 'Sluiten',
-                style: TextStyle(color: colorScheme.onSurface.withAlpha((0.7 * 255).round())),
+                style: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.7)),
               ),
             ),
             ElevatedButton(
@@ -700,7 +700,7 @@ class _AIThemeDesignerScreenState extends State<AIThemeDesignerScreen> {
               color: color,
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
-                color: Colors.grey.withAlpha((0.3 * 255).round()),
+                color: Colors.grey.withValues(alpha: 0.3),
                 width: 1,
               ),
             ),
