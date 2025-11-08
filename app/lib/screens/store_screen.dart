@@ -12,6 +12,7 @@ import '../screens/ai_theme_designer_screen.dart';
 import '../services/logger.dart';
 import '../utils/automatic_error_reporter.dart';
 import '../services/store_service.dart';
+import '../services/connection_service.dart';
 import '../models/store_item.dart';
 
 
@@ -23,21 +24,30 @@ class StoreScreen extends StatefulWidget {
   State<StoreScreen> createState() => _StoreScreenState();
 }
 
+enum StoreErrorType {
+  network,
+  server,
+  unknown,
+}
+
 class _StoreScreenState extends State<StoreScreen> {
   List<StoreItem> _storeItems = [];
   bool _isLoadingItems = true;
-  String? _loadError;
+  StoreErrorType? _errorType;
+  String? _errorMessage;
+  late ConnectionService _connectionService;
 
   @override
   void initState() {
     super.initState();
     AppLogger.info('StoreScreen initialized');
+    _connectionService = ConnectionService();
     final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
     analyticsService.screen(context, 'StoreScreen');
 
     // Track store access
     analyticsService.trackFeatureStart(context, AnalyticsService.FEATURE_THEME_PURCHASES);
-    
+
     // Load store items from Supabase
     _loadStoreItems();
   }
@@ -46,24 +56,55 @@ class _StoreScreenState extends State<StoreScreen> {
     try {
       setState(() {
         _isLoadingItems = true;
-        _loadError = null;
+        _errorType = null;
+        _errorMessage = null;
       });
 
       final storeService = StoreService();
       final items = await storeService.getStoreItems();
-      
+
       setState(() {
         _storeItems = items;
         _isLoadingItems = false;
       });
-      
+
       AppLogger.info('Loaded ${items.length} store items from database');
     } catch (e) {
+      final errorString = e.toString().toLowerCase();
+      StoreErrorType errorType;
+      String userMessage;
+
+      // First check actual connectivity status
+      await _connectionService.checkConnection();
+
+      if (!_connectionService.isConnected) {
+        errorType = StoreErrorType.network;
+        userMessage = 'Geen internetverbinding beschikbaar. Controleer je Wi-Fi of mobiele data en probeer het opnieuw.';
+      } else if (errorString.contains('network') ||
+          errorString.contains('connection') ||
+          errorString.contains('timeout') ||
+          errorString.contains('socket') ||
+          errorString.contains('dns')) {
+        errorType = StoreErrorType.network;
+        userMessage = 'Geen internetverbinding beschikbaar. Controleer je netwerk en probeer het opnieuw.';
+      } else if (errorString.contains('server') ||
+                 errorString.contains('500') ||
+                 errorString.contains('502') ||
+                 errorString.contains('503') ||
+                 errorString.contains('504')) {
+        errorType = StoreErrorType.server;
+        userMessage = 'De server is tijdelijk niet beschikbaar. Probeer het later opnieuw.';
+      } else {
+        errorType = StoreErrorType.unknown;
+        userMessage = 'Er is een fout opgetreden bij het laden van de winkel. Probeer het opnieuw.';
+      }
+
       setState(() {
         _isLoadingItems = false;
-        _loadError = 'Failed to load store items: ${e.toString()}';
+        _errorType = errorType;
+        _errorMessage = userMessage;
       });
-      
+
       AppLogger.error('Error loading store items: $e');
     }
   }
@@ -189,7 +230,29 @@ class _StoreScreenState extends State<StoreScreen> {
     }
 
     // Show error if loading failed
-    if (_loadError != null) {
+    if (_errorType != null) {
+      IconData errorIcon;
+      String errorTitle;
+      Color errorColor;
+
+      switch (_errorType!) {
+        case StoreErrorType.network:
+          errorIcon = Icons.wifi_off_rounded;
+          errorTitle = 'Geen internetverbinding';
+          errorColor = Colors.orange[700]!;
+          break;
+        case StoreErrorType.server:
+          errorIcon = Icons.cloud_off_rounded;
+          errorTitle = 'Server niet beschikbaar';
+          errorColor = Colors.red[700]!;
+          break;
+        case StoreErrorType.unknown:
+          errorIcon = Icons.error_outline_rounded;
+          errorTitle = 'Fout bij laden winkel';
+          errorColor = colorScheme.error;
+          break;
+      }
+
       return Scaffold(
         backgroundColor: colorScheme.surface,
         appBar: AppBar(
@@ -223,39 +286,105 @@ class _StoreScreenState extends State<StoreScreen> {
           scrolledUnderElevation: 0,
           centerTitle: true,
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.error_outline,
-                size: 64,
-                color: colorScheme.error,
+        body: SafeArea(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: isDesktop ? 600 : double.infinity,
               ),
-              const SizedBox(height: 16),
-              Text(
-                'Fout bij laden winkel',
-                style: textTheme.headlineSmall?.copyWith(
-                  color: colorScheme.error,
+              child: Padding(
+                padding: EdgeInsets.all(isDesktop ? 32 : 24),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Error icon with background
+                    Container(
+                      padding: EdgeInsets.all(isDesktop ? 32 : 24),
+                      decoration: BoxDecoration(
+                        color: errorColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
+                          color: errorColor.withOpacity(0.2),
+                          width: 2,
+                        ),
+                      ),
+                      child: Icon(
+                        errorIcon,
+                        size: getResponsiveFontSize(context, isDesktop ? 80 : 64),
+                        color: errorColor,
+                      ),
+                    ),
+                    SizedBox(height: isDesktop ? 32 : 24),
+                    Text(
+                      errorTitle,
+                      style: textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: errorColor,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: isDesktop ? 16 : 12),
+                    Text(
+                      _errorMessage!,
+                      style: textTheme.bodyLarge?.copyWith(
+                        color: colorScheme.onSurface.withOpacity(0.7),
+                        height: 1.5,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: isDesktop ? 40 : 32),
+                    // Action buttons
+                    Column(
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: _loadStoreItems,
+                          icon: const Icon(Icons.refresh_rounded),
+                          label: const Text('Opnieuw proberen'),
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: isDesktop ? 32 : 24,
+                              vertical: isDesktop ? 16 : 12,
+                            ),
+                            textStyle: textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        if (_errorType == StoreErrorType.network) ...[
+                          SizedBox(height: isDesktop ? 16 : 12),
+                          TextButton.icon(
+                            onPressed: () async {
+                              // Check connection again and show status
+                              await _connectionService.checkConnection();
+                              final isNowConnected = _connectionService.isConnected;
+
+                              String message;
+                              if (isNowConnected) {
+                                message = 'Verbinding hersteld! Probeer de winkel te laden.';
+                              } else {
+                                message = 'Nog steeds geen verbinding. Controleer je Wi-Fi of mobiele data.';
+                              }
+
+                              if (!context.mounted) return;
+                              showTopSnackBar(
+                                context,
+                                message,
+                                style: isNowConnected ? TopSnackBarStyle.success : TopSnackBarStyle.info,
+                              );
+                            },
+                            icon: const Icon(Icons.wifi_find_rounded),
+                            label: const Text('Controleer verbinding'),
+                            style: TextButton.styleFrom(
+                              foregroundColor: colorScheme.primary,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 8),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Text(
-                  _loadError!,
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurface.withOpacity(0.6),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _loadStoreItems,
-                child: const Text('Opnieuw proberen'),
-              ),
-            ],
+            ),
           ),
         ),
       );
@@ -639,8 +768,6 @@ class _StoreScreenState extends State<StoreScreen> {
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
           onTap: () async {
-            final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
-
             AppLogger.info('Power-up purchase attempted: $title, cost: $cost');
 
             final analytics = Provider.of<AnalyticsService>(context, listen: false);
