@@ -504,7 +504,6 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
 class AppLifecycleObserver {
   final AnalyticsService _analyticsService;
   final TimeTrackingService _timeTrackingService;
-  DateTime? _lastPausedTime;
 
   AppLifecycleObserver(this._analyticsService, this._timeTrackingService);
 

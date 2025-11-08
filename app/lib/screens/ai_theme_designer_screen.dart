@@ -90,7 +90,6 @@ class _AIThemeDesignerScreenState extends State<AIThemeDesignerScreen> {
     final gameStats = Provider.of<GameStatsProvider>(context);
     final settings = Provider.of<SettingsProvider>(context);
     final isDev = kDebugMode; // Use kDebugMode to enable dev mode
-    final cost = 200; // Standard cost for AI theme generation
 
     return Scaffold(
       appBar: AppBar(
@@ -488,13 +487,11 @@ class _AIThemeDesignerScreenState extends State<AIThemeDesignerScreen> {
 
     } catch (e) {
       AppLogger.error('AI theme generation failed', e);
-      
+
       // Auto-report the error
-      String errorType = 'unknown';
       String userMessage = 'Er ging iets fout bij het genereren van het thema.';
       
       if (e is GeminiError) {
-        errorType = 'ai';
         userMessage = 'AI fout: ${e.message}';
         await AutomaticErrorReporter.reportStorageError(  // Using storage error since it's related to data processing
           message: 'AI theme generation failed: ${e.message}',
