@@ -226,58 +226,117 @@ class _SocialScreenState extends State<SocialScreen> {
 
   /// Builds responsive buttons for social features
   Widget _buildSocialFeatureButtons(ColorScheme colorScheme, TextTheme textTheme, bool isLargeScreen) {
-    // Always arrange all buttons in a single row
-    return Row(
-      children: [
-        Expanded(
-          child: _buildFeatureButton(
-            colorScheme: colorScheme,
-            textTheme: textTheme,
-            icon: Icons.search,
-            label: strings.AppStrings.search,
-            onPressed: _navigateToUserSearchScreen,
-            isLargeScreen: isLargeScreen,
-            isMessages: false,
+    if (isLargeScreen) {
+      // Arrange all buttons in a single row for large screens
+      return Row(
+        children: [
+          Expanded(
+            child: _buildFeatureButton(
+              colorScheme: colorScheme,
+              textTheme: textTheme,
+              icon: Icons.search,
+              label: strings.AppStrings.search,
+              onPressed: _navigateToUserSearchScreen,
+              isLargeScreen: isLargeScreen,
+              isMessages: false,
+            ),
           ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _buildFeatureButton(
-            colorScheme: colorScheme,
-            textTheme: textTheme,
-            icon: Icons.people_alt_rounded,
-            label: strings.AppStrings.myFollowing,
-            onPressed: _navigateToFollowingList,
-            isLargeScreen: isLargeScreen,
-            isMessages: false,
+          const SizedBox(width: 12),
+          Expanded(
+            child: _buildFeatureButton(
+              colorScheme: colorScheme,
+              textTheme: textTheme,
+              icon: Icons.people_alt_rounded,
+              label: strings.AppStrings.myFollowing,
+              onPressed: _navigateToFollowingList,
+              isLargeScreen: isLargeScreen,
+              isMessages: false,
+            ),
           ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _buildFeatureButton(
-            colorScheme: colorScheme,
-            textTheme: textTheme,
-            icon: Icons.person_add_rounded,
-            label: strings.AppStrings.myFollowers,
-            onPressed: _navigateToFollowersList,
-            isLargeScreen: isLargeScreen,
-            isMessages: false,
+          const SizedBox(width: 12),
+          Expanded(
+            child: _buildFeatureButton(
+              colorScheme: colorScheme,
+              textTheme: textTheme,
+              icon: Icons.person_add_rounded,
+              label: strings.AppStrings.myFollowers,
+              onPressed: _navigateToFollowersList,
+              isLargeScreen: isLargeScreen,
+              isMessages: false,
+            ),
           ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _buildFeatureButton(
-            colorScheme: colorScheme,
-            textTheme: textTheme,
-            icon: Icons.message_rounded,
-            label: strings.AppStrings.messages,
-            onPressed: _navigateToMessagesScreen,
-            isLargeScreen: isLargeScreen,
-            isMessages: true,
+          const SizedBox(width: 12),
+          Expanded(
+            child: _buildFeatureButton(
+              colorScheme: colorScheme,
+              textTheme: textTheme,
+              icon: Icons.message_rounded,
+              label: strings.AppStrings.messages,
+              onPressed: _navigateToMessagesScreen,
+              isLargeScreen: isLargeScreen,
+              isMessages: true,
+            ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
+    } else {
+      // Stack buttons vertically for small screens, full width
+      return Column(
+        children: [
+          SizedBox(
+            width: double.infinity,
+            child: _buildFeatureButton(
+              colorScheme: colorScheme,
+              textTheme: textTheme,
+              icon: Icons.search,
+              label: strings.AppStrings.search,
+              onPressed: _navigateToUserSearchScreen,
+              isLargeScreen: isLargeScreen,
+              isMessages: false,
+            ),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: _buildFeatureButton(
+              colorScheme: colorScheme,
+              textTheme: textTheme,
+              icon: Icons.people_alt_rounded,
+              label: strings.AppStrings.myFollowing,
+              onPressed: _navigateToFollowingList,
+              isLargeScreen: isLargeScreen,
+              isMessages: false,
+            ),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: _buildFeatureButton(
+              colorScheme: colorScheme,
+              textTheme: textTheme,
+              icon: Icons.person_add_rounded,
+              label: strings.AppStrings.myFollowers,
+              onPressed: _navigateToFollowersList,
+              isLargeScreen: isLargeScreen,
+              isMessages: false,
+            ),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: _buildFeatureButton(
+              colorScheme: colorScheme,
+              textTheme: textTheme,
+              icon: Icons.message_rounded,
+              label: strings.AppStrings.messages,
+              onPressed: _navigateToMessagesScreen,
+              isLargeScreen: isLargeScreen,
+              isMessages: true,
+            ),
+          ),
+        ],
+      );
+    }
   }
 
   /// Builds the followed users scores section
@@ -552,6 +611,7 @@ class _SocialScreenState extends State<SocialScreen> {
           borderRadius: BorderRadius.circular(12),
         ),
         backgroundColor: colorScheme.surface,
+        fixedSize: Size.fromHeight(isLargeScreen ? 112.0 : 100.0),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
