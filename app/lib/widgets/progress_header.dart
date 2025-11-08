@@ -6,6 +6,7 @@ import '../providers/lesson_progress_provider.dart';
 import '../screens/quiz_screen.dart';
 import '../services/analytics_service.dart';
 import '../services/greeting_service.dart';
+import '../services/logger.dart';
 import '../l10n/strings_nl.dart' as strings;
 
 enum DayState { success, fail, freeze, future }
@@ -61,10 +62,10 @@ Future<void> _loadGreeting() async {
         setState(() {
           _greeting = greeting;
         });
-        print('Loaded greeting: $greeting');
+        AppLogger.info('Loaded greeting: $greeting');
       }
     } catch (e) {
-      print('Error loading greeting: $e');
+      AppLogger.warning('Error loading greeting: $e');
       if (mounted) {
         setState(() {
           _greeting = 'Jouw voortgang'; // Keep fallback

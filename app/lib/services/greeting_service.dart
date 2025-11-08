@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'logger.dart';
 
 class GreetingService {
   static final GreetingService _instance = GreetingService._internal();
@@ -23,7 +24,7 @@ class GreetingService {
       _greetingsData = null;
       _isLoaded = true;
       // Print error for debugging
-      print('Failed to load greetings: $e');
+      AppLogger.warning('Failed to load greetings: $e');
     }
   }
 

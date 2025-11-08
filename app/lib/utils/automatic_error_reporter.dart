@@ -1,5 +1,6 @@
 import '../services/error_reporting_service.dart';
 import '../error/error_types.dart';
+import '../services/logger.dart';
 
 /// Utility class for automatic error reporting in specific app features
 class AutomaticErrorReporter {
@@ -25,7 +26,7 @@ class AutomaticErrorReporter {
       );
     } catch (e) {
       // If error reporting itself fails, we just log it locally but don't break functionality
-      print('Failed to auto-report biblical reference error: $e');
+      AppLogger.warning('Failed to auto-report biblical reference error: $e');
     }
   }
 
@@ -50,7 +51,7 @@ class AutomaticErrorReporter {
         },
       );
     } catch (e) {
-      print('Failed to auto-report question error: $e');
+      AppLogger.warning('Failed to auto-report question error: $e');
     }
   }
 
@@ -77,7 +78,7 @@ class AutomaticErrorReporter {
         },
       );
     } catch (e) {
-      print('Failed to auto-report network error: $e');
+      AppLogger.warning('Failed to auto-report network error: $e');
     }
   }
 
@@ -104,7 +105,7 @@ class AutomaticErrorReporter {
         },
       );
     } catch (e) {
-      print('Failed to auto-report storage error: $e');
+      AppLogger.warning('Failed to auto-report storage error: $e');
     }
   }
 }

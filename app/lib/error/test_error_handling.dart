@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:bijbelquiz/error_system.dart';
+import '../services/logger.dart';
 
 /// Test widget to demonstrate the new error handling system
 class ErrorHandlingTestWidget extends StatelessWidget {
@@ -82,8 +83,8 @@ void testErrorHandlingSystem() {
     userMessage: 'Could not save settings',
   );
   
-  print('Error handling system test completed. Created errors:');
-  print('- Network Error: ${networkError.userMessage}');
-  print('- Data Load Error: ${dataLoadError.userMessage}');
-  print('- Storage Error: ${storageError.userMessage}');
+  AppLogger.info('Error handling system test completed. Created errors:');
+  AppLogger.info('- Network Error: ${networkError.userMessage}');
+  AppLogger.info('- Data Load Error: ${dataLoadError.userMessage}');
+  AppLogger.info('- Storage Error: ${storageError.userMessage}');
 }

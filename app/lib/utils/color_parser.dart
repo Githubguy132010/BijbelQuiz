@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import '../services/logger.dart';
 
 /// Comprehensive color parsing utility for handling various color formats
 /// from Gemini API responses and normalizing them for the AI theme system.
@@ -189,7 +190,7 @@ class ColorParser {
 
       throw const FormatException('Unsupported color format');
     } catch (e) {
-      print('Warning: Failed to parse color for $component: $e. Using fallback.');
+      AppLogger.warning('Failed to parse color for $component: $e. Using fallback.');
       return _getFallbackColor(component);
     }
   }
@@ -391,7 +392,7 @@ class ColorParser {
 
       return _parseColorPalette(colorData);
     } catch (e) {
-      print('Warning: Failed to parse Gemini response: $e. Using fallback colors.');
+      AppLogger.warning('Failed to parse Gemini response: $e. Using fallback colors.');
       return getFallbackColorPalette();
     }
   }
