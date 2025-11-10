@@ -611,9 +611,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                    ],
-                    Flexible(
-                      child: TextButton(
+                      IconButton(
                         onPressed: () async {
                           if (settings.apiKey.isEmpty) {
                             await settings.generateNewApiKey();
@@ -622,9 +620,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             _showApiKeyDialog(context, settings);
                           }
                         },
-                        child: Text(settings.apiKey.isEmpty ? strings.AppStrings.generateKey : strings.AppStrings.regenerateApiKey),
+                        icon: Icon(Icons.refresh, size: 20),
+                        tooltip: strings.AppStrings.regenerateApiKey,
+                        style: IconButton.styleFrom(
+                          backgroundColor: colorScheme.primary.withValues(alpha: 0.1),
+                          foregroundColor: colorScheme.primary,
+                        ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
               ),
