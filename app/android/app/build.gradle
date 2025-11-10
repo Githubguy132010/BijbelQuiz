@@ -30,7 +30,7 @@ android {
         targetSdkVersion 36
         multiDexEnabled true
         versionCode 12
-        versionName "1.2.5"
+        versionName "1.2.6"
 
         manifestPlaceholders = [
             applicationName: 'io.flutter.app.FlutterApplication'
