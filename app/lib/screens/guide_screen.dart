@@ -631,6 +631,54 @@ class _GuidePageViewState extends State<GuidePageView> {
                                   ],
                                 ),
                               ),
+                              const SizedBox(height: 20),
+                              // Analytics Toggle
+                              Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: colorScheme.surfaceContainerHighest,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            strings.AppStrings.analytics,
+                                            style: textTheme.titleMedium?.copyWith(
+                                                  color: colorScheme.onSurface,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            strings.AppStrings.analyticsDescription,
+                                            style: textTheme.bodyMedium?.copyWith(
+                                                  color: colorScheme.onSurface.withValues(alpha: 0.7),
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Switch(
+                                      value: settings.analyticsEnabled,
+                                      onChanged: (bool value) {
+                                        // Track analytics setting change
+                                        final analytics = Provider.of<AnalyticsService>(context, listen: false);
+                                        analytics.trackFeatureSuccess(context, AnalyticsService.FEATURE_ANALYTICS_SETTINGS, additionalProperties: {
+                                          'enabled': value,
+                                          'source': 'guide_screen',
+                                        });
+                                        settings.setAnalyticsEnabled(value);
+                                      },
+                                      activeThumbColor: colorScheme.primary,
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ],
                           );
                         }
