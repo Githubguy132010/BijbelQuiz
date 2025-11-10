@@ -1,6 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 // Mock TrackingService for test since the actual service doesn't exist
 class MockTrackingService {
