@@ -19,7 +19,7 @@ class _MultiplayerGameSetupScreenState extends State<MultiplayerGameSetupScreen>
     super.initState();
     final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
     analyticsService.screen(context, 'MultiplayerGameSetupScreen');
-    analyticsService.trackFeatureStart(context, AnalyticsService.FEATURE_MULTIPLAYER_GAME);
+    analyticsService.trackFeatureStart(context, AnalyticsService.featureMultiplayerGame);
   }
 
   @override

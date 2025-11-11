@@ -38,7 +38,7 @@ class _AIThemeDesignerScreenState extends State<AIThemeDesignerScreen> {
     // Track AI theme designer access
     analyticsService.trackFeatureStart(
       context, 
-      AnalyticsService.FEATURE_AI_THEME_GENERATOR
+      AnalyticsService.featureAiThemeGenerator
     );
     
     // Load the current price from store
@@ -475,7 +475,7 @@ class _AIThemeDesignerScreenState extends State<AIThemeDesignerScreen> {
 
         // Track successful AI theme generation
         final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
-        analyticsService.trackFeatureSuccess(context, AnalyticsService.FEATURE_AI_THEME_GENERATOR, additionalProperties: {
+        analyticsService.trackFeatureSuccess(context, AnalyticsService.featureAiThemeGenerator, additionalProperties: {
           'theme_name': themeName,
           'description': description,
           'cost': cost,

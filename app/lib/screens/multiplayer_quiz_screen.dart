@@ -185,7 +185,7 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
     });
 
     // Track multiplayer game completion
-    analyticsService.trackFeatureCompletion(context, AnalyticsService.FEATURE_MULTIPLAYER_GAME, additionalProperties: {
+    analyticsService.trackFeatureCompletion(context, AnalyticsService.featureMultiplayerGame, additionalProperties: {
       'duration_minutes': widget.gameDurationMinutes,
       'player1_score': _player1Score,
       'player2_score': _player2Score,
@@ -975,7 +975,7 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
     final String playerName = isPlayer1 ? 'Player1' : 'Player2';
 
     // Track skip feature usage
-    analyticsService.trackFeatureAttempt(context, AnalyticsService.FEATURE_SKIP_QUESTION, additionalProperties: {
+    analyticsService.trackFeatureAttempt(context, AnalyticsService.featureSkipQuestion, additionalProperties: {
       'question_category': quizState.question.category,
       'question_difficulty': quizState.question.difficulty,
       'time_remaining': quizState.timeRemaining,
@@ -1000,7 +1000,7 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
     
     if (success) {
       // Track successful question skip
-      analyticsService.trackFeatureSuccess(context, AnalyticsService.FEATURE_SKIP_QUESTION, additionalProperties: {
+      analyticsService.trackFeatureSuccess(context, AnalyticsService.featureSkipQuestion, additionalProperties: {
         'question_category': quizState.question.category,
         'question_difficulty': quizState.question.difficulty,
         'time_remaining': quizState.timeRemaining,
@@ -1062,7 +1062,7 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
     final String playerName = isPlayer1 ? 'Player1' : 'Player2';
 
     // Track biblical reference unlock attempt
-    analyticsService.trackFeatureAttempt(context, AnalyticsService.FEATURE_BIBLICAL_REFERENCES, additionalProperties: {
+    analyticsService.trackFeatureAttempt(context, AnalyticsService.featureBiblicalReferences, additionalProperties: {
       'question_category': quizState.question.category,
       'question_difficulty': quizState.question.difficulty,
       'biblical_reference': quizState.question.biblicalReference ?? 'none',
@@ -1121,7 +1121,7 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
       });
 
       // Track successful biblical reference unlock
-      analyticsService.trackFeatureSuccess(context, AnalyticsService.FEATURE_BIBLICAL_REFERENCES, additionalProperties: {
+      analyticsService.trackFeatureSuccess(context, AnalyticsService.featureBiblicalReferences, additionalProperties: {
         'question_category': quizState.question.category,
         'question_difficulty': quizState.question.difficulty,
         'biblical_reference': quizState.question.biblicalReference ?? 'none',
@@ -1214,7 +1214,7 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
     final quizState = isPlayer1 ? _player1QuizState : _player2QuizState;
     final String playerName = isPlayer1 ? 'Player1' : 'Player2';
 
-    analyticsService.trackFeatureSuccess(context, AnalyticsService.FEATURE_BIBLICAL_REFERENCES, additionalProperties: {
+    analyticsService.trackFeatureSuccess(context, AnalyticsService.featureBiblicalReferences, additionalProperties: {
       'question_category': quizState.question.category,
       'question_difficulty': quizState.question.difficulty,
       'biblical_reference': biblicalReference,

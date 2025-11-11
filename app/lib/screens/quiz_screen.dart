@@ -105,7 +105,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
     analyticsService.screen(context, 'QuizScreen');
 
     // Track quiz gameplay feature access
-    analyticsService.trackFeatureStart(context, AnalyticsService.FEATURE_QUIZ_GAMEPLAY, additionalProperties: {
+    analyticsService.trackFeatureStart(context, AnalyticsService.featureQuizGameplay, additionalProperties: {
       'lesson_mode': _lessonMode,
       'lesson_id': widget.lesson?.id ?? 'free_play',
       'session_limit': widget.sessionLimit ?? 0,
@@ -367,7 +367,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
                 onPressed: hasEnoughPoints ? () {
                   final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
                   analyticsService.capture(context, 'retry_with_points');
-                  analyticsService.trackFeatureAttempt(context, AnalyticsService.FEATURE_RETRY_WITH_POINTS, additionalProperties: {
+                  analyticsService.trackFeatureAttempt(context, AnalyticsService.featureRetryWithPoints, additionalProperties: {
                     'time_remaining': 0, // Time is up
                     'current_streak': gameStats.currentStreak,
                     'current_score': gameStats.score,
@@ -376,7 +376,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
                     if (!dialogContext.mounted) return;
                     if (success) {
                       // Track successful retry with points
-                      analyticsService.trackFeatureSuccess(context, AnalyticsService.FEATURE_RETRY_WITH_POINTS, additionalProperties: {
+                      analyticsService.trackFeatureSuccess(context, AnalyticsService.featureRetryWithPoints, additionalProperties: {
                         'time_remaining': 0, // Time is up
                         'current_streak': gameStats.currentStreak,
                         'current_score': gameStats.score,
@@ -496,7 +496,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
     if (_lastLanguage != null && _lastLanguage != language) {
       final analytics = Provider.of<AnalyticsService>(context, listen: false);
       analytics.capture(context, 'language_changed', properties: {'from': _lastLanguage!, 'to': language});
-      analytics.trackFeatureSuccess(context, AnalyticsService.FEATURE_LANGUAGE_SETTINGS, additionalProperties: {
+      analytics.trackFeatureSuccess(context, AnalyticsService.featureLanguageSettings, additionalProperties: {
         'from_language': _lastLanguage!,
         'to_language': language,
       });
@@ -571,7 +571,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
 
       // Track slow mode usage
       if (isSlowMode) {
-        analyticsService.trackFeatureUsage(context, AnalyticsService.FEATURE_SETTINGS, AnalyticsService.ACTION_USED, additionalProperties: {
+        analyticsService.trackFeatureUsage(context, AnalyticsService.featureSettings, AnalyticsService.actionUsed, additionalProperties: {
           'setting': 'slow_mode',
           'enabled': true,
         });
@@ -584,7 +584,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
 
       // Track question category usage
       if (firstQuestion.category.isNotEmpty) {
-        analyticsService.trackFeatureUsage(context, AnalyticsService.FEATURE_QUESTION_CATEGORIES, AnalyticsService.ACTION_USED, additionalProperties: {
+        analyticsService.trackFeatureUsage(context, AnalyticsService.featureQuestionCategories, AnalyticsService.actionUsed, additionalProperties: {
           'category': firstQuestion.category,
           'difficulty': firstQuestion.difficulty,
         });
@@ -714,7 +714,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
     if (_lessonMode && _sessionAnswered >= (widget.sessionLimit ?? 0)) {
       // Track lesson completion
       final analytics = Provider.of<AnalyticsService>(context, listen: false);
-      analytics.trackFeatureCompletion(context, AnalyticsService.FEATURE_LESSON_SYSTEM, additionalProperties: {
+      analytics.trackFeatureCompletion(context, AnalyticsService.featureLessonSystem, additionalProperties: {
         'lesson_id': widget.lesson?.id ?? 'unknown',
         'lesson_category': widget.lesson?.category ?? 'unknown',
         'questions_answered': _sessionAnswered,
@@ -761,7 +761,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
     // Track progressive difficulty adjustments
     if (calculatedNewDifficulty != _quizState.currentDifficulty) {
       final analytics = Provider.of<AnalyticsService>(context, listen: false);
-      analytics.trackFeatureUsage(context, AnalyticsService.FEATURE_PROGRESSIVE_DIFFICULTY, isCorrect ? 'increased' : 'decreased', additionalProperties: {
+      analytics.trackFeatureUsage(context, AnalyticsService.featureProgressiveDifficulty, isCorrect ? 'increased' : 'decreased', additionalProperties: {
         'previous_difficulty': _quizState.currentDifficulty,
         'new_difficulty': calculatedNewDifficulty,
         'current_streak': gameStats.currentStreak,
@@ -1088,7 +1088,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
     final question = _quizState.question;
 
     // Track skip feature usage
-    analyticsService.trackFeatureAttempt(context, AnalyticsService.FEATURE_SKIP_QUESTION, additionalProperties: {
+    analyticsService.trackFeatureAttempt(context, AnalyticsService.featureSkipQuestion, additionalProperties: {
       'question_category': question.category,
       'question_difficulty': question.difficulty,
       'time_remaining': _quizState.timeRemaining,
@@ -1110,7 +1110,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
     );
     if (success) {
       // Track successful question skip
-      analyticsService.trackFeatureSuccess(context, AnalyticsService.FEATURE_SKIP_QUESTION, additionalProperties: {
+      analyticsService.trackFeatureSuccess(context, AnalyticsService.featureSkipQuestion, additionalProperties: {
         'question_category': question.category,
         'question_difficulty': question.difficulty,
         'time_remaining': _quizState.timeRemaining,
@@ -1153,7 +1153,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
     final question = _quizState.question;
 
     // Track biblical reference unlock attempt
-    analyticsService.trackFeatureAttempt(context, AnalyticsService.FEATURE_BIBLICAL_REFERENCES, additionalProperties: {
+    analyticsService.trackFeatureAttempt(context, AnalyticsService.featureBiblicalReferences, additionalProperties: {
       'question_category': question.category,
       'question_difficulty': question.difficulty,
       'biblical_reference': question.biblicalReference ?? 'none',
@@ -1223,7 +1223,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
       });
 
       // Track successful biblical reference unlock
-      analyticsService.trackFeatureSuccess(context, AnalyticsService.FEATURE_BIBLICAL_REFERENCES, additionalProperties: {
+      analyticsService.trackFeatureSuccess(context, AnalyticsService.featureBiblicalReferences, additionalProperties: {
         'question_category': question.category,
         'question_difficulty': question.difficulty,
         'biblical_reference': question.biblicalReference ?? 'none',

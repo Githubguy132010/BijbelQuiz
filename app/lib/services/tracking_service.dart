@@ -358,45 +358,43 @@ class TrackingService {
 
   /// ===== COMPREHENSIVE FEATURE USAGE TRACKING =====
 
-  // ignore: constant_identifier_names
   /// Standardized feature names for consistent tracking
-  static const String FEATURE_QUIZ_GAMEPLAY = 'quiz_gameplay';
-  static const String FEATURE_LESSON_SYSTEM = 'lesson_system';
-  static const String FEATURE_QUESTION_CATEGORIES = 'question_categories';
-  static const String FEATURE_BIBLICAL_REFERENCES = 'biblical_references';
-  static const String FEATURE_SKIP_QUESTION = 'skip_question';
-  static const String FEATURE_RETRY_WITH_POINTS = 'retry_with_points';
-  static const String FEATURE_STREAK_TRACKING = 'streak_tracking';
-  static const String FEATURE_PROGRESSIVE_DIFFICULTY = 'progressive_difficulty';
-  static const String FEATURE_POWER_UPS = 'power_ups';
-  static const String FEATURE_THEME_PURCHASES = 'theme_purchases';
-  static const String FEATURE_AI_THEME_GENERATOR = 'ai_theme_generator';
-  static const String FEATURE_SOCIAL_FEATURES = 'social_features';
-  static const String FEATURE_PROMO_CARDS = 'promo_cards';
-  static const String FEATURE_SETTINGS = 'settings';
-  static const String FEATURE_THEME_SELECTION = 'theme_selection';
-  static const String FEATURE_ANALYTICS_SETTINGS = 'analytics_settings';
-  static const String FEATURE_LANGUAGE_SETTINGS = 'language_settings';
-  static const String FEATURE_ONBOARDING = 'onboarding';
-  static const String FEATURE_DONATION_SYSTEM = 'donation_system';
-  static const String FEATURE_SATISFACTION_SURVEYS = 'satisfaction_surveys';
-  static const String FEATURE_DIFFICULTY_FEEDBACK = 'difficulty_feedback';
-  static const String FEATURE_MULTIPLAYER_GAME = 'multiplayer_game';
+  static const String featureQuizGameplay = 'quiz_gameplay';
+  static const String featureLessonSystem = 'lesson_system';
+  static const String featureQuestionCategories = 'question_categories';
+  static const String featureBiblicalReferences = 'biblical_references';
+  static const String featureSkipQuestion = 'skip_question';
+  static const String featureRetryWithPoints = 'retry_with_points';
+  static const String featureStreakTracking = 'streak_tracking';
+  static const String featureProgressiveDifficulty = 'progressive_difficulty';
+  static const String featurePowerUps = 'power_ups';
+  static const String featureThemePurchases = 'theme_purchases';
+  static const String featureAiThemeGenerator = 'ai_theme_generator';
+  static const String featureSocialFeatures = 'social_features';
+  static const String featurePromoCards = 'promo_cards';
+  static const String featureSettings = 'settings';
+  static const String featureThemeSelection = 'theme_selection';
+  static const String featureAnalyticsSettings = 'analytics_settings';
+  static const String featureLanguageSettings = 'language_settings';
+  static const String featureOnboarding = 'onboarding';
+  static const String featureDonationSystem = 'donation_system';
+  static const String featureSatisfactionSurveys = 'satisfaction_surveys';
+  static const String featureDifficultyFeedback = 'difficulty_feedback';
+  static const String featureMultiplayerGame = 'multiplayer_game';
 
-  // ignore: constant_identifier_names
   /// Standardized action names for consistent tracking
-  static const String ACTION_ACCESSED = 'accessed';
-  static const String ACTION_USED = 'used';
-  static const String ACTION_PURCHASED = 'purchased';
-  static const String ACTION_UNLOCKED = 'unlocked';
-  static const String ACTION_ATTEMPTED = 'attempted';
-  static const String ACTION_COMPLETED = 'completed';
-  static const String ACTION_DISMISSED = 'dismissed';
-  static const String ACTION_ENABLED = 'enabled';
-  static const String ACTION_DISABLED = 'disabled';
-  static const String ACTION_CHANGED = 'changed';
-  static const String ACTION_STARTED = 'started';
-  static const String ACTION_FINISHED = 'finished';
+  static const String actionAccessed = 'accessed';
+  static const String actionUsed = 'used';
+  static const String actionPurchased = 'purchased';
+  static const String actionUnlocked = 'unlocked';
+  static const String actionAttempted = 'attempted';
+  static const String actionCompleted = 'completed';
+  static const String actionDismissed = 'dismissed';
+  static const String actionEnabled = 'enabled';
+  static const String actionDisabled = 'disabled';
+  static const String actionChanged = 'changed';
+  static const String actionStarted = 'started';
+  static const String actionFinished = 'finished';
 
   /// Enhanced feature usage tracking with standardized features and actions
   /// This is the primary method for tracking which features users interact with
@@ -415,32 +413,32 @@ class TrackingService {
 
   /// Track when a user starts using a feature (for engagement metrics)
   Future<void> trackFeatureStart(BuildContext context, String feature, {Map<String, Object>? additionalProperties}) async {
-    await trackFeatureUsage(context, feature, ACTION_STARTED, additionalProperties: additionalProperties);
+    await trackFeatureUsage(context, feature, actionStarted, additionalProperties: additionalProperties);
   }
 
   /// Track when a user successfully uses a feature
   Future<void> trackFeatureSuccess(BuildContext context, String feature, {Map<String, Object>? additionalProperties}) async {
-    await trackFeatureUsage(context, feature, ACTION_USED, additionalProperties: additionalProperties);
+    await trackFeatureUsage(context, feature, actionUsed, additionalProperties: additionalProperties);
   }
 
   /// Track when a user attempts but fails to use a feature
   Future<void> trackFeatureAttempt(BuildContext context, String feature, {Map<String, Object>? additionalProperties}) async {
-    await trackFeatureUsage(context, feature, ACTION_ATTEMPTED, additionalProperties: additionalProperties);
+    await trackFeatureUsage(context, feature, actionAttempted, additionalProperties: additionalProperties);
   }
 
   /// Track when a user purchases/unlocks a feature
   Future<void> trackFeaturePurchase(BuildContext context, String feature, {Map<String, Object>? additionalProperties}) async {
-    await trackFeatureUsage(context, feature, ACTION_PURCHASED, additionalProperties: additionalProperties);
+    await trackFeatureUsage(context, feature, actionPurchased, additionalProperties: additionalProperties);
   }
 
   /// Track when a user completes a feature or flow
   Future<void> trackFeatureCompletion(BuildContext context, String feature, {Map<String, Object>? additionalProperties}) async {
-    await trackFeatureUsage(context, feature, ACTION_COMPLETED, additionalProperties: additionalProperties);
+    await trackFeatureUsage(context, feature, actionCompleted, additionalProperties: additionalProperties);
   }
 
   /// Track when a user dismisses or cancels a feature
   Future<void> trackFeatureDismissal(BuildContext context, String feature, {Map<String, Object>? additionalProperties}) async {
-    await trackFeatureUsage(context, feature, ACTION_DISMISSED, additionalProperties: additionalProperties);
+    await trackFeatureUsage(context, feature, actionDismissed, additionalProperties: additionalProperties);
   }
 
   /// Specific app usage events - these are the primary tracked events
@@ -452,7 +450,7 @@ class TrackingService {
     if (category != null) properties['category'] = category;
     if (difficulty != null) properties['difficulty'] = difficulty;
     
-    await trackFeatureUsage(context, FEATURE_QUIZ_GAMEPLAY, ACTION_STARTED, additionalProperties: properties);
+    await trackFeatureUsage(context, featureQuizGameplay, actionStarted, additionalProperties: properties);
   }
 
   /// Track when user completes a quiz
@@ -462,15 +460,15 @@ class TrackingService {
     if (maxScore != null) properties['max_score'] = maxScore;
     if (questionsAnswered != null) properties['questions_answered'] = questionsAnswered;
     
-    await trackFeatureUsage(context, FEATURE_QUIZ_GAMEPLAY, ACTION_COMPLETED, additionalProperties: properties);
+    await trackFeatureUsage(context, featureQuizGameplay, actionCompleted, additionalProperties: properties);
   }
 
   /// Track when user purchases/unlocks a theme
   Future<void> trackThemePurchase(BuildContext context, String themeName) async {
     await trackFeatureUsage(
       context,
-      FEATURE_THEME_PURCHASES,
-      ACTION_PURCHASED,
+      featureThemePurchases,
+      actionPurchased,
       additionalProperties: {'theme_name': themeName}
     );
   }
@@ -479,8 +477,8 @@ class TrackingService {
   Future<void> trackThemeChange(BuildContext context, String themeName) async {
     await trackFeatureUsage(
       context,
-      FEATURE_THEME_SELECTION,
-      ACTION_CHANGED,
+      featureThemeSelection,
+      actionChanged,
       additionalProperties: {'theme_name': themeName}
     );
   }
@@ -489,8 +487,8 @@ class TrackingService {
   Future<void> trackLessonStart(BuildContext context, String lessonId) async {
     await trackFeatureUsage(
       context,
-      FEATURE_LESSON_SYSTEM,
-      ACTION_STARTED,
+      featureLessonSystem,
+      actionStarted,
       additionalProperties: {'lesson_id': lessonId}
     );
   }
@@ -499,28 +497,28 @@ class TrackingService {
   Future<void> trackLessonComplete(BuildContext context, String lessonId) async {
     await trackFeatureUsage(
       context,
-      FEATURE_LESSON_SYSTEM,
-      ACTION_COMPLETED,
+      featureLessonSystem,
+      actionCompleted,
       additionalProperties: {'lesson_id': lessonId}
     );
   }
 
   /// Track when user uses skip feature
   Future<void> trackSkipUsed(BuildContext context) async {
-    await trackFeatureUsage(context, FEATURE_SKIP_QUESTION, ACTION_USED);
+    await trackFeatureUsage(context, featureSkipQuestion, actionUsed);
   }
 
   /// Track when user uses retry feature
   Future<void> trackRetryUsed(BuildContext context) async {
-    await trackFeatureUsage(context, FEATURE_RETRY_WITH_POINTS, ACTION_USED);
+    await trackFeatureUsage(context, featureRetryWithPoints, actionUsed);
   }
 
   /// Track when user enables/disables analytics
   Future<void> trackAnalyticsToggle(BuildContext context, bool enabled) async {
     await trackFeatureUsage(
       context,
-      FEATURE_ANALYTICS_SETTINGS,
-      enabled ? ACTION_ENABLED : ACTION_DISABLED
+      featureAnalyticsSettings,
+      enabled ? actionEnabled : actionDisabled
     );
   }
 
@@ -528,48 +526,48 @@ class TrackingService {
   Future<void> trackLanguageChange(BuildContext context, String languageCode) async {
     await trackFeatureUsage(
       context,
-      FEATURE_LANGUAGE_SETTINGS,
-      ACTION_CHANGED,
+      featureLanguageSettings,
+      actionChanged,
       additionalProperties: {'language_code': languageCode}
     );
   }
 
   /// Track when user accesses settings
   Future<void> trackSettingsAccess(BuildContext context) async {
-    await trackFeatureUsage(context, FEATURE_SETTINGS, ACTION_ACCESSED);
+    await trackFeatureUsage(context, featureSettings, actionAccessed);
   }
 
   /// Track when user starts onboarding
   Future<void> trackOnboardingStart(BuildContext context) async {
-    await trackFeatureUsage(context, FEATURE_ONBOARDING, ACTION_STARTED);
+    await trackFeatureUsage(context, featureOnboarding, actionStarted);
   }
 
   /// Track when user completes onboarding
   Future<void> trackOnboardingComplete(BuildContext context) async {
-    await trackFeatureUsage(context, FEATURE_ONBOARDING, ACTION_COMPLETED);
+    await trackFeatureUsage(context, featureOnboarding, actionCompleted);
   }
 
   /// Track when user makes a donation
   Future<void> trackDonationInitiated(BuildContext context) async {
-    await trackFeatureUsage(context, FEATURE_DONATION_SYSTEM, ACTION_STARTED);
+    await trackFeatureUsage(context, featureDonationSystem, actionStarted);
   }
 
   /// Track when user completes a donation
   Future<void> trackDonationCompleted(BuildContext context) async {
-    await trackFeatureUsage(context, FEATURE_DONATION_SYSTEM, ACTION_COMPLETED);
+    await trackFeatureUsage(context, featureDonationSystem, actionCompleted);
   }
 
   /// Track when user accesses satisfaction survey
   Future<void> trackSatisfactionSurveyAccess(BuildContext context) async {
-    await trackFeatureUsage(context, FEATURE_SATISFACTION_SURVEYS, ACTION_ACCESSED);
+    await trackFeatureUsage(context, featureSatisfactionSurveys, actionAccessed);
   }
 
   /// Track when user submits satisfaction survey
   Future<void> trackSatisfactionSurveySubmit(BuildContext context, int rating) async {
     await trackFeatureUsage(
       context,
-      FEATURE_SATISFACTION_SURVEYS,
-      ACTION_COMPLETED,
+      featureSatisfactionSurveys,
+      actionCompleted,
       additionalProperties: {'rating': rating}
     );
   }
@@ -581,15 +579,15 @@ class TrackingService {
     
     await trackFeatureUsage(
       context,
-      FEATURE_DIFFICULTY_FEEDBACK,
-      ACTION_USED,
+      featureDifficultyFeedback,
+      actionUsed,
       additionalProperties: properties
     );
   }
 
   /// Track when user starts multiplayer game
   Future<void> trackMultiplayerGameStart(BuildContext context) async {
-    await trackFeatureUsage(context, FEATURE_MULTIPLAYER_GAME, ACTION_STARTED);
+    await trackFeatureUsage(context, featureMultiplayerGame, actionStarted);
   }
 
   /// Track when user completes multiplayer game
@@ -598,15 +596,15 @@ class TrackingService {
     if (placement != null) properties['placement'] = placement;
     if (score != null) properties['score'] = score;
     
-    await trackFeatureUsage(context, FEATURE_MULTIPLAYER_GAME, ACTION_COMPLETED, additionalProperties: properties);
+    await trackFeatureUsage(context, featureMultiplayerGame, actionCompleted, additionalProperties: properties);
   }
 
   /// Track when user uses power-up
   Future<void> trackPowerUpUsed(BuildContext context, String powerUpType) async {
     await trackFeatureUsage(
       context,
-      FEATURE_POWER_UPS,
-      ACTION_USED,
+      featurePowerUps,
+      actionUsed,
       additionalProperties: {'power_up_type': powerUpType}
     );
   }
@@ -615,23 +613,23 @@ class TrackingService {
   Future<void> trackPromoCardViewed(BuildContext context, String cardType) async {
     await trackFeatureUsage(
       context,
-      FEATURE_PROMO_CARDS,
-      ACTION_ACCESSED,
+      featurePromoCards,
+      actionAccessed,
       additionalProperties: {'card_type': cardType}
     );
   }
 
   /// Track when user starts using AI theme generator
   Future<void> trackAiThemeGeneratorStart(BuildContext context) async {
-    await trackFeatureUsage(context, FEATURE_AI_THEME_GENERATOR, ACTION_STARTED);
+    await trackFeatureUsage(context, featureAiThemeGenerator, actionStarted);
   }
 
   /// Track when user completes using AI theme generator
   Future<void> trackAiThemeGeneratorComplete(BuildContext context, {bool success = true}) async {
     await trackFeatureUsage(
       context,
-      FEATURE_AI_THEME_GENERATOR,
-      success ? ACTION_COMPLETED : ACTION_ATTEMPTED,
+      featureAiThemeGenerator,
+      success ? actionCompleted : actionAttempted,
       additionalProperties: {'success': success}
     );
   }
@@ -640,8 +638,8 @@ class TrackingService {
   Future<void> trackSocialFeatureUsed(BuildContext context, String socialAction) async {
     await trackFeatureUsage(
       context,
-      FEATURE_SOCIAL_FEATURES,
-      ACTION_USED,
+      featureSocialFeatures,
+      actionUsed,
       additionalProperties: {'social_action': socialAction}
     );
   }
@@ -650,8 +648,8 @@ class TrackingService {
   Future<void> trackCategoryView(BuildContext context, String category) async {
     await trackFeatureUsage(
       context,
-      FEATURE_QUESTION_CATEGORIES,
-      ACTION_ACCESSED,
+      featureQuestionCategories,
+      actionAccessed,
       additionalProperties: {'category': category}
     );
   }
@@ -663,8 +661,8 @@ class TrackingService {
     
     await trackFeatureUsage(
       context,
-      FEATURE_BIBLICAL_REFERENCES,
-      ACTION_ACCESSED,
+      featureBiblicalReferences,
+      actionAccessed,
       additionalProperties: properties
     );
   }
@@ -673,15 +671,15 @@ class TrackingService {
   Future<void> trackProgressiveDifficultyUsed(BuildContext context, int level) async {
     await trackFeatureUsage(
       context,
-      FEATURE_PROGRESSIVE_DIFFICULTY,
-      ACTION_USED,
+      featureProgressiveDifficulty,
+      actionUsed,
       additionalProperties: {'level': level}
     );
   }
 
   /// Track when user engages with streak tracking
   Future<void> trackStreakFeatureUsed(BuildContext context) async {
-    await trackFeatureUsage(context, FEATURE_STREAK_TRACKING, ACTION_USED);
+    await trackFeatureUsage(context, featureStreakTracking, actionUsed);
   }
 
   /// Get comprehensive feature usage statistics (for reporting)
@@ -728,14 +726,14 @@ class TrackingService {
           ..sort((a, b) => (b['usage_count'] as int).compareTo(a['usage_count'] as int));
       
       final allFeatures = [
-        FEATURE_QUIZ_GAMEPLAY, FEATURE_LESSON_SYSTEM, FEATURE_QUESTION_CATEGORIES,
-        FEATURE_BIBLICAL_REFERENCES, FEATURE_SKIP_QUESTION, FEATURE_RETRY_WITH_POINTS,
-        FEATURE_STREAK_TRACKING, FEATURE_PROGRESSIVE_DIFFICULTY, FEATURE_POWER_UPS,
-        FEATURE_THEME_PURCHASES, FEATURE_AI_THEME_GENERATOR, FEATURE_SOCIAL_FEATURES,
-        FEATURE_PROMO_CARDS, FEATURE_SETTINGS, FEATURE_THEME_SELECTION,
-        FEATURE_ANALYTICS_SETTINGS, FEATURE_LANGUAGE_SETTINGS, FEATURE_ONBOARDING,
-        FEATURE_DONATION_SYSTEM, FEATURE_SATISFACTION_SURVEYS, FEATURE_DIFFICULTY_FEEDBACK,
-        FEATURE_MULTIPLAYER_GAME
+        featureQuizGameplay, featureLessonSystem, featureQuestionCategories,
+        featureBiblicalReferences, featureSkipQuestion, featureRetryWithPoints,
+        featureStreakTracking, featureProgressiveDifficulty, featurePowerUps,
+        featureThemePurchases, featureAiThemeGenerator, featureSocialFeatures,
+        featurePromoCards, featureSettings, featureThemeSelection,
+        featureAnalyticsSettings, featureLanguageSettings, featureOnboarding,
+        featureDonationSystem, featureSatisfactionSurveys, featureDifficultyFeedback,
+        featureMultiplayerGame
       ];
       
       stats['unused_features'] = allFeatures

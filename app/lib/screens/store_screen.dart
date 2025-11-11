@@ -46,7 +46,7 @@ class _StoreScreenState extends State<StoreScreen> {
     analyticsService.screen(context, 'StoreScreen');
 
     // Track store access
-    analyticsService.trackFeatureStart(context, AnalyticsService.FEATURE_THEME_PURCHASES);
+    analyticsService.trackFeatureStart(context, AnalyticsService.featureThemePurchases);
 
     // Load store items from Supabase
     _loadStoreItems();
@@ -772,7 +772,7 @@ class _StoreScreenState extends State<StoreScreen> {
 
             final analytics = Provider.of<AnalyticsService>(context, listen: false);
             analytics.capture(context, 'purchase_powerup', properties: {'title': title, 'cost': cost});
-            analytics.trackFeaturePurchase(context, AnalyticsService.FEATURE_POWER_UPS, additionalProperties: {
+            analytics.trackFeaturePurchase(context, AnalyticsService.featurePowerUps, additionalProperties: {
               'powerup_type': title,
               'cost': cost,
               'current_score': gameStats.score,
@@ -1052,7 +1052,7 @@ class _StoreScreenState extends State<StoreScreen> {
             AppLogger.info('Theme purchase attempted: $title, theme: $themeKey, cost: $cost');
             final analytics = Provider.of<AnalyticsService>(context, listen: false);
             analytics.capture(context, 'purchase_theme', properties: {'theme': themeKey, 'cost': cost});
-            analytics.trackFeaturePurchase(context, AnalyticsService.FEATURE_THEME_PURCHASES, additionalProperties: {
+            analytics.trackFeaturePurchase(context, AnalyticsService.featureThemePurchases, additionalProperties: {
               'theme_key': themeKey,
               'theme_name': title,
               'cost': cost,
@@ -1306,7 +1306,7 @@ class _StoreScreenState extends State<StoreScreen> {
             AppLogger.info('AI Theme Generator tapped, cost: $cost');
             final analytics = Provider.of<AnalyticsService>(context, listen: false);
             analytics.capture(context, 'ai_theme_generator_tapped', properties: {'cost': cost});
-            analytics.trackFeatureAttempt(context, AnalyticsService.FEATURE_AI_THEME_GENERATOR, additionalProperties: {
+            analytics.trackFeatureAttempt(context, AnalyticsService.featureAiThemeGenerator, additionalProperties: {
               'cost': cost,
               'current_score': gameStats.score,
             });

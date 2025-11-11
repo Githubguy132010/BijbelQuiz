@@ -40,10 +40,10 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
        // Track feature usage for main navigation
        final featureNames = [
-         AnalyticsService.FEATURE_LESSON_SYSTEM,
-         AnalyticsService.FEATURE_THEME_PURCHASES,
-         AnalyticsService.FEATURE_SOCIAL_FEATURES,
-         AnalyticsService.FEATURE_SETTINGS
+         AnalyticsService.featureLessonSystem,
+         AnalyticsService.featureThemePurchases,
+         AnalyticsService.featureSocialFeatures,
+         AnalyticsService.featureSettings
        ];
        analyticsService.trackFeatureStart(context, featureNames[index]);
      });

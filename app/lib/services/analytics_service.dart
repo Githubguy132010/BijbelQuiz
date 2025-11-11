@@ -87,43 +87,41 @@ class AnalyticsService {
 
   // ===== COMPREHENSIVE FEATURE USAGE TRACKING =====
 
-  // ignore: constant_identifier_names
   /// Standardized feature names for consistent tracking
-  static const String FEATURE_QUIZ_GAMEPLAY = 'quiz_gameplay';
-  static const String FEATURE_LESSON_SYSTEM = 'lesson_system';
-  static const String FEATURE_QUESTION_CATEGORIES = 'question_categories';
-  static const String FEATURE_BIBLICAL_REFERENCES = 'biblical_references';
-  static const String FEATURE_SKIP_QUESTION = 'skip_question';
-  static const String FEATURE_RETRY_WITH_POINTS = 'retry_with_points';
-  static const String FEATURE_STREAK_TRACKING = 'streak_tracking';
-  static const String FEATURE_PROGRESSIVE_DIFFICULTY = 'progressive_difficulty';
-  static const String FEATURE_POWER_UPS = 'power_ups';
-  static const String FEATURE_THEME_PURCHASES = 'theme_purchases';
-  static const String FEATURE_AI_THEME_GENERATOR = 'ai_theme_generator';
-  static const String FEATURE_SOCIAL_FEATURES = 'social_features';
-  static const String FEATURE_PROMO_CARDS = 'promo_cards';
-  static const String FEATURE_SETTINGS = 'settings';
-  static const String FEATURE_THEME_SELECTION = 'theme_selection';
-  static const String FEATURE_ANALYTICS_SETTINGS = 'analytics_settings';
-  static const String FEATURE_LANGUAGE_SETTINGS = 'language_settings';
-  static const String FEATURE_ONBOARDING = 'onboarding';
-  static const String FEATURE_DONATION_SYSTEM = 'donation_system';
-  static const String FEATURE_SATISFACTION_SURVEYS = 'satisfaction_surveys';
-  static const String FEATURE_DIFFICULTY_FEEDBACK = 'difficulty_feedback';
-  static const String FEATURE_MULTIPLAYER_GAME = 'multiplayer_game';
+  static const String featureQuizGameplay = 'quiz_gameplay';
+  static const String featureLessonSystem = 'lesson_system';
+  static const String featureQuestionCategories = 'question_categories';
+  static const String featureBiblicalReferences = 'biblical_references';
+  static const String featureSkipQuestion = 'skip_question';
+  static const String featureRetryWithPoints = 'retry_with_points';
+  static const String featureStreakTracking = 'streak_tracking';
+  static const String featureProgressiveDifficulty = 'progressive_difficulty';
+  static const String featurePowerUps = 'power_ups';
+  static const String featureThemePurchases = 'theme_purchases';
+  static const String featureAiThemeGenerator = 'ai_theme_generator';
+  static const String featureSocialFeatures = 'social_features';
+  static const String featurePromoCards = 'promo_cards';
+  static const String featureSettings = 'settings';
+  static const String featureThemeSelection = 'theme_selection';
+  static const String featureAnalyticsSettings = 'analytics_settings';
+  static const String featureLanguageSettings = 'language_settings';
+  static const String featureOnboarding = 'onboarding';
+  static const String featureDonationSystem = 'donation_system';
+  static const String featureSatisfactionSurveys = 'satisfaction_surveys';
+  static const String featureDifficultyFeedback = 'difficulty_feedback';
+  static const String featureMultiplayerGame = 'multiplayer_game';
 
-  // ignore: constant_identifier_names
   /// Standardized action names for consistent tracking
-  static const String ACTION_ACCESSED = 'accessed';
-  static const String ACTION_USED = 'used';
-  static const String ACTION_PURCHASED = 'purchased';
-  static const String ACTION_UNLOCKED = 'unlocked';
-  static const String ACTION_ATTEMPTED = 'attempted';
-  static const String ACTION_COMPLETED = 'completed';
-  static const String ACTION_DISMISSED = 'dismissed';
-  static const String ACTION_ENABLED = 'enabled';
-  static const String ACTION_DISABLED = 'disabled';
-  static const String ACTION_CHANGED = 'changed';
+  static const String actionAccessed = 'accessed';
+  static const String actionUsed = 'used';
+  static const String actionPurchased = 'purchased';
+  static const String actionUnlocked = 'unlocked';
+  static const String actionAttempted = 'attempted';
+  static const String actionCompleted = 'completed';
+  static const String actionDismissed = 'dismissed';
+  static const String actionEnabled = 'enabled';
+  static const String actionDisabled = 'disabled';
+  static const String actionChanged = 'changed';
 
   /// Enhanced feature usage tracking with standardized features and actions
   /// This is the primary method for tracking which features users interact with
@@ -142,32 +140,32 @@ class AnalyticsService {
 
   /// Track when a user starts using a feature (for engagement metrics)
   Future<void> trackFeatureStart(BuildContext context, String feature, {Map<String, Object>? additionalProperties}) async {
-    await trackFeatureUsage(context, feature, ACTION_ACCESSED, additionalProperties: additionalProperties);
+    await trackFeatureUsage(context, feature, actionAccessed, additionalProperties: additionalProperties);
   }
 
   /// Track when a user successfully uses a feature
   Future<void> trackFeatureSuccess(BuildContext context, String feature, {Map<String, Object>? additionalProperties}) async {
-    await trackFeatureUsage(context, feature, ACTION_USED, additionalProperties: additionalProperties);
+    await trackFeatureUsage(context, feature, actionUsed, additionalProperties: additionalProperties);
   }
 
   /// Track when a user attempts but fails to use a feature
   Future<void> trackFeatureAttempt(BuildContext context, String feature, {Map<String, Object>? additionalProperties}) async {
-    await trackFeatureUsage(context, feature, ACTION_ATTEMPTED, additionalProperties: additionalProperties);
+    await trackFeatureUsage(context, feature, actionAttempted, additionalProperties: additionalProperties);
   }
 
   /// Track when a user purchases/unlocks a feature
   Future<void> trackFeaturePurchase(BuildContext context, String feature, {Map<String, Object>? additionalProperties}) async {
-    await trackFeatureUsage(context, feature, ACTION_PURCHASED, additionalProperties: additionalProperties);
+    await trackFeatureUsage(context, feature, actionPurchased, additionalProperties: additionalProperties);
   }
 
   /// Track when a user completes a feature or flow
   Future<void> trackFeatureCompletion(BuildContext context, String feature, {Map<String, Object>? additionalProperties}) async {
-    await trackFeatureUsage(context, feature, ACTION_COMPLETED, additionalProperties: additionalProperties);
+    await trackFeatureUsage(context, feature, actionCompleted, additionalProperties: additionalProperties);
   }
 
   /// Track when a user dismisses or cancels a feature
   Future<void> trackFeatureDismissal(BuildContext context, String feature, {Map<String, Object>? additionalProperties}) async {
-    await trackFeatureUsage(context, feature, ACTION_DISMISSED, additionalProperties: additionalProperties);
+    await trackFeatureUsage(context, feature, actionDismissed, additionalProperties: additionalProperties);
   }
 
   /// Get or create a session ID for tracking user sessions

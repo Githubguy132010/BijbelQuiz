@@ -158,7 +158,7 @@ class GameStatsProvider extends ChangeNotifier {
             final context = navigatorKey.currentContext;
             if (context != null) {
               final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
-              analyticsService.trackFeatureUsage(context, AnalyticsService.FEATURE_POWER_UPS, AnalyticsService.ACTION_USED, additionalProperties: {
+              analyticsService.trackFeatureUsage(context, AnalyticsService.featurePowerUps, AnalyticsService.actionUsed, additionalProperties: {
                 'powerup_multiplier': _activePowerup!.multiplier,
                 'powerup_type': _activePowerup!.byQuestions ? 'question_based' : 'time_based',
                 'questions_remaining': _activePowerup!.questionsRemaining ?? 0,

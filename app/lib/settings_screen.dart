@@ -47,7 +47,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     analyticsService.screen(context, 'SettingsScreen');
 
     // Track settings access
-    analyticsService.trackFeatureStart(context, AnalyticsService.FEATURE_SETTINGS);
+    analyticsService.trackFeatureStart(context, AnalyticsService.featureSettings);
     // Attach error handler for notification service
     NotificationService.onError = (message) {
       AppLogger.error('Notification service error: $message');
@@ -251,7 +251,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   
                       final analytics = Provider.of<AnalyticsService>(context, listen: false);
                       analytics.capture(context, 'change_theme', properties: {'theme': value});
-                      analytics.trackFeatureSuccess(context, AnalyticsService.FEATURE_THEME_SELECTION, additionalProperties: {
+                      analytics.trackFeatureSuccess(context, AnalyticsService.featureThemeSelection, additionalProperties: {
                         'theme': value,
                         'previous_theme': previousTheme,
                       });
@@ -310,7 +310,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                   final analytics = Provider.of<AnalyticsService>(context, listen: false);
                   analytics.capture(context, 'toggle_navigation_labels', properties: {'show_labels': value});
-                  analytics.trackFeatureSuccess(context, AnalyticsService.FEATURE_SETTINGS, additionalProperties: {
+                  analytics.trackFeatureSuccess(context, AnalyticsService.featureSettings, additionalProperties: {
                     'setting': 'show_navigation_labels',
                     'value': value,
                   });
@@ -350,7 +350,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                     final analytics = Provider.of<AnalyticsService>(context, listen: false);
                     analytics.capture(context, 'change_layout_type', properties: {'layout': value});
-                    analytics.trackFeatureSuccess(context, AnalyticsService.FEATURE_SETTINGS, additionalProperties: {
+                    analytics.trackFeatureSuccess(context, AnalyticsService.featureSettings, additionalProperties: {
                       'setting': 'layout_type',
                       'value': value,
                     });
@@ -380,7 +380,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                   final analytics = Provider.of<AnalyticsService>(context, listen: false);
                   analytics.capture(context, 'toggle_colorful_mode', properties: {'enabled': value});
-                  analytics.trackFeatureSuccess(context, AnalyticsService.FEATURE_SETTINGS, additionalProperties: {
+                  analytics.trackFeatureSuccess(context, AnalyticsService.featureSettings, additionalProperties: {
                     'setting': 'colorful_mode',
                     'value': value,
                   });
@@ -405,7 +405,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                   final analytics = Provider.of<AnalyticsService>(context, listen: false);
                   analytics.capture(context, 'toggle_hide_promo_card', properties: {'hide': value});
-                  analytics.trackFeatureSuccess(context, AnalyticsService.FEATURE_SETTINGS, additionalProperties: {
+                  analytics.trackFeatureSuccess(context, AnalyticsService.featureSettings, additionalProperties: {
                     'setting': 'hide_promo_card',
                     'value': value,
                   });
@@ -456,7 +456,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                     final analytics = Provider.of<AnalyticsService>(context, listen: false);
                     analytics.capture(context, 'change_game_speed', properties: {'speed': value});
-                    analytics.trackFeatureSuccess(context, AnalyticsService.FEATURE_SETTINGS, additionalProperties: {
+                    analytics.trackFeatureSuccess(context, AnalyticsService.featureSettings, additionalProperties: {
                       'setting': 'game_speed',
                       'value': value,
                     });
@@ -486,7 +486,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                   final analytics = Provider.of<AnalyticsService>(context, listen: false);
                   analytics.capture(context, 'toggle_mute', properties: {'muted': value});
-                  analytics.trackFeatureSuccess(context, AnalyticsService.FEATURE_SETTINGS, additionalProperties: {
+                  analytics.trackFeatureSuccess(context, AnalyticsService.featureSettings, additionalProperties: {
                     'setting': 'mute',
                     'value': value,
                   });
@@ -738,7 +738,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 onChanged: (bool value) {
                   // Track analytics setting change
                   final analytics = Provider.of<AnalyticsService>(context, listen: false);
-                  analytics.trackFeatureSuccess(context, AnalyticsService.FEATURE_ANALYTICS_SETTINGS, additionalProperties: {
+                  analytics.trackFeatureSuccess(context, AnalyticsService.featureAnalyticsSettings, additionalProperties: {
                     'enabled': value,
                   });
                   settings.setAnalyticsEnabled(value);
@@ -775,7 +775,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                     final analytics = Provider.of<AnalyticsService>(context, listen: false);
                     analytics.capture(context, 'toggle_notifications', properties: {'enabled': value});
-                    analytics.trackFeatureSuccess(context, AnalyticsService.FEATURE_SETTINGS, additionalProperties: {
+                    analytics.trackFeatureSuccess(context, AnalyticsService.featureSettings, additionalProperties: {
                       'setting': 'notifications',
                       'value': value,
                     });
@@ -814,7 +814,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                 // Track donation attempt
                 final analytics = Provider.of<AnalyticsService>(context, listen: false);
-                analytics.trackFeatureSuccess(context, AnalyticsService.FEATURE_DONATION_SYSTEM);
+                analytics.trackFeatureSuccess(context, AnalyticsService.featureDonationSystem);
 
                 Provider.of<AnalyticsService>(context, listen: false).capture(context, 'donate');
                 final Uri url = Uri.parse(AppUrls.donateUrl);

@@ -55,7 +55,7 @@ class _LessonSelectScreenState extends State<LessonSelectScreen> {
     analyticsService.screen(context, 'LessonSelectScreen');
 
     // Track lesson system access
-    analyticsService.trackFeatureStart(context, AnalyticsService.FEATURE_LESSON_SYSTEM);
+    analyticsService.trackFeatureStart(context, AnalyticsService.featureLessonSystem);
 
     _loadLessons();
     _loadStreakData();
@@ -420,7 +420,7 @@ class _LessonSelectScreenState extends State<LessonSelectScreen> {
                         final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
 
                         // Track lesson system usage
-                        analyticsService.trackFeatureSuccess(context, AnalyticsService.FEATURE_LESSON_SYSTEM, additionalProperties: {
+                        analyticsService.trackFeatureSuccess(context, AnalyticsService.featureLessonSystem, additionalProperties: {
                           'lesson_id': lesson.id,
                           'lesson_category': lesson.category,
                           'lesson_unlocked': unlocked,
@@ -428,7 +428,7 @@ class _LessonSelectScreenState extends State<LessonSelectScreen> {
 
                         // Track streak feature if this contributes to streak
                         if (_streakDays > 0) {
-                          analyticsService.trackFeatureUsage(context, AnalyticsService.FEATURE_STREAK_TRACKING, AnalyticsService.ACTION_USED, additionalProperties: {
+                          analyticsService.trackFeatureUsage(context, AnalyticsService.featureStreakTracking, AnalyticsService.actionUsed, additionalProperties: {
                             'current_streak': _streakDays,
                           });
                         }
@@ -501,7 +501,7 @@ class _LessonSelectScreenState extends State<LessonSelectScreen> {
                       final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
 
                       // Track lesson system usage
-                      analyticsService.trackFeatureSuccess(context, AnalyticsService.FEATURE_LESSON_SYSTEM, additionalProperties: {
+                      analyticsService.trackFeatureSuccess(context, AnalyticsService.featureLessonSystem, additionalProperties: {
                         'lesson_id': lesson.id,
                         'lesson_category': lesson.category,
                         'lesson_unlocked': unlocked,
@@ -509,7 +509,7 @@ class _LessonSelectScreenState extends State<LessonSelectScreen> {
 
                       // Track streak feature if this contributes to streak
                       if (_streakDays > 0) {
-                        analyticsService.trackFeatureUsage(context, AnalyticsService.FEATURE_STREAK_TRACKING, AnalyticsService.ACTION_USED, additionalProperties: {
+                        analyticsService.trackFeatureUsage(context, AnalyticsService.featureStreakTracking, AnalyticsService.actionUsed, additionalProperties: {
                           'current_streak': _streakDays,
                         });
                       }
@@ -583,7 +583,7 @@ class _LessonSelectScreenState extends State<LessonSelectScreen> {
                       final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
 
                       // Track lesson system usage
-                      analyticsService.trackFeatureSuccess(context, AnalyticsService.FEATURE_LESSON_SYSTEM, additionalProperties: {
+                      analyticsService.trackFeatureSuccess(context, AnalyticsService.featureLessonSystem, additionalProperties: {
                         'lesson_id': lesson.id,
                         'lesson_category': lesson.category,
                         'lesson_unlocked': unlocked,
@@ -591,7 +591,7 @@ class _LessonSelectScreenState extends State<LessonSelectScreen> {
 
                       // Track streak feature if this contributes to streak
                       if (_streakDays > 0) {
-                        analyticsService.trackFeatureUsage(context, AnalyticsService.FEATURE_STREAK_TRACKING, AnalyticsService.ACTION_USED, additionalProperties: {
+                        analyticsService.trackFeatureUsage(context, AnalyticsService.featureStreakTracking, AnalyticsService.actionUsed, additionalProperties: {
                           'current_streak': _streakDays,
                         });
                       }
@@ -732,7 +732,7 @@ class _LessonSelectScreenState extends State<LessonSelectScreen> {
                                     onDismiss: () {
                                       final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
                                       analyticsService.capture(context, 'dismiss_promo_card');
-                                      analyticsService.trackFeatureDismissal(context, AnalyticsService.FEATURE_PROMO_CARDS, additionalProperties: {
+                                      analyticsService.trackFeatureDismissal(context, AnalyticsService.featurePromoCards, additionalProperties: {
                                         'promo_type': _isDonationPromo ? 'donation' : (_isSatisfactionPromo ? 'satisfaction' : (_isDifficultyPromo ? 'difficulty' : (_socialMediaType ?? 'follow'))),
                                       });
                                       setState(() {
@@ -742,7 +742,7 @@ class _LessonSelectScreenState extends State<LessonSelectScreen> {
                                     onView: () {
                                       // Track promo card view
                                       final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
-                                      analyticsService.trackFeatureUsage(context, AnalyticsService.FEATURE_PROMO_CARDS, AnalyticsService.ACTION_ACCESSED, additionalProperties: {
+                                      analyticsService.trackFeatureUsage(context, AnalyticsService.featurePromoCards, AnalyticsService.actionAccessed, additionalProperties: {
                                         'promo_type': _isDonationPromo ? 'donation' : (_isSatisfactionPromo ? 'satisfaction' : (_isDifficultyPromo ? 'difficulty' : (_socialMediaType ?? 'follow'))),
                                       });
                                     },
@@ -752,14 +752,14 @@ class _LessonSelectScreenState extends State<LessonSelectScreen> {
                                       if (_isDonationPromo) {
                                         final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
                                         analyticsService.capture(context, 'tap_donation_promo');
-                                        analyticsService.trackFeatureSuccess(context, AnalyticsService.FEATURE_DONATION_SYSTEM);
+                                        analyticsService.trackFeatureSuccess(context, AnalyticsService.featureDonationSystem);
                                         await settings.markDonationLinkAsClicked();
                                         await settings.updateLastDonationPopup();
                                         _openDonationPage();
                                       } else if (_isSatisfactionPromo) {
                                         final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
                                         analyticsService.capture(context, 'tap_satisfaction_promo');
-                                        analyticsService.trackFeatureSuccess(context, AnalyticsService.FEATURE_SATISFACTION_SURVEYS);
+                                        analyticsService.trackFeatureSuccess(context, AnalyticsService.featureSatisfactionSurveys);
                                         await settings.markSatisfactionLinkAsClicked();
                                         await settings.updateLastSatisfactionPopup();
                                         _launchUrl(AppUrls.satisfactionSurveyUrl);
@@ -767,7 +767,7 @@ class _LessonSelectScreenState extends State<LessonSelectScreen> {
                                         // Handle difficulty feedback
                                         final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
                                         analyticsService.capture(context, 'tap_difficulty_feedback', properties: {'feedback': url});
-                                        analyticsService.trackFeatureSuccess(context, AnalyticsService.FEATURE_DIFFICULTY_FEEDBACK, additionalProperties: {'feedback_type': url});
+                                        analyticsService.trackFeatureSuccess(context, AnalyticsService.featureDifficultyFeedback, additionalProperties: {'feedback_type': url});
                                         await settings.markDifficultyLinkAsClicked();
                                         await settings.updateLastDifficultyPopup();
                                         

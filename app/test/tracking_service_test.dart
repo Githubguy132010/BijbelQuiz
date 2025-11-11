@@ -4,8 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 class MockTrackingService {
   Future<void> init() async {}
   
-  static const String FEATURE_QUIZ_GAMEPLAY = 'feature_quiz_gameplay';
-  static const String ACTION_USED = 'action_used';
+  static const String featureQuizGameplay = 'feature_quiz_gameplay';
+  static const String actionUsed = 'action_used';
   
   Future<void> trackFeatureUsage(Object context, String feature, String action) async {
     // Mock implementation - does nothing
@@ -35,8 +35,8 @@ void main() {
       try {
         await trackingService.trackFeatureUsage(
           'mock_context', 
-          MockTrackingService.FEATURE_QUIZ_GAMEPLAY,
-          MockTrackingService.ACTION_USED,
+          MockTrackingService.featureQuizGameplay,
+          MockTrackingService.actionUsed,
         );
         // If we get here, the method call succeeded
         expect(true, isTrue);
