@@ -11,7 +11,10 @@ import sys
 import urllib.request
 import urllib.parse
 import urllib.error
+import time
+import random
 from typing import Optional
+from dataclasses import dataclass
 
 
 class BijbelQuizAPI:
@@ -131,6 +134,209 @@ class BijbelQuizAPI:
         return self._get("stars/stats")
 
 
+@dataclass
+class QuizQuestion:
+    """Represents a quiz question."""
+    question: str
+    correctAnswer: str
+    incorrectAnswers: list
+    difficulty: int
+    type: str
+    categories: list
+    biblicalReference: str
+    allOptions: list
+    correctAnswerIndex: int
+
+
+class QuizGame:
+    """Interactive quiz game."""
+    
+    def __init__(self, api: BijbelQuizAPI):
+        self.api = api
+        self.score = 0
+        self.total_questions = 0
+        self.correct_answers = 0
+        self.stars_earned = 0
+        self.start_time = None
+        
+    def clear_screen(self):
+        """Clear the terminal screen."""
+        print("\n" * 50)
+        
+    def print_header(self, title: str):
+        """Print a formatted header."""
+        print("=" * 60)
+        print(f"{title:^60}")
+        print("=" * 60)
+        
+    def print_score(self):
+        """Print current score."""
+        print(f"\n📊 Score: {self.score} | Correct: {self.correct_answers}/{self.total_questions} | Stars: {self.stars_earned}")
+        print("-" * 60)
+        
+    def get_user_input(self, prompt: str, valid_choices: list = None) -> str:
+        """Get user input with validation."""
+        while True:
+            try:
+                user_input = input(prompt).strip().lower()
+                if valid_choices and user_input not in valid_choices:
+                    print(f"Please enter one of: {', '.join(valid_choices)}")
+                    continue
+                return user_input
+            except KeyboardInterrupt:
+                print("\n\nGame interrupted by user.")
+                sys.exit(0)
+                
+    def display_question(self, question_data: dict):
+        """Display a quiz question."""
+        question = QuizQuestion(**question_data)
+        self.clear_screen()
+        self.print_header("🏛️ BIJBEL QUIZ GAME")
+        self.print_score()
+        
+        print(f"\n📖 Question {self.total_questions + 1}:")
+        print(f"{question.question}")
+        
+        if question.biblicalReference:
+            print(f"📚 Bible Reference: {question.biblicalReference}")
+            
+        if question.categories:
+            print(f"📂 Categories: {', '.join(question.categories)}")
+            
+        # Convert difficulty to int to avoid string multiplication error
+        difficulty = int(question.difficulty) if isinstance(question.difficulty, str) else question.difficulty
+        print(f"\n🎯 Difficulty: {'⭐' * difficulty}")
+        print("\nChoices:")
+        
+        # Display all options
+        for i, option in enumerate(question.allOptions, 1):
+            print(f"  {i}. {option}")
+            
+        return question
+        
+    def play_round(self, question_data: dict) -> bool:
+        """Play a single question round."""
+        question = self.display_question(question_data)
+        
+        # Get user choice
+        valid_choices = [str(i) for i in range(1, len(question.allOptions) + 1)]
+        choice = self.get_user_input(f"\nEnter your choice (1-{len(question.allOptions)}): ", valid_choices)
+        
+        user_answer_index = int(choice) - 1
+        user_answer = question.allOptions[user_answer_index]
+        correct_answer = question.correctAnswer
+        
+        # Check if answer is correct
+        is_correct = user_answer_index == question.correctAnswerIndex
+        
+        # Convert difficulty to int to avoid string multiplication error
+        difficulty = int(question.difficulty) if isinstance(question.difficulty, str) else question.difficulty
+        
+        # Calculate points and stars
+        points = difficulty * 10
+        stars_earned = difficulty if is_correct else 0
+        
+        # Update stats
+        self.total_questions += 1
+        if is_correct:
+            self.correct_answers += 1
+            self.score += points
+            self.stars_earned += stars_earned
+            
+        # Show result
+        self.clear_screen()
+        self.print_header("🏛️ BIJBEL QUIZ GAME")
+        
+        if is_correct:
+            print("🎉 CORRECT!")
+            print(f"✅ Your answer: {user_answer}")
+            print(f"⭐ You earned {points} points and {stars_earned} stars!")
+        else:
+            print("❌ INCORRECT!")
+            print(f"❌ Your answer: {user_answer}")
+            print(f"✅ Correct answer: {correct_answer}")
+            
+        if question.biblicalReference:
+            print(f"\n📚 Bible Reference: {question.biblicalReference}")
+            
+        # Brief pause before next question
+        time.sleep(2)
+        
+        return is_correct
+        
+    def end_game(self):
+        """End the game and show final results."""
+        self.clear_screen()
+        self.print_header("🏆 GAME COMPLETE!")
+        
+        accuracy = (self.correct_answers / self.total_questions * 100) if self.total_questions > 0 else 0
+        
+        print(f"📊 Final Results:")
+        print(f"   • Questions answered: {self.total_questions}")
+        print(f"   • Correct answers: {self.correct_answers}")
+        print(f"   • Accuracy: {accuracy:.1f}%")
+        print(f"   • Total score: {self.score}")
+        print(f"   • Stars earned: {self.stars_earned}")
+        
+        # Award stars via API
+        if self.stars_earned > 0:
+            try:
+                result = self.api.add_stars(
+                    self.stars_earned,
+                    f"Quiz game completed - {self.correct_answers}/{self.total_questions} correct"
+                )
+                if result.get('success'):
+                    print(f"   • New star balance: {result.get('balance', 'Unknown')}")
+                else:
+                    print(f"   • Warning: Could not update star balance")
+            except Exception as e:
+                print(f"   • Warning: Could not award stars - {e}")
+                
+        print("\nThank you for playing! 🙏")
+        
+    def start(self, category: str = None, difficulty: int = None, num_questions: int = 10):
+        """Start the quiz game."""
+        print("Starting BijbelQuiz game...")
+        print("Press Ctrl+C at any time to quit.")
+        time.sleep(2)
+        
+        self.start_time = time.time()
+        
+        try:
+            # Get questions from API
+            print("Loading questions...")
+            result = self.api.get_questions(category=category, limit=num_questions, difficulty=difficulty)
+            
+            if 'questions' not in result or not result['questions']:
+                print("❌ No questions available. Please check your API connection and try again.")
+                return
+                
+            questions = result['questions']
+            print(f"✅ Loaded {len(questions)} questions!")
+            time.sleep(1)
+            
+            # Play each question
+            for i, question_data in enumerate(questions, 1):
+                if not self.play_round(question_data):
+                    # Allow user to continue or quit on wrong answer
+                    if i < len(questions):
+                        continue_game = self.get_user_input(
+                            "\nContinue playing? (y/n): ", ['y', 'n', 'yes', 'no']
+                        )
+                        if continue_game in ['n', 'no']:
+                            break
+                            
+            # End game
+            self.end_game()
+            
+        except KeyboardInterrupt:
+            print("\n\nGame interrupted. Final results:")
+            self.end_game()
+        except Exception as e:
+            print(f"\n❌ Error during game: {e}")
+            print("Please check your API connection and try again.")
+
+
 def print_json(data: dict):
     """Pretty print JSON data."""
     print(json.dumps(data, indent=2, ensure_ascii=False))
@@ -157,6 +363,12 @@ def main():
 
     # Stats command
     subparsers.add_parser("stats", help="Get game statistics")
+
+    # Game command
+    game_parser = subparsers.add_parser("game", help="Start interactive quiz game")
+    game_parser.add_argument("--category", help="Filter by category")
+    game_parser.add_argument("--difficulty", type=int, choices=range(1, 6), help="Difficulty level (1-5)")
+    game_parser.add_argument("--questions", type=int, default=10, help="Number of questions to play (default: 10)")
 
     # Settings command
     subparsers.add_parser("settings", help="Get app settings")
@@ -213,6 +425,14 @@ def main():
         elif args.command == "stats":
             result = api.get_stats()
             print_json(result)
+
+        elif args.command == "game":
+            game = QuizGame(api)
+            game.start(
+                category=args.category,
+                difficulty=args.difficulty,
+                num_questions=args.questions
+            )
 
         elif args.command == "settings":
             result = api.get_settings()
