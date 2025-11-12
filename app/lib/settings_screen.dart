@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'providers/settings_provider.dart';
 import 'providers/game_stats_provider.dart';
 import 'providers/lesson_progress_provider.dart';
+import 'utils/automatic_error_reporter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'screens/guide_screen.dart';
 import 'dart:io' show Platform;
@@ -1395,6 +1396,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _exportStats(BuildContext context) async {
     final statsKey = dotenv.env["STATS_KEY"] ?? "";
 
+    // Report error if STATS_KEY is not configured
+    if (statsKey.isEmpty) {
+      await AutomaticErrorReporter.reportStorageError(
+        message: 'STATS_KEY environment variable not found during stats export',
+        userMessage: 'Error preparing stats export - missing configuration',
+        operation: 'export_stats',
+        additionalInfo: {
+          'feature': 'stats_export_import',
+          'error_type': 'missing_config',
+        },
+      );
+    }
+
     try {
       final gameStats = Provider.of<GameStatsProvider>(context, listen: false);
       final lessonProgress = Provider.of<LessonProgressProvider>(context, listen: false);
@@ -1972,6 +1986,22 @@ class _ImportStatsScreenState extends State<ImportStatsScreen> {
                         String jsonString;
 
                         final statsKey = dotenv.env["STATS_KEY"] ?? "";
+
+                        // Report error if STATS_KEY is not configured
+                        if (statsKey.isEmpty) {
+                          await AutomaticErrorReporter.reportStorageError(
+                            message: 'STATS_KEY environment variable not found during stats import',
+                            userMessage: 'Error verifying stats import - missing configuration',
+                            operation: 'import_stats',
+                            additionalInfo: {
+                              'feature': 'stats_export_import',
+                              'error_type': 'missing_config',
+                            },
+                          );
+                          if (!safeContext.mounted) return;
+                          showTopSnackBar(safeContext, strings.AppStrings.invalidOrTamperedData, style: TopSnackBarStyle.error);
+                          return;
+                        }
 
                         // Detect format based on hash length: SHA-1 (40 chars) for new, SHA-256 (64 chars) for old
                         if (hash.length == 40) {
