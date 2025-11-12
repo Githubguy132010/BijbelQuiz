@@ -201,12 +201,15 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
           AppLogger.warning('Navigator context not available for star transaction initialization');
           return;
         }
-        final gameStatsProvider = Provider.of<GameStatsProvider>(currentContext, listen: false);
-        final lessonProgressProvider = Provider.of<LessonProgressProvider>(currentContext, listen: false);
-        await starTransactionService.initialize(
-          gameStatsProvider: gameStatsProvider,
-          lessonProgressProvider: lessonProgressProvider,
-        );
+        // Use context safely after checking if it's available
+        if (mounted && navigatorKey.currentContext != null) {
+          final gameStatsProvider = Provider.of<GameStatsProvider>(navigatorKey.currentContext!, listen: false);
+          final lessonProgressProvider = Provider.of<LessonProgressProvider>(navigatorKey.currentContext!, listen: false);
+          await starTransactionService.initialize(
+            gameStatsProvider: gameStatsProvider,
+            lessonProgressProvider: lessonProgressProvider,
+          );
+        }
       });
 
       // Kick off initialization in background
@@ -387,8 +390,8 @@ class _BijbelQuizAppState extends State<BijbelQuizApp> {
         
         // Small delay to ensure context is ready
         Future.delayed(const Duration(milliseconds: 500), () {
-          if (mounted) {
-            Navigator.of(context).push(
+          if (mounted && navigatorKey.currentState != null) {
+            navigatorKey.currentState!.push(
               MaterialPageRoute(
                 builder: (_) => const BijbelQuizGenScreen(),
               ),

@@ -359,7 +359,12 @@ class _AIThemeDesignerScreenState extends State<AIThemeDesignerScreen> {
     }
 
     AppLogger.info('AI Theme generation requested: $description');
-    Provider.of<AnalyticsService>(context, listen: false).capture(
+
+    // Get all providers before any async operations to avoid context issues
+    final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
+    final settings = Provider.of<SettingsProvider>(context, listen: false);
+    
+    analyticsService.capture(
       context,
       'ai_theme_generated',
       properties: {'description': description}
@@ -455,8 +460,6 @@ class _AIThemeDesignerScreenState extends State<AIThemeDesignerScreen> {
         _generationStatus = 'Thema aan het opslaan...';
       });
 
-      // Save theme to settings provider
-      final settings = Provider.of<SettingsProvider>(context, listen: false);
       await settings.saveAITheme(aiTheme);
 
       // Update status
@@ -473,8 +476,6 @@ class _AIThemeDesignerScreenState extends State<AIThemeDesignerScreen> {
           style: TopSnackBarStyle.success
         );
 
-        // Track successful AI theme generation
-        final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
         analyticsService.trackFeatureSuccess(context, AnalyticsService.featureAiThemeGenerator, additionalProperties: {
           'theme_name': themeName,
           'description': description,

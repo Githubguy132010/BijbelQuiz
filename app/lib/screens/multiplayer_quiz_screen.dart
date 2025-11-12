@@ -1007,14 +1007,6 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
     );
     
     if (success) {
-      // Track successful question skip
-      analyticsService.trackFeatureSuccess(context, AnalyticsService.featureSkipQuestion, additionalProperties: {
-        'question_category': quizState.question.category,
-        'question_difficulty': quizState.question.difficulty,
-        'time_remaining': quizState.timeRemaining,
-        'player': playerName,
-      });
-
       setState(() {
         if (isPlayer1) {
           _player1QuizState = _player1QuizState.copyWith(
@@ -1028,6 +1020,16 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
           );
         }
       });
+
+      // Track successful question skip after state update
+      if (mounted) {
+        analyticsService.trackFeatureSuccess(context, AnalyticsService.featureSkipQuestion, additionalProperties: {
+          'question_category': quizState.question.category,
+          'question_difficulty': quizState.question.difficulty,
+          'time_remaining': quizState.timeRemaining,
+          'player': playerName,
+        });
+      }
 
       await Future.delayed(_performanceService.getOptimalAnimationDuration(const Duration(milliseconds: 300)));
       if (!mounted) return;
@@ -1078,8 +1080,7 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
       'player': playerName,
     });
 
-    final localContext = context;
-    final gameStats = Provider.of<GameStatsProvider>(localContext, listen: false);
+    final gameStats = Provider.of<GameStatsProvider>(context, listen: false);
     final isDev = kDebugMode;
 
     // First check if the reference can be parsed
@@ -1099,7 +1100,7 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
       );
       
       if (mounted) {
-        showTopSnackBar(localContext, strings.AppStrings.invalidBiblicalReference, style: TopSnackBarStyle.error);
+        showTopSnackBar(context, strings.AppStrings.invalidBiblicalReference, style: TopSnackBarStyle.error);
       }
       return;
     }
@@ -1121,7 +1122,7 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           _showBiblicalReferenceDialogForPlayer(
-            localContext,
+            context,
             quizState.question.biblicalReference!,
             isPlayer1
           );
@@ -1129,18 +1130,20 @@ class _MultiplayerQuizScreenState extends State<MultiplayerQuizScreen>
       });
 
       // Track successful biblical reference unlock
-      analyticsService.trackFeatureSuccess(context, AnalyticsService.featureBiblicalReferences, additionalProperties: {
-        'question_category': quizState.question.category,
-        'question_difficulty': quizState.question.difficulty,
-        'biblical_reference': quizState.question.biblicalReference ?? 'none',
-        'time_remaining': quizState.timeRemaining,
-        'player': playerName,
-      });
+      if (mounted) {
+        analyticsService.trackFeatureSuccess(context, AnalyticsService.featureBiblicalReferences, additionalProperties: {
+          'question_category': quizState.question.category,
+          'question_difficulty': quizState.question.difficulty,
+          'biblical_reference': quizState.question.biblicalReference ?? 'none',
+          'time_remaining': quizState.timeRemaining,
+          'player': playerName,
+        });
+      }
     } else {
       // Not enough stars - this is a user state issue, not an error to report automatically
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
-          showTopSnackBar(localContext, strings.AppStrings.notEnoughStars, style: TopSnackBarStyle.warning);
+          showTopSnackBar(context, strings.AppStrings.notEnoughStars, style: TopSnackBarStyle.warning);
         }
       });
     }

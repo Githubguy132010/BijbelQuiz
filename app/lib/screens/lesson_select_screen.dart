@@ -366,13 +366,16 @@ class _LessonSelectScreenState extends State<LessonSelectScreen> {
   /// The ProgressiveQuestionSelector dynamically adjusts difficulty based on performance
   /// so we'll store the user's preference to potentially influence future difficulty
   Future<void> _adjustDifficulty(String feedback) async {
+    // Get analytics service before any async operations to avoid context issues
+    final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
     final settings = Provider.of<SettingsProvider>(context, listen: false);
+    
+    // Capture analytics before async operation to avoid context issues
+    analyticsService.capture(context, 'difficulty_adjusted',
+      properties: {'feedback': feedback});
     
     // Store the user's difficulty preference
     await settings.setDifficultyPreference(feedback);
-    
-    Provider.of<AnalyticsService>(context, listen: false).capture(context, 'difficulty_adjusted', 
-      properties: {'feedback': feedback});
   }
 
   /// Builds the lesson layout based on the selected layout type

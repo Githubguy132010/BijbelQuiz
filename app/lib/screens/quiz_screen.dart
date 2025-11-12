@@ -376,10 +376,12 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
                     if (!dialogContext.mounted) return;
                     if (success) {
                       // Track successful retry with points
-                      analyticsService.trackFeatureSuccess(context, AnalyticsService.featureRetryWithPoints, additionalProperties: {
+                      final localAnalytics = analyticsService;
+                      final localGameStats = gameStats;
+                      localAnalytics.trackFeatureSuccess(dialogContext, AnalyticsService.featureRetryWithPoints, additionalProperties: {
                         'time_remaining': 0, // Time is up
-                        'current_streak': gameStats.currentStreak,
-                        'current_score': gameStats.score,
+                        'current_streak': localGameStats.currentStreak,
+                        'current_score': localGameStats.score,
                       });
 
                       Navigator.of(dialogContext).pop();
@@ -571,7 +573,8 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
 
       // Track slow mode usage
       if (isSlowMode) {
-        analyticsService.trackFeatureUsage(context, AnalyticsService.featureSettings, AnalyticsService.actionUsed, additionalProperties: {
+        final localAnalytics = analyticsService;
+        localAnalytics.trackFeatureUsage(context, AnalyticsService.featureSettings, AnalyticsService.actionUsed, additionalProperties: {
           'setting': 'slow_mode',
           'enabled': true,
         });
@@ -584,7 +587,8 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
 
       // Track question category usage
       if (firstQuestion.category.isNotEmpty) {
-        analyticsService.trackFeatureUsage(context, AnalyticsService.featureQuestionCategories, AnalyticsService.actionUsed, additionalProperties: {
+        final localAnalytics = analyticsService;
+        localAnalytics.trackFeatureUsage(context, AnalyticsService.featureQuestionCategories, AnalyticsService.actionUsed, additionalProperties: {
           'category': firstQuestion.category,
           'difficulty': firstQuestion.difficulty,
         });
@@ -712,7 +716,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
 
     // If in lesson mode and session reached limit, show completion screen
     if (_lessonMode && _sessionAnswered >= (widget.sessionLimit ?? 0)) {
-      // Track lesson completion
+      // Track lesson completion before async operation
       final analytics = Provider.of<AnalyticsService>(context, listen: false);
       analytics.trackFeatureCompletion(context, AnalyticsService.featureLessonSystem, additionalProperties: {
         'lesson_id': widget.lesson?.id ?? 'unknown',
@@ -1010,13 +1014,13 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
     final bestStreak = _sessionBestStreak;
     final stars = LessonProgressProvider().computeStars(correct: correct, total: total);
 
-    // Persist lesson progress
+    // Persist lesson progress - capture context before async operation
     final progress = Provider.of<LessonProgressProvider>(context, listen: false);
     await progress.markCompleted(lesson: lesson, correct: correct, total: total);
 
-    // Show full-screen completion screen
-    final quizContext = context;
+    // Show full-screen completion screen - capture context before navigation
     if (!mounted) return;
+    final quizContext = context;
     await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (ctx) => LessonCompleteScreen(
@@ -1109,13 +1113,6 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
       },
     );
     if (success) {
-      // Track successful question skip
-      analyticsService.trackFeatureSuccess(context, AnalyticsService.featureSkipQuestion, additionalProperties: {
-        'question_category': question.category,
-        'question_difficulty': question.difficulty,
-        'time_remaining': _quizState.timeRemaining,
-      });
-
       _timerManager.timeAnimationController.stop();
       setState(() {
         _quizState = _quizState.copyWith(
@@ -1126,6 +1123,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
       await Future.delayed(_performanceService.getOptimalAnimationDuration(const Duration(milliseconds: 300)));
       if (!mounted) return;
       final newDifficulty = _quizState.currentDifficulty;
+      final localAnalytics = analyticsService;
       setState(() {
         // Record that the current question was not answered correctly (since it was skipped)
         _questionSelector.recordAnswerResult(_quizState.question.question, false);
@@ -1140,6 +1138,13 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
         );
         _timerManager.startTimer(context: context, reset: true);
         _animationController.triggerTimeAnimation();
+      });
+      
+      // Track successful question skip after setState
+      localAnalytics.trackFeatureSuccess(context, AnalyticsService.featureSkipQuestion, additionalProperties: {
+        'question_category': question.category,
+        'question_difficulty': question.difficulty,
+        'time_remaining': _quizState.timeRemaining,
       });
     } else {
       if (mounted) {
@@ -1181,7 +1186,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
       );
       
       if (mounted) {
-        showTopSnackBar(localContext, strings.AppStrings.invalidBiblicalReference, style: TopSnackBarStyle.error);
+        showTopSnackBar(context, strings.AppStrings.invalidBiblicalReference, style: TopSnackBarStyle.error);
       }
       return;
     }
@@ -1223,17 +1228,20 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
       });
 
       // Track successful biblical reference unlock
-      analyticsService.trackFeatureSuccess(context, AnalyticsService.featureBiblicalReferences, additionalProperties: {
-        'question_category': question.category,
-        'question_difficulty': question.difficulty,
-        'biblical_reference': question.biblicalReference ?? 'none',
-        'time_remaining': _quizState.timeRemaining,
+      final localAnalytics = analyticsService;
+      final localQuestion = question;
+      final localTimeRemaining = _quizState.timeRemaining;
+      localAnalytics.trackFeatureSuccess(context, AnalyticsService.featureBiblicalReferences, additionalProperties: {
+        'question_category': localQuestion.category,
+        'question_difficulty': localQuestion.difficulty,
+        'biblical_reference': localQuestion.biblicalReference ?? 'none',
+        'time_remaining': localTimeRemaining,
       });
     } else {
       // Not enough stars - this is a user state issue, not an error to report automatically
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
-          showTopSnackBar(localContext, strings.AppStrings.notEnoughStars, style: TopSnackBarStyle.warning);
+          showTopSnackBar(context, strings.AppStrings.notEnoughStars, style: TopSnackBarStyle.warning);
         }
       });
     }

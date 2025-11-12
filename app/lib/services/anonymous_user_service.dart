@@ -29,7 +29,7 @@ class AnonymousUserService {
   }
 
   /// Generates a unique anonymous user ID
-  /// Format: anonymous_user_[timestamp]_[random_string]
+  /// Format: anonymous_user_{timestamp}_{random_string}
   String _generateUniqueId() {
     final timestamp = DateTime.now().millisecondsSinceEpoch;
     final random = Random().nextInt(999999).toString().padLeft(6, '0');

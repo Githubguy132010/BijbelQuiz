@@ -32,8 +32,10 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
 
   /// Track screen access for analytics
   void _trackScreenAccess() {
-    _analyticsService.screen(context, 'UserSearchScreen');
-    _analyticsService.trackFeatureUsage(context, 'user_search', 'screen_accessed');
+    if (mounted) {
+      _analyticsService.screen(context, 'UserSearchScreen');
+      _analyticsService.trackFeatureUsage(context, 'user_search', 'screen_accessed');
+    }
   }
 
   /// Load the current following list
@@ -116,23 +118,27 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
     }
 
     if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(isFollowing 
-            ? 'Unfollowed $username' 
-            : 'Started following $username'),
-          backgroundColor: Theme.of(context).colorScheme.primary,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(isFollowing
+              ? 'Unfollowed $username'
+              : 'Started following $username'),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+          ),
+        );
+      }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(isFollowing 
-            ? 'Failed to unfollow user' 
-            : 'Failed to follow user'),
-          backgroundColor: Theme.of(context).colorScheme.error,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(isFollowing
+              ? 'Failed to unfollow user'
+              : 'Failed to follow user'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
     }
   }
 
@@ -293,30 +299,36 @@ class _UserSearchScreenState extends State<UserSearchScreen> {
                             color: colorScheme.onSurface.withValues(alpha: 0.6),
                           ),
                         ),
-                        trailing: deviceId != Provider.of<GameStatsProvider>(context, listen: false).syncService.getCurrentDeviceId() 
-                          ? OutlinedButton(
-                              onPressed: () => _toggleFollow(deviceId, username),
-                              style: OutlinedButton.styleFrom(
-                                side: BorderSide(color: isFollowing ? colorScheme.error : colorScheme.primary),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                              ),
-                              child: Text(
-                                isFollowing ? strings.AppStrings.unfollow : strings.AppStrings.follow,
-                                style: TextStyle(
-                                  color: isFollowing ? colorScheme.error : colorScheme.primary,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            )
-                          : Text(
-                              strings.AppStrings.yourself,
-                              style: theme.textTheme.labelSmall?.copyWith(
-                                color: colorScheme.onSurface.withValues(alpha: 0.5),
-                              ),
-                            ),
+                        trailing: FutureBuilder<String>(
+                          future: Provider.of<GameStatsProvider>(context, listen: false).syncService.getCurrentDeviceId(),
+                          builder: (context, snapshot) {
+                            final currentDeviceId = snapshot.data;
+                            return currentDeviceId != deviceId
+                                ? OutlinedButton(
+                                    onPressed: () => _toggleFollow(deviceId, username),
+                                    style: OutlinedButton.styleFrom(
+                                      side: BorderSide(color: isFollowing ? colorScheme.error : colorScheme.primary),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                    ),
+                                    child: Text(
+                                      isFollowing ? strings.AppStrings.unfollow : strings.AppStrings.follow,
+                                      style: TextStyle(
+                                        color: isFollowing ? colorScheme.error : colorScheme.primary,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  )
+                                : Text(
+                                    strings.AppStrings.yourself,
+                                    style: theme.textTheme.labelSmall?.copyWith(
+                                      color: colorScheme.onSurface.withValues(alpha: 0.5),
+                                    ),
+                                  );
+                          },
+                        ),
                       );
                     },
                   ),

@@ -552,7 +552,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   final Uri url = Uri.parse(AppUrls.privacyUrl);
                   if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
                     if (mounted) {
-                      showTopSnackBar(context, strings.AppStrings.couldNotOpenPrivacyPolicy, style: TopSnackBarStyle.error);
+                      final localContext = context;
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        if (localContext.mounted) {
+                          showTopSnackBar(localContext, strings.AppStrings.couldNotOpenPrivacyPolicy, style: TopSnackBarStyle.error);
+                        }
+                      });
                     }
                   }
                 },
@@ -602,7 +607,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   children: [
                     if (settings.apiKey.isNotEmpty) ...[
                       IconButton(
-                        onPressed: () => _copyApiKeyToClipboard(context, settings.apiKey),
+                        onPressed: () {
+                        final localContext = context;
+                        _copyApiKeyToClipboard(localContext, settings.apiKey);
+                      },
                         icon: Icon(Icons.copy, size: 20),
                         tooltip: strings.AppStrings.copyApiKey,
                         style: IconButton.styleFrom(
@@ -1583,12 +1591,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 // Copy the personalized link to clipboard
                 await Clipboard.setData(ClipboardData(text: inviteUrl));
                 
-                if (context.mounted) {
-                  showTopSnackBar(
-                    context,
-                    strings.AppStrings.inviteLinkCopied,
-                    style: TopSnackBarStyle.success,
-                  );
+                if (mounted) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (mounted) {
+                      showTopSnackBar(
+                        context, // Using dialog's builder context
+                        strings.AppStrings.inviteLinkCopied,
+                        style: TopSnackBarStyle.success,
+                      );
+                    }
+                  });
                 }
                 
                 Navigator.of(context).pop(); // Close the dialog
@@ -1667,8 +1679,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onPressed: () async {
                 await settings.generateNewApiKey();
                 Navigator.of(context).pop();
-                if (context.mounted) {
-                  showTopSnackBar(context, strings.AppStrings.apiKeyGenerated, style: TopSnackBarStyle.success);
+                if (mounted) {
+                  // Use a local context to avoid async context issues
+                  final localContext = context;
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (localContext.mounted) {
+                      showTopSnackBar(localContext, strings.AppStrings.apiKeyGenerated, style: TopSnackBarStyle.success);
+                    }
+                  });
                 }
               },
               style: TextButton.styleFrom(
@@ -1694,19 +1712,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
     try {
       await Clipboard.setData(ClipboardData(text: apiKey));
       if (context.mounted) {
-        showTopSnackBar(
-          context,
-          strings.AppStrings.apiKeyCopied,
-          style: TopSnackBarStyle.success,
-        );
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (context.mounted) {
+            showTopSnackBar(
+              context,
+              strings.AppStrings.apiKeyCopied,
+              style: TopSnackBarStyle.success,
+            );
+          }
+        });
       }
     } catch (e) {
       if (context.mounted) {
-        showTopSnackBar(
-          context,
-          strings.AppStrings.apiKeyCopyFailed,
-          style: TopSnackBarStyle.error,
-        );
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (context.mounted) {
+            showTopSnackBar(
+              context,
+              strings.AppStrings.apiKeyCopyFailed,
+              style: TopSnackBarStyle.error,
+            );
+          }
+        });
       }
     }
   }
@@ -2003,8 +2029,12 @@ class _ImportStatsScreenState extends State<ImportStatsScreen> {
                           }
                         });
                       } catch (e) {
-                        if (!mounted) return;
-                        showTopSnackBar(safeContext, '${strings.AppStrings.failedToImportStats} $e', style: TopSnackBarStyle.error);
+                        if (!safeContext.mounted) return;
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          if (safeContext.mounted) {
+                            showTopSnackBar(safeContext, '${strings.AppStrings.failedToImportStats} $e', style: TopSnackBarStyle.error);
+                          }
+                        });
                       }
                     },
                     child: Text(strings.AppStrings.importButton),

@@ -31,11 +31,13 @@ class _AdWidgetState extends State<AdWidget> {
         widget.onView!();
       }
       // Track ad view
-      final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
-      analyticsService.trackFeatureUsage(context, 'custom_ads', 'viewed', additionalProperties: {
-        'ad_id': widget.ad.id,
-        'ad_title': widget.ad.title,
-      });
+      if (mounted) {
+        final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
+        analyticsService.trackFeatureUsage(context, 'custom_ads', 'viewed', additionalProperties: {
+          'ad_id': widget.ad.id,
+          'ad_title': widget.ad.title,
+        });
+      }
     });
   }
 
@@ -47,13 +49,15 @@ class _AdWidgetState extends State<AdWidget> {
       if (await canLaunchUrl(uri)) {
         await launchUrl(uri);
         
-        // Track ad click
-        final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
-        analyticsService.trackFeatureSuccess(context, 'custom_ads', additionalProperties: {
-          'ad_id': widget.ad.id,
-          'ad_title': widget.ad.title,
-          'action': 'clicked',
-        });
+        // Track ad click after confirming launch
+        if (mounted) {
+          final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
+          analyticsService.trackFeatureSuccess(context, 'custom_ads', additionalProperties: {
+            'ad_id': widget.ad.id,
+            'ad_title': widget.ad.title,
+            'action': 'clicked',
+          });
+        }
       }
     } catch (e) {
       // Handle error silently for user experience

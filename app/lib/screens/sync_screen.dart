@@ -175,6 +175,7 @@ class _SyncScreenState extends State<SyncScreen> {
       });
 
       try {
+        if (!mounted) return;
         final gameStatsProvider = Provider.of<GameStatsProvider>(context, listen: false);
         final success = await gameStatsProvider.removeDevice(deviceId);
 
@@ -440,7 +441,9 @@ class _SyncScreenState extends State<SyncScreen> {
         // Trigger immediate sync of all data after joining room
         await _syncAllData();
         
-        Navigator.of(context).pop(true); // Return success
+        if (mounted) {
+          Navigator.of(context).pop(true); // Return success
+        }
       } else {
         // Auto-report the failure
         await AutomaticErrorReporter.reportStorageError(
@@ -452,9 +455,11 @@ class _SyncScreenState extends State<SyncScreen> {
             'feature': 'sync',
           },
         );
-        setState(() {
-          _error = strings.AppStrings.failedToConnectToUser;
-        });
+        if (mounted) {
+          setState(() {
+            _error = strings.AppStrings.failedToConnectToUser;
+          });
+        }
       }
     } catch (e) {
       // Auto-report the error
@@ -493,7 +498,9 @@ class _SyncScreenState extends State<SyncScreen> {
       await gameStatsProvider.leaveSyncRoom();
 
       AppLogger.info('Left sync room');
-      Navigator.of(context).pop(false); // Return left
+      if (mounted) {
+        Navigator.of(context).pop(false); // Return left
+      }
     } catch (e) {
       // Auto-report the error
       await AutomaticErrorReporter.reportStorageError(
@@ -505,14 +512,18 @@ class _SyncScreenState extends State<SyncScreen> {
           'feature': 'sync',
         },
       );
-      setState(() {
-        _error = '${strings.AppStrings.errorLeavingSyncRoom}${e.toString()}';
-      });
+      if (mounted) {
+        setState(() {
+          _error = '${strings.AppStrings.errorLeavingSyncRoom}${e.toString()}';
+        });
+      }
       AppLogger.error('Error leaving sync room', e);
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
   }
 
@@ -585,7 +596,9 @@ class _SyncScreenState extends State<SyncScreen> {
         // Trigger immediate sync of all data after creating room
         await _syncAllData();
         
-        Navigator.of(context).pop(true); // Return success
+        if (mounted) {
+          Navigator.of(context).pop(true); // Return success
+        }
       } else {
         // Auto-report the failure
         await AutomaticErrorReporter.reportStorageError(
@@ -597,9 +610,11 @@ class _SyncScreenState extends State<SyncScreen> {
             'feature': 'sync',
           },
         );
-        setState(() {
-          _error = strings.AppStrings.failedToCreateUserId;
-        });
+        if (mounted) {
+          setState(() {
+            _error = strings.AppStrings.failedToCreateUserId;
+          });
+        }
       }
     } catch (e) {
       // Auto-report the error

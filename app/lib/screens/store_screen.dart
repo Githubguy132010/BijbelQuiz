@@ -1360,11 +1360,13 @@ class _StoreScreenState extends State<StoreScreen> {
               
               // Navigate to AI Theme Designer screen
               try {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => const AIThemeDesignerScreen(),
-                  ),
-                );
+                if (localContext.mounted) {
+                  Navigator.of(localContext).push(
+                    MaterialPageRoute(
+                      builder: (_) => const AIThemeDesignerScreen(),
+                    ),
+                  );
+                }
               } catch (navError) {
                 // Auto-report navigation error
                 await AutomaticErrorReporter.reportStorageError(

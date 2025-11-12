@@ -819,11 +819,14 @@ class _BijbelQuizGenScreenState extends State<BijbelQuizGenScreen> {
     await Clipboard.setData(ClipboardData(text: shareUrl));
     
     // Show a snackbar to indicate the URL has been copied
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('URL gekopieerd naar klembord!'),
-        backgroundColor: Colors.green,
-      ),
-    );
+    final localContext = context;
+    if (localContext.mounted) {
+      ScaffoldMessenger.of(localContext).showSnackBar(
+        SnackBar(
+          content: Text('URL gekopieerd naar klembord!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
   }
 }
