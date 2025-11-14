@@ -524,6 +524,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
   /// Initialize animations with performance optimizations
   Future<void> _initializeQuiz() async {
     final analyticsService = Provider.of<AnalyticsService>(context, listen: false);
+    final settings = Provider.of<SettingsProvider>(context, listen: false);
 
     try {
       setState(() {
@@ -531,7 +532,6 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
         _error = null;
       });
 
-      final settings = Provider.of<SettingsProvider>(context, listen: false);
       final language = settings.language;
 
 
@@ -574,10 +574,14 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
       // Track slow mode usage
       if (isSlowMode) {
         final localAnalytics = analyticsService;
-        localAnalytics.trackFeatureUsage(context, AnalyticsService.featureSettings, AnalyticsService.actionUsed, additionalProperties: {
-          'setting': 'slow_mode',
-          'enabled': true,
-        });
+        // Don't pass context in async operation - trackFeatureUsage will handle context internally
+        // or we need to call this before any await operations
+        if (mounted) {
+          localAnalytics.trackFeatureUsage(context, AnalyticsService.featureSettings, AnalyticsService.actionUsed, additionalProperties: {
+            'setting': 'slow_mode',
+            'enabled': true,
+          });
+        }
       }
 
       if (!mounted) return;
@@ -588,6 +592,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
       // Track question category usage
       if (firstQuestion.category.isNotEmpty) {
         final localAnalytics = analyticsService;
+        // Track immediately, not after async operations
         localAnalytics.trackFeatureUsage(context, AnalyticsService.featureQuestionCategories, AnalyticsService.actionUsed, additionalProperties: {
           'category': firstQuestion.category,
           'difficulty': firstQuestion.difficulty,
@@ -692,10 +697,10 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
   }
 
   Future<void> _handleNextQuestion(bool isCorrect, double newDifficulty) async {
-    Provider.of<AnalyticsService>(context, listen: false);
-    final gameStats = Provider.of<GameStatsProvider>(context, listen: false);
-    final settings = Provider.of<SettingsProvider>(context, listen: false);
-
+    final localContext = context;
+    Provider.of<AnalyticsService>(localContext, listen: false);
+    final gameStats = Provider.of<GameStatsProvider>(localContext, listen: false);
+    final settings = Provider.of<SettingsProvider>(localContext, listen: false);
 
     // Update game stats first
     await gameStats.updateStats(isCorrect: isCorrect);
@@ -716,16 +721,18 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
 
     // If in lesson mode and session reached limit, show completion screen
     if (_lessonMode && _sessionAnswered >= (widget.sessionLimit ?? 0)) {
-      // Track lesson completion before async operation
-      final analytics = Provider.of<AnalyticsService>(context, listen: false);
-      analytics.trackFeatureCompletion(context, AnalyticsService.featureLessonSystem, additionalProperties: {
-        'lesson_id': widget.lesson?.id ?? 'unknown',
-        'lesson_category': widget.lesson?.category ?? 'unknown',
-        'questions_answered': _sessionAnswered,
-        'questions_correct': _sessionCorrect,
-        'accuracy_rate': _sessionAnswered > 0 ? (_sessionCorrect / _sessionAnswered) : 0,
-        'best_streak': _sessionBestStreak,
-      });
+      // Track lesson completion - capture context before any async operations
+      if (mounted) {
+        final analytics = Provider.of<AnalyticsService>(context, listen: false);
+        analytics.trackFeatureCompletion(context, AnalyticsService.featureLessonSystem, additionalProperties: {
+          'lesson_id': widget.lesson?.id ?? 'unknown',
+          'lesson_category': widget.lesson?.category ?? 'unknown',
+          'questions_answered': _sessionAnswered,
+          'questions_correct': _sessionCorrect,
+          'accuracy_rate': _sessionAnswered > 0 ? (_sessionCorrect / _sessionAnswered) : 0,
+          'best_streak': _sessionBestStreak,
+        });
+      }
 
       await _completeLessonSession();
       return;
@@ -762,7 +769,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
       context: context,
     );
 
-    // Track progressive difficulty adjustments
+    // Track progressive difficulty adjustments - use context before any async gaps
     if (calculatedNewDifficulty != _quizState.currentDifficulty) {
       final analytics = Provider.of<AnalyticsService>(context, listen: false);
       analytics.trackFeatureUsage(context, AnalyticsService.featureProgressiveDifficulty, isCorrect ? 'increased' : 'decreased', additionalProperties: {
@@ -999,8 +1006,6 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
 
 
   Future<void> _completeLessonSession() async {
-    Provider.of<AnalyticsService>(context, listen: false);
-
     // Mark today's streak as active since lesson was completed
     await _markStreakActive();
 
@@ -1014,7 +1019,8 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
     final bestStreak = _sessionBestStreak;
     final stars = LessonProgressProvider().computeStars(correct: correct, total: total);
 
-    // Persist lesson progress - capture context before async operation
+    // Persist lesson progress - this must happen after await, so use mounted check
+    if (!mounted) return;
     final progress = Provider.of<LessonProgressProvider>(context, listen: false);
     await progress.markCompleted(lesson: lesson, correct: correct, total: total);
 
@@ -1231,12 +1237,14 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin, 
       final localAnalytics = analyticsService;
       final localQuestion = question;
       final localTimeRemaining = _quizState.timeRemaining;
-      localAnalytics.trackFeatureSuccess(context, AnalyticsService.featureBiblicalReferences, additionalProperties: {
-        'question_category': localQuestion.category,
-        'question_difficulty': localQuestion.difficulty,
-        'biblical_reference': localQuestion.biblicalReference ?? 'none',
-        'time_remaining': localTimeRemaining,
-      });
+      if (mounted) {
+        localAnalytics.trackFeatureSuccess(context, AnalyticsService.featureBiblicalReferences, additionalProperties: {
+          'question_category': localQuestion.category,
+          'question_difficulty': localQuestion.difficulty,
+          'biblical_reference': localQuestion.biblicalReference ?? 'none',
+          'time_remaining': localTimeRemaining,
+        });
+      }
     } else {
       // Not enough stars - this is a user state issue, not an error to report automatically
       WidgetsBinding.instance.addPostFrameCallback((_) {
