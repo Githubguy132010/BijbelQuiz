@@ -2,6 +2,9 @@ import '../config/supabase_config.dart';
 import '../error/error_types.dart';
 import '../services/logger.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
+import '../providers/settings_provider.dart';
 
 /// Data class that represents an error report to be sent to Supabase
 class ErrorReport {
@@ -103,8 +106,18 @@ class ErrorReportingService {
     String? deviceInfo,
     String? appVersion,
     String? buildNumber,
+    BuildContext? context,
   }) async {
     try {
+      // Check if automatic bug reporting is enabled
+      if (context != null) {
+        final settings = Provider.of<SettingsProvider>(context, listen: false);
+        if (!settings.automaticBugReporting) {
+          AppLogger.info('Automatic bug reporting is disabled, skipping error report');
+          return;
+        }
+      }
+
       AppLogger.info('Attempting to report error to Supabase: ${appError.userMessage}');
 
       // Get app version and build number if not provided
@@ -179,6 +192,7 @@ class ErrorReportingService {
     String? deviceInfo,
     String? appVersion,
     String? buildNumber,
+    BuildContext? context,
   }) async {
     final appError = AppError(
       type: type,
@@ -195,6 +209,7 @@ class ErrorReportingService {
       deviceInfo: deviceInfo,
       appVersion: appVersion,
       buildNumber: buildNumber,
+      context: context,
     );
   }
 

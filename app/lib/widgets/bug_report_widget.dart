@@ -36,7 +36,7 @@ class _BugReportDialogState extends State<BugReportDialog> {
     });
 
     try {
-      // Create a simple error report 
+      // Create a simple error report
       await ErrorReportingService().reportSimpleError(
         message: _descriptionController.text,
         userMessage: _subjectController.text,
@@ -44,6 +44,7 @@ class _BugReportDialogState extends State<BugReportDialog> {
           'email': _emailController.text,
           'form_type': 'bug_report',
         },
+        context: context,
       );
 
       if (mounted) {
@@ -225,7 +226,7 @@ class _BugReportScreenState extends State<BugReportScreen> {
     });
 
     try {
-      // Create a simple error report 
+      // Create a simple error report
       await ErrorReportingService().reportSimpleError(
         message: _descriptionController.text,
         userMessage: _subjectController.text,
@@ -233,6 +234,7 @@ class _BugReportScreenState extends State<BugReportScreen> {
           'email': _emailController.text,
           'form_type': 'bug_report',
         },
+        context: context,
       );
 
       if (mounted) {

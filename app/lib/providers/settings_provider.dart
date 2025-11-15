@@ -36,6 +36,7 @@ class SettingsProvider extends ChangeNotifier {
   static const String _layoutTypeKey = 'layout_type';
   static const String _colorfulModeKey = 'colorful_mode';
   static const String _hidePromoCardKey = 'hide_promo_card';
+  static const String _automaticBugReportingKey = 'automatic_bug_reporting';
 
   SharedPreferences? _prefs;
   String _language = 'nl';
@@ -82,6 +83,9 @@ class SettingsProvider extends ChangeNotifier {
   
   // Promo card settings
   bool _hidePromoCard = false; // default to false (don't hide the promo card, so show it)
+
+  // Bug reporting settings
+  bool _automaticBugReporting = true; // default to true (automatically send bug reports)
 
   SettingsProvider() {
     syncService = SyncService();
@@ -173,6 +177,21 @@ class SettingsProvider extends ChangeNotifier {
 
   /// Whether to show the promo card popup on lesson select screen (opposite of hidePromoCard)
   bool get showPromoCard => !_hidePromoCard;
+
+  /// Whether automatic bug reporting is enabled
+  bool get automaticBugReporting => _automaticBugReporting;
+
+  /// Static method to check automatic bug reporting setting without BuildContext
+  /// Returns true by default to maintain backward compatibility
+  static Future<bool> isAutomaticBugReportingEnabled() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getBool(_automaticBugReportingKey) ?? true;
+    } catch (e) {
+      AppLogger.warning('Failed to check automatic bug reporting setting: $e');
+      return true; // Default to true for backward compatibility
+    }
+  }
 
   String? get selectedCustomThemeKey => _selectedCustomThemeKey;
   Set<String> get unlockedThemes => _unlockedThemes;
@@ -419,6 +438,9 @@ class SettingsProvider extends ChangeNotifier {
 
       // Load hide promo card setting
       _hidePromoCard = _getBoolSetting(_hidePromoCardKey, defaultValue: false);
+
+      // Load automatic bug reporting setting
+      _automaticBugReporting = _getBoolSetting(_automaticBugReportingKey, defaultValue: true);
 
       final unlocked = _prefs?.getStringList(_unlockedThemesKey);
       if (unlocked != null) {
@@ -801,6 +823,19 @@ class SettingsProvider extends ChangeNotifier {
     );
   }
 
+  /// Updates the automatic bug reporting setting
+  Future<void> setAutomaticBugReporting(bool enabled) async {
+    AppLogger.info('Changing automatic bug reporting setting from $_automaticBugReporting to $enabled');
+    await _saveSetting(
+      action: () async {
+        _automaticBugReporting = enabled;
+        await _prefs?.setBool(_automaticBugReportingKey, enabled);
+        AppLogger.info('Automatic bug reporting setting saved successfully: $enabled');
+      },
+      errorMessage: 'Failed to save automatic bug reporting setting',
+    );
+  }
+
 
   // Helper method to safely get a boolean setting with type checking
   bool _getBoolSetting(String key, {required bool defaultValue}) {
@@ -851,6 +886,7 @@ class SettingsProvider extends ChangeNotifier {
       'layoutType': _layoutType,
       'colorfulMode': _colorfulMode,
       'hidePromoCard': _hidePromoCard,
+      'automaticBugReporting': _automaticBugReporting,
       'aiThemes': _aiThemes.map((key, value) => MapEntry(key, value.toJson())),
     };
   }
@@ -897,6 +933,7 @@ class SettingsProvider extends ChangeNotifier {
 
     _colorfulMode = data['colorfulMode'] ?? false;
     _hidePromoCard = data['hidePromoCard'] ?? false;
+    _automaticBugReporting = data['automaticBugReporting'] ?? true;
 
     final lastDifficultyPopupMs = data['lastDifficultyPopup'];
     _lastDifficultyPopup = lastDifficultyPopupMs != null ? DateTime.fromMillisecondsSinceEpoch(lastDifficultyPopupMs) : null;
@@ -969,6 +1006,9 @@ class SettingsProvider extends ChangeNotifier {
 
     // Save hide promo card setting
     await _prefs?.setBool(_hidePromoCardKey, _hidePromoCard);
+
+    // Save automatic bug reporting setting
+    await _prefs?.setBool(_automaticBugReportingKey, _automaticBugReporting);
 
     // Save difficulty popup tracking data
     if (_lastDifficultyPopup != null) {

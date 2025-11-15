@@ -324,6 +324,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 colorScheme,
               ),
             ),
+            _SettingItem(
+              title: strings.AppStrings.automaticBugReports,
+              subtitle: strings.AppStrings.automaticBugReportsDesc,
+              child: _buildSwitch(
+                settings.automaticBugReporting,
+                (value) => _updateSetting(settings, 'toggle_automatic_bug_reporting', () => settings.setAutomaticBugReporting(value)),
+                colorScheme,
+              ),
+            ),
             if (settings.apiEnabled) ...[
               _SettingItem(
                 title: strings.AppStrings.apiKey,

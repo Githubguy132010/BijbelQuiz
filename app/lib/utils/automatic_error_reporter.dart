@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
 import '../services/error_reporting_service.dart';
 import '../error/error_types.dart';
 import '../services/logger.dart';
+import '../providers/settings_provider.dart';
 
 /// Utility class for automatic error reporting in specific app features
 class AutomaticErrorReporter {
@@ -11,8 +13,16 @@ class AutomaticErrorReporter {
     String? userMessage,
     String? questionId,
     Map<String, dynamic>? additionalInfo,
+    BuildContext? context,
   }) async {
     try {
+      // Check if automatic bug reporting is enabled
+      final isEnabled = await SettingsProvider.isAutomaticBugReportingEnabled();
+      if (!isEnabled) {
+        AppLogger.info('Automatic bug reporting is disabled, skipping biblical reference error report');
+        return;
+      }
+
       await ErrorReportingService().reportSimpleError(
         message: message,
         type: AppErrorType.api, // Most biblical reference issues are API related
@@ -37,8 +47,16 @@ class AutomaticErrorReporter {
     required String questionId,
     String? questionText,
     Map<String, dynamic>? additionalInfo,
+    BuildContext? context,
   }) async {
     try {
+      // Check if automatic bug reporting is enabled
+      final isEnabled = await SettingsProvider.isAutomaticBugReportingEnabled();
+      if (!isEnabled) {
+        AppLogger.info('Automatic bug reporting is disabled, skipping question error report');
+        return;
+      }
+
       await ErrorReportingService().reportSimpleError(
         message: message,
         type: AppErrorType.dataLoading,
@@ -63,8 +81,16 @@ class AutomaticErrorReporter {
     int? statusCode,
     String? questionId,
     Map<String, dynamic>? additionalInfo,
+    BuildContext? context,
   }) async {
     try {
+      // Check if automatic bug reporting is enabled
+      final isEnabled = await SettingsProvider.isAutomaticBugReportingEnabled();
+      if (!isEnabled) {
+        AppLogger.info('Automatic bug reporting is disabled, skipping network error report');
+        return;
+      }
+
       await ErrorReportingService().reportSimpleError(
         message: message,
         type: AppErrorType.network,
@@ -90,8 +116,16 @@ class AutomaticErrorReporter {
     String? filePath,
     String? questionId,
     Map<String, dynamic>? additionalInfo,
+    BuildContext? context,
   }) async {
     try {
+      // Check if automatic bug reporting is enabled
+      final isEnabled = await SettingsProvider.isAutomaticBugReportingEnabled();
+      if (!isEnabled) {
+        AppLogger.info('Automatic bug reporting is disabled, skipping storage error report');
+        return;
+      }
+
       await ErrorReportingService().reportSimpleError(
         message: message,
         type: AppErrorType.storage,

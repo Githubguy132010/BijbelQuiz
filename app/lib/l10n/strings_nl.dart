@@ -737,4 +737,9 @@ class AppStrings {
  static const String inviteFriendDesc = 'Deel een gepersonaliseerde uitnodigingslink met vrienden';
  static const String bugReport = 'Bug Rapport';
  static const String bugReportDesc = 'Rapporteer bugs en problemen met de app';
+
+ // Automatic Bug Reporting
+ static const String automaticBugReports = 'Automatisch problemen melden';
+ static const String automaticBugReportsDesc =
+     'Automatisch bug rapporten verzenden wanneer er fouten optreden (aanbevolen)';
 }
