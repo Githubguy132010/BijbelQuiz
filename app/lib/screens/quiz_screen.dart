@@ -26,6 +26,7 @@ import '../widgets/metrics_widget.dart';
 import '../widgets/app_bar_widget.dart';
 import '../utils/responsive_utils.dart';
 import '../widgets/common_widgets.dart';
+import '../utils/quiz_action_price_helper.dart';
 import 'dart:async';
 import 'dart:math';
 import '../widgets/quiz_skeleton.dart';
@@ -1167,10 +1168,14 @@ class _QuizScreenState extends State<QuizScreen>
     final settings = Provider.of<SettingsProvider>(context, listen: false);
     final isDev = kDebugMode;
 
+    // Fetch the price from the database
+    final priceHelper = QuizActionPriceHelper();
+    final amount = await priceHelper.getSkipQuestionPrice();
+
     final success = isDev
         ? true
         : await gameStats.spendStarsWithTransaction(
-            amount: 35,
+            amount: amount,
             reason: 'Vraag overslaan',
             metadata: {
               'question_category': question.category,
@@ -1270,11 +1275,15 @@ class _QuizScreenState extends State<QuizScreen>
       return;
     }
 
-    // Spend 10 stars for unlocking the biblical reference (free in debug mode)
+    // Fetch the price from the database
+    final priceHelper = QuizActionPriceHelper();
+    final amount = await priceHelper.getUnlockBiblicalReferencePrice();
+
+    // Spend stars for unlocking the biblical reference (free in debug mode)
     final success = isDev
         ? true
         : await gameStats.spendStarsWithTransaction(
-            amount: 10,
+            amount: amount,
             reason: 'Bijbelse referentie ontgrendelen',
             metadata: {
               'question_category': question.category,

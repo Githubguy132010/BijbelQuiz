@@ -52,7 +52,9 @@ class QuizActionPriceHelper {
         ),
       );
 
-      return item?.currentPrice ?? defaultPrice;
+      final price = item?.currentPrice ?? defaultPrice;
+      // Ensure price is positive, fallback to default if not
+      return price > 0 ? price : defaultPrice;
     } catch (e) {
       // Return default price if loading fails
       return defaultPrice;
